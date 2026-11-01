@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#101827">
+  <meta name="description" content="AppZone — ilovalar dunyosi">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="AppZone">
+
+  <title>AppZone — Ilovalar do‘koni</title>
+
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+
+  <script src="https://www.gstatic.com/firebasejs/13.1.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/13.1.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/13.1.0/firebase-firestore-compat.js"></script>
+
+  <style>
+    :root {
+      --bg: #0b1020;
+      --surface: #141d31;
+      --surface2: #1b2740;
+      --text: #f5f7ff;
+      --muted: #a1acc4;
+      --accent: #7867ff;
+      --accent2: #4b8bff;
+      --border: rgba(255,255,255,.09);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, sans-serif;
+      min-height: 100vh;
+    }
+
+    button, input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+      border: none;
+    }
+
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(11,16,32,.94);
+      backdrop-filter: blur(15px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-inner {
+      max-width: 1150px;
+      margin: auto;
+      padding: 15px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 23px;
+      font-weight: 800;
+      letter-spacing: -.7px;
+    }
+
+    .logo-icon {
+      background: linear-gradient(135deg,var(--accent),var(--accent2));
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      font-size: 23px;
+    }
+
+    .logo span {
+      color: #9c91ff;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 9px;
+      align-items: center;
+    }
+
+    .btn {
+      padding: 11px 17px;
+      border-radius: 12px;
+      font-weight: 700;
+      color: white;
+      background: linear-gradient(135deg,var(--accent),var(--accent2));
+      transition: .2s;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      opacity: .92;
+    }
+
+    .btn-outline {
+      background: var(--surface);
+      border: 1px solid var(--border);
+    }
+
+    .profile-btn {
+      max-width: 190px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .container {
+      max-width: 1150px;
+      margin: auto;
+      padding: 25px 18px;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      border-radius: 25px;
+      padding: 48px 35px;
+      background:
+        radial-gradient(circle at 85% 20%,rgba(111,94,255,.48),transparent 35%),
+        linear-gradient(120deg,#202957,#172345 55%,#253e6c);
+      border: 1px solid var(--border);
+    }
+
+    .hero h1 {
+      font-size: clamp(30px,6vw,49px);
+      max-width: 650px;
+      line-height: 1.15;
+      margin-bottom: 15px;
+    }
+
+    .hero h1 span {
+      color: #b3aaff;
+    }
+
+    .hero p {
+      color: #d4d9ed;
+      max-width: 570px;
+      line-height: 1.7;
+      margin-bottom: 23px;
+    }
+
+    .hero-art {
+      position: absolute;
+      right: 55px;
+      top: 40px;
+      font-size: 115px;
+      opacity: .85;
+    }
+
+    .search-box {
+      margin-top: 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      padding: 5px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .search-box input {
+      flex: 1;
+      min-width: 0;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: white;
+      padding: 14px;
+      font-size: 15px;
+    }
+
+    .section {
+      margin-top: 35px;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 19px;
+    }
+
+    .section-head h2 {
+      font-size: 23px;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .categories {
+      display: flex;
+      gap: 9px;
+      overflow-x: auto;
+      padding-bottom: 9px;
+    }
+
+    .category {
+      flex-shrink: 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 11px 16px;
+      color: var(--muted);
+      border-radius: 12px;
+      font-weight: 600;
+    }
+
+    .category.active {
+      background: linear-gradient(135deg,var(--accent),var(--accent2));
+      color: white;
+      border-color: transparent;
+    }
+
+    .app-grid {
+      display: grid;
+      grid-template-columns: repeat(3,minmax(0,1fr));
+      gap: 16px;
+    }
+
+    .app-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 17px;
+      border-radius: 19px;
+      transition: .2s;
+      min-width: 0;
+    }
+
+    .app-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(120,103,255,.6);
+    }
+
+    .app-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .app-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 17px;
+      display: grid;
+      place-items: center;
+      font-size: 30px;
+      flex-shrink: 0;
+    }
+
+    .icon-1 { background: linear-gradient(135deg,#7459ff,#bc69ff); }
+    .icon-2 { background: linear-gradient(135deg,#00a8a8,#54d7c3); }
+    .icon-3 { background: linear-gradient(135deg,#ef8d46,#ffbc63); }
+    .icon-4 { background: linear-gradient(135deg,#e34a80,#ff8da9); }
+    .icon-5 { background: linear-gradient(135deg,#2876dc,#55b5fa); }
+    .icon-6 { background: linear-gradient(135deg,#b647e8,#7356ff); }
+
+    .favorite {
+      color: #aab2c7;
+      background: var(--surface2);
+      padding: 8px;
+      border-radius: 10px;
+    }
+
+    .favorite.active {
+      color: #ff708c;
+    }
+
+    .app-card h3 {
+      font-size: 17px;
+      margin-top: 14px;
+      margin-bottom: 6px;
+    }
+
+    .app-card p {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+      min-height: 39px;
+    }
+
+    .app-meta {
+      margin-top: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .details-btn {
+      margin-top: 15px;
+      width: 100%;
+      border-radius: 11px;
+      padding: 11px;
+      color: white;
+      background: var(--surface2);
+      font-weight: 700;
+    }
+
+    .details-btn:hover {
+      background: #2c3c60;
+    }
+
+    .empty {
+      grid-column: 1/-1;
+      text-align: center;
+      color: var(--muted);
+      padding: 35px 10px;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 14px;
+    }
+
+    .feature {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      padding: 22px;
+      border-radius: 18px;
+    }
+
+    .feature .emoji {
+      font-size: 27px;
+      margin-bottom: 12px;
+    }
+
+    .feature h3 {
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+
+    .feature p {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .footer {
+      margin-top: 45px;
+      border-top: 1px solid var(--border);
+      padding: 25px 18px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: rgba(0,0,0,.75);
+      padding: 16px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-box {
+      width: 100%;
+      max-width: 420px;
+      max-height: 90vh;
+      overflow-y: auto;
+      background: #141d31;
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 23px;
+    }
+
+    .modal-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .modal-head h2 {
+      font-size: 21px;
+    }
+
+    .close-btn {
+      background: var(--surface2);
+      color: white;
+      border-radius: 9px;
+      padding: 8px 12px;
+      font-size: 18px;
+    }
+
+    .auth-tabs {
+      display: flex;
+      background: #0d1527;
+      padding: 5px;
+      border-radius: 12px;
+      margin-bottom: 18px;
+    }
+
+    .auth-tab {
+      flex: 1;
+      padding: 11px 6px;
+      background: transparent;
+      color: var(--muted);
+      border-radius: 9px;
+      font-weight: 700;
+    }
+
+    .auth-tab.active {
+      color: white;
+      background: var(--accent);
+    }
+
+    .form-group {
+      margin-bottom: 13px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: #c5cce0;
+      font-size: 13px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 14px;
+      border-radius: 11px;
+      outline: none;
+      border: 1px solid var(--border);
+      background: #0d1527;
+      color: white;
+    }
+
+    .form-group input:focus {
+      border-color: var(--accent);
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      background: linear-gradient(135deg,var(--accent),var(--accent2));
+      color: white;
+      font-weight: 800;
+      margin-top: 5px;
+    }
+
+    .form-note {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 14px;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    .error {
+      color: #ff8295;
+      font-size: 13px;
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+
+    .success {
+      color: #65dba1;
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+
+    .link-btn {
+      display: block;
+      background: transparent;
+      color: #a99fff;
+      margin: 13px auto 0;
+      font-size: 13px;
+    }
+
+    .profile-info {
+      padding: 18px;
+      background: var(--surface2);
+      border-radius: 14px;
+      margin-bottom: 15px;
+      overflow-wrap: anywhere;
+    }
+
+    .profile-info small {
+      color: var(--muted);
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 22px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      opacity: 0;
+      z-index: 200;
+      background: #263858;
+      border: 1px solid var(--border);
+      color: white;
+      padding: 13px 19px;
+      border-radius: 13px;
+      transition: .3s;
+      max-width: 90%;
+      text-align: center;
+      font-size: 13px;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @media(max-width:750px) {
+      .app-grid {
+        grid-template-columns: repeat(2,minmax(0,1fr));
+      }
+
+      .hero-art {
+        right: 15px;
+        top: 70px;
+        font-size: 65px;
+        opacity: .35;
+      }
+
+      .hero {
+        padding: 35px 22px;
+      }
+
+      .feature-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media(max-width:420px) {
+      .header-inner {
+        padding: 11px;
+      }
+
+      .logo {
+        font-size: 19px;
+      }
+
+      .logo-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 11px;
+      }
+
+      .header-actions .btn {
+        padding: 9px 10px;
+        font-size: 12px;
+      }
+
+      .app-grid {
+        gap: 10px;
+      }
+
+      .app-card {
+        padding: 12px;
+      }
+
+      .app-icon {
+        width: 51px;
+        height: 51px;
+        font-size: 26px;
+      }
+
+      .app-card h3 {
+        font-size: 15px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-icon">A</div>
+      App<span>Zone</span>
+    </div>
+
+    <div class="header-actions">
+      <button class="btn btn-outline" id="installBtn" hidden>
+        ⬇ O‘rnatish
+      </button>
+      <button class="btn" id="authButton" onclick="openAuth()">
+        Kirish
+      </button>
+      <button class="btn profile-btn" id="profileButton"
+              onclick="openProfile()" hidden>
+        Profil
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+
+  <section class="hero">
+    <div class="hero-art">📱</div>
+    <h1>Ilovalar dunyosiga <span>xush kelibsiz!</span></h1>
+    <p>
+      AppZone — sevimli ilovalaringizni topish, o‘rganish
+      va yangi raqamli imkoniyatlarni kashf qilish uchun
+      yaratilgan platforma.
+    </p>
+    <button class="btn" onclick="scrollToApps()">
+      Ilovalarni ko‘rish →
+    </button>
+  </section>
+
+  <div class="search-box">
+    <span style="padding-left:12px">🔍</span>
+    <input id="searchInput" type="search"
+           placeholder="Ilova nomini qidiring...">
+  </div>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>Kategoriyalar</h2>
+    </div>
+
+    <div class="categories" id="categories"></div>
+  </section>
+
+  <section class="section" id="appsSection">
+    <div class="section-head">
+      <h2>Ommabop ilovalar</h2>
+      <span class="muted" id="appCount">6 ta ilova</span>
+    </div>
+
+    <div class="app-grid" id="appGrid"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>Nega AppZone?</h2>
+    </div>
+
+    <div class="feature-grid">
+      <div class="feature">
+        <div class="emoji">🔎</div>
+        <h3>Oson qidiruv</h3>
+        <p>Kerakli ilovalarni kategoriyalar va qidiruv orqali toping.</p>
+      </div>
+
+      <div class="feature">
+        <div class="emoji">⭐</div>
+        <h3>Sevimlilar</h3>
+        <p>O‘zingiz yoqtirgan ilovalarni ro‘yxatga saqlang.</p>
+      </div>
+
+      <div class="feature">
+        <div class="emoji">🔐</div>
+        <h3>Shaxsiy profil</h3>
+        <p>O‘z akkauntingiz orqali tizimga kiring va profilingizni boshqaring.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="logo" style="justify-content:center;margin-bottom:10px">
+    <div class="logo-icon">A</div>
+    App<span>Zone</span>
+  </div>
+  <p>© 2026 AppZone. Barcha huquqlar himoyalangan.</p>
+  <p style="margin-top:7px">Ilovalar dunyosi — bir joyda.</p>
+</footer>
+
+<!-- KIRISH VA RO‘YXATDAN O‘TISH -->
+<div class="modal" id="authModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h2>AppZone akkaunti</h2>
+      <button class="close-btn" onclick="closeModal('authModal')">×</button>
+    </div>
+
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="loginTab"
+              onclick="switchAuth('login')">Kirish</button>
+      <button class="auth-tab" id="registerTab"
+              onclick="switchAuth('register')">Ro‘yxatdan o‘tish</button>
+    </div>
+
+    <div id="authMessage"></div>
+
+    <form id="loginForm">
+      <div class="form-group">
+        <label>Email manzilingiz</label>
+        <input type="email" id="loginEmail" required
+               placeholder="example@gmail.com">
+      </div>
+
+      <div class="form-group">
+        <label>Parol</label>
+        <input type="password" id="loginPassword"
+               required minlength="6" placeholder="Parolingiz">
+      </div>
+
+      <button class="submit-btn" type="submit">Akkauntga kirish</button>
+      <button class="link-btn" type="button" onclick="resetPassword()">
+        Parolni unutdingizmi?
+      </button>
+    </form>
+
+    <form id="registerForm" hidden>
+      <div class="form-group">
+        <label>Email manzilingiz</label>
+        <input type="email" id="registerEmail" required
+               placeholder="example@gmail.com">
+      </div>
+
+      <div class="form-group">
+        <label>Parol</label>
+        <input type="password" id="registerPassword"
+               required minlength="6" placeholder="Kamida 6 ta belgi">
+      </div>
+
+      <div class="form-group">
+        <label>Parolni tasdiqlang</label>
+        <input type="password" id="confirmPassword"
+               required minlength="6" placeholder="Parolni qayta kiriting">
+      </div>
+
+      <button class="submit-btn" type="submit">
+        Akkaunt yaratish
+      </button>
+    </form>
+
+    <p class="form-note">
+      AppZone akkauntingiz orqali xizmatlardan foydalanishingiz mumkin.
+    </p>
+  </div>
+</div>
+
+<!-- PROFIL -->
+<div class="modal" id="profileModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h2>Shaxsiy profil</h2>
+      <button class="close-btn" onclick="closeModal('profileModal')">×</button>
+    </div>
+
+    <div class="profile-info">
+      <small>Akkaunt emaili</small>
+      <h3 id="profileEmail" style="margin-top:7px"></h3>
+    </div>
+
+    <button class="submit-btn" onclick="logout()">
+      Akkauntdan chiqish
+    </button>
+  </div>
+</div>
+
+<!-- ILOVA MA'LUMOTLARI -->
+<div class="modal" id="appModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h2 id="detailTitle">Ilova</h2>
+      <button class="close-btn" onclick="closeModal('appModal')">×</button>
+    </div>
+
+    <div id="detailContent"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===========================
+   FIREBASE SOZLAMALARI
+=========================== */
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCI_7KqqOy2qPE7Qu5pMm1Jc7mZONtIy70",
+  authDomain: "appzone-19115.firebaseapp.com",
+  projectId: "appzone-19115",
+  storageBucket: "appzone-19115.firebasestorage.app",
+  messagingSenderId: "685330977059",
+  appId: "1:685330977059:web:bf686fa47088a70cb33c96"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+/* ===========================
+   ILOVALAR
+=========================== */
+
+const demoApps = [
+  {
+    id: "demo-1",
+    name: "Photo Editor",
+    description: "Suratlarni tahrirlash va chiroyli effektlar.",
+    category: "Foto va video",
+    icon: "📸",
+    css: "icon-1",
+    version: "1.0"
+  },
+  {
+    id: "demo-2",
+    name: "Brain Test",
+    description: "Mantiqiy fikrlashni rivojlantiruvchi o‘yin.",
+    category: "O‘yinlar",
+    icon: "🧠",
+    css: "icon-2",
+    version: "1.0"
+  },
+  {
+    id: "demo-3",
+    name: "English Master",
+    description: "Ingliz tilini o‘rganish uchun yordamchi.",
+    category: "Ta’lim",
+    icon: "📚",
+    css: "icon-3",
+    version: "1.0"
+  },
+  {
+    id: "demo-4",
+    name: "Video Maker",
+    description: "Videolar tayyorlash uchun qulay vosita.",
+    category: "Foto va video",
+    icon: "🎬",
+    css: "icon-4",
+    version: "1.0"
+  },
+  {
+    id: "demo-5",
+    name: "Calculator Pro",
+    description: "Kundalik hisob-kitoblar uchun kalkulyator.",
+    category: "Vositalar",
+    icon: "🧮",
+    css: "icon-5",
+    version: "1.0"
+  },
+  {
+    id: "demo-6",
+    name: "Speed Racing",
+    description: "Tezlik va poyga mavzusidagi o‘yin.",
+    category: "O‘yinlar",
+    icon: "🏎️",
+    css: "icon-6",
+    version: "1.0"
+  }
+];
+
+let apps = [...demoApps];
+let visibleApps = [...apps];
+let activeCategory = "Barchasi";
+let selectedAuth = "login";
+
+const categoriesList = [
+  "Barchasi",
+  "Ta’lim",
+  "Foto va video",
+  "Vositalar",
+  "O‘yinlar"
+];
+
+let favorites = [];
+
+try {
+  favorites = JSON.parse(localStorage.getItem("appzoneFavorites") || "[]");
+  if (!Array.isArray(favorites)) favorites = [];
+} catch (error) {
+  favorites = [];
+}
+
+/* ===========================
+   YORDAMCHI FUNKSIYALAR
+=========================== */
+
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, function(char) {
+    return {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;"
+    }[char];
+  });
+}
+
+function showToast(message) {
+  const toast = document.getElementById("toast");
+  toast.textContent = message;
+  toast.classList.add("show");
+
+  setTimeout(() => {
+    toast.classList.remove("show");
+  }, 2800);
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove("show");
+}
+
+function scrollToApps() {
+  document.getElementById("appsSection").scrollIntoView({
+    behavior: "smooth"
+  });
+}
+
+/* ===========================
+   KATEGORIYALAR
+=========================== */
+
+function renderCategories() {
+  const box = document.getElementById("categories");
+
+  box.innerHTML = categoriesList.map(category => `
+    <button
+      class="category ${activeCategory === category ? "active" : ""}"
+      data-category="${escapeHTML(category)}">
+      ${escapeHTML(category)}
+    </button>
+  `).join("");
+}
+
+document.getElementById("categories").addEventListener("click", event => {
+  const button = event.target.closest("[data-category]");
+  if (!button) return;
+
+  activeCategory = button.dataset.category;
+  renderCategories();
+  filterApps();
+});
+
+/* ===========================
+   ILOVALAR RO‘YXATI
+=========================== */
+
+function renderApps() {
+  const grid = document.getElementById("appGrid");
+
+  document.getElementById("appCount").textContent =
+    visibleApps.length + " ta ilova";
+
+  if (visibleApps.length === 0) {
+    grid.innerHTML = `
+      <div class="empty">
+        <div style="font-size:35px;margin-bottom:10px">🔎</div>
+        Bu qidiruv bo‘yicha ilova topilmadi.
+      </div>
+    `;
+    return;
+  }
+
+  grid.innerHTML = visibleApps.map((app, index) => {
+    const isFavorite = favorites.includes(String(app.id));
+
+    return `
+      <article class="app-card">
+        <div class="app-top">
+          <div class="app-icon ${app.css || "icon-1"}">
+            ${escapeHTML(app.icon || "📱")}
+          </div>
+
+          <button
+            class="favorite ${isFavorite ? "active" : ""}"
+            data-favorite="${escapeHTML(app.id)}"
+            aria-label="Sevimlilarga qo‘shish">
+            ${isFavorite ? "♥" : "♡"}
+          </button>
+        </div>
+
+        <h3>${escapeHTML(app.name)}</h3>
+        <p>${escapeHTML(app.description)}</p>
+
+        <div class="app-meta">
+          <span>${escapeHTML(app.category || "Ilova")}</span>
+          <span>v${escapeHTML(app.version || "1.0")}</span>
+        </div>
+
+        <button
+          class="details-btn"
+          data-open-app="${escapeHTML(app.id)}">
+          Batafsil →
+        </button>
+      </article>
+    `;
+  }).join("");
+}
+
+function filterApps() {
+  const search = document.getElementById("searchInput")
+    .value.trim().toLowerCase();
+
+  visibleApps = apps.filter(app => {
+    const matchCategory =
+      activeCategory === "Barchasi" ||
+      app.category === activeCategory;
+
+    const matchSearch =
+      String(app.name || "").toLowerCase().includes(search) ||
+      String(app.description || "").toLowerCase().includes(search);
+
+    return matchCategory && matchSearch;
+  });
+
+  renderApps();
+}
+
+document.getElementById("searchInput")
+  .addEventListener("input", filterApps);
+
+/* ===========================
+   SEVIMLILAR VA BATAFSIL
+=========================== */
+
+document.getElementById("appGrid").addEventListener("click", event => {
+  const favoriteButton = event.target.closest("[data-favorite]");
+
+  if (favoriteButton) {
+    const id = favoriteButton.dataset.favorite;
+
+    if (favorites.includes(id)) {
+      favorites = favorites.filter(item => item !== id);
+      showToast("Sevimlilardan olib tashlandi");
+    } else {
+      favorites.push(id);
+      showToast("Sevimlilarga qo‘shildi");
+    }
+
+    try {
+      localStorage.setItem(
+        "appzoneFavorites",
+        JSON.stringify(favorites)
+      );
+    } catch (error) {
+      console.warn("Sevimlilar saqlanmadi.");
+    }
+
+    filterApps();
+    return;
+  }
+
+  const detailsButton = event.target.closest("[data-open-app]");
+  if (!detailsButton) return;
+
+  const id = detailsButton.dataset.openApp;
+  const app = visibleApps.find(item => String(item.id) === id);
+
+  if (!app) return;
+
+  document.getElementById("detailTitle").textContent = app.name;
+
+  document.getElementById("detailContent").innerHTML = `
+    <div style="text-align:center;padding:10px">
+      <div style="font-size:65px">${escapeHTML(app.icon || "📱")}</div>
+      <h3 style="margin:12px 0">${escapeHTML(app.name)}</h3>
+      <p style="color:#a1acc4;line-height:1.6">
+        ${escapeHTML(app.description)}
+      </p>
+      <p style="margin-top:14px;color:#a1acc4;font-size:13px">
+        Kategoriya: ${escapeHTML(app.category || "Ilova")}<br>
+        Versiya: ${escapeHTML(app.version || "1.0")}
+      </p>
+      <p style="margin-top:17px;color:#a1acc4;font-size:12px">
+        Bu katalogdagi namuna. Haqiqiy yuklab olish imkoniyati
+        keyingi bosqichlarda qo‘shiladi.
+      </p>
+    </div>
+  `;
+
+  document.getElementById("appModal").classList.add("show");
+});
+
+/* ===========================
+   FIRESTORE'DAN TASDIQLANGAN
+   ILOVALARNI OLISH
+=========================== */
+
+async function loadCloudApps() {
+  try {
+    const snapshot = await db.collection("apps")
+      .where("status", "==", "approved")
+      .get();
+
+    const cloudApps = snapshot.docs.map(doc => {
+      const data = doc.data();
+
+      return {
+        id: doc.id,
+        name: data.name || "Nomsiz ilova",
+        description: data.description || "",
+        category: data.category || "Boshqa",
+        version: data.version || "1.0",
+        icon: "📱",
+        css: "icon-1"
+      };
+    });
+
+    apps = [
+      ...demoApps,
+      ...cloudApps.filter(cloud =>
+        !demoApps.some(demo =>
+          demo.name.toLowerCase() === cloud.name.toLowerCase()
+        )
+      )
+    ];
+
+    filterApps();
+  } catch (error) {
+    console.warn("Firestore ma'lumotlarini olishda xato:", error);
+    showToast("Katalogning namunaviy qismi ko‘rsatildi.");
+  }
+}
+
+/* ===========================
+   AUTHENTICATION
+=========================== */
+
+function openAuth() {
+  document.getElementById("authModal").classList.add("show");
+  switchAuth("login");
+}
+
+function switchAuth(type) {
+  selectedAuth = type;
+
+  document.getElementById("loginForm").hidden = type !== "login";
+  document.getElementById("registerForm").hidden = type !== "register";
+
+  document.getElementById("loginTab").classList.toggle(
+    "active", type === "login"
+  );
+
+  document.getElementById("registerTab").classList.toggle(
+    "active", type === "register"
+  );
+
+  document.getElementById("authMessage").innerHTML = "";
+}
+
+function showAuthMessage(message, type = "error") {
+  const box = document.getElementById("authMessage");
+  box.innerHTML = `<div class="${type}">${escapeHTML(message)}</div>`;
+}
+
+function translateFirebaseError(error) {
+  const messages = {
+    "auth/email-already-in-use":
+      "Bu email orqali oldin akkaunt yaratilgan.",
+    "auth/invalid-email":
+      "Email manzili noto‘g‘ri.",
+    "auth/weak-password":
+      "Parol juda oddiy. Boshqa parol tanlang.",
+    "auth/user-not-found":
+      "Bu email bilan akkaunt topilmadi.",
+    "auth/wrong-password":
+      "Parol noto‘g‘ri.",
+    "auth/invalid-credential":
+      "Email yoki parol noto‘g‘ri.",
+    "auth/too-many-requests":
+      "Juda ko‘p urinish bo‘ldi. Keyinroq qayta urinib ko‘ring.",
+    "auth/network-request-failed":
+      "Internet aloqasini tekshiring.",
+    "auth/unauthorized-domain":
+      "Bu sayt manzili Firebase'da ruxsat etilmagan."
+  };
+
+  return messages[error.code] ||
+    "Xatolik yuz berdi: " + (error.message || "Noma'lum xato");
+}
+
+document.getElementById("loginForm")
+  .addEventListener("submit", async event => {
+    event.preventDefault();
+
+    const email = document.getElementById("loginEmail").value.trim();
+    const password = document.getElementById("loginPassword").value;
+
+    try {
+      showAuthMessage("Kirilmoqda...", "success");
+
+      await auth.signInWithEmailAndPassword(email, password);
+
+      closeModal("authModal");
+      showToast("AppZone'ga muvaffaqiyatli kirdingiz!");
+    } catch (error) {
+      showAuthMessage(translateFirebaseError(error));
+    }
+  });
+
+document.getElementById("registerForm")
+  .addEventListener("submit", async event => {
+    event.preventDefault();
+
+    const email = document.getElementById("registerEmail").value.trim();
+    const password = document.getElementById("registerPassword").value;
+    const confirm = document.getElementById("confirmPassword").value;
+
+    if (password !== confirm) {
+      showAuthMessage("Parollar bir xil emas.");
+      return;
+    }
+
+    try {
+      showAuthMessage("Akkaunt yaratilmoqda...", "success");
+
+      await auth.createUserWithEmailAndPassword(email, password);
+
+      closeModal("authModal");
+      showToast("Akkaunt muvaffaqiyatli yaratildi!");
+    } catch (error) {
+      showAuthMessage(translateFirebaseError(error));
+    }
+  });
+
+async function resetPassword() {
+  const email = document.getElementById("loginEmail").value.trim();
+
+  if (!email) {
+    showAuthMessage("Avval email manzilingizni kiriting.");
+    return;
+  }
+
+  try {
+    await auth.sendPasswordResetEmail(email);
+    showAuthMessage(
+      "Parolni tiklash havolasi emailingizga yuborildi.",
+      "success"
+    );
+  } catch (error) {
+    showAuthMessage(translateFirebaseError(error));
+  }
+}
+
+/* ===========================
+   PROFIL VA CHIQISH
+=========================== */
+
+function openProfile() {
+  if (!auth.currentUser) return;
+
+  document.getElementById("profileEmail").textContent =
+    auth.currentUser.email || "Email mavjud emas";
+
+  document.getElementById("profileModal").classList.add("show");
+}
+
+async function logout() {
+  try {
+    await auth.signOut();
+    closeModal("profileModal");
+    showToast("Akkauntdan chiqdingiz.");
+  } catch (error) {
+    showToast("Chiqishda xatolik yuz berdi.");
+  }
+}
+
+auth.onAuthStateChanged(user => {
+  const authButton = document.getElementById("authButton");
+  const profileButton = document.getElementById("profileButton");
+
+  if (user) {
+    authButton.hidden = true;
+    profileButton.hidden = false;
+    profileButton.textContent = user.email || "Profil";
+  } else {
+    authButton.hidden = false;
+    profileButton.hidden = true;
+  }
+});
+
+/* ===========================
+   PWA — ILOVANI O‘RNATISH
+=========================== */
+
+let installPrompt = null;
+
+const installButton = document.getElementById("installBtn");
+
+window.addEventListener("beforeinstallprompt", event => {
+  event.preventDefault();
+  installPrompt = event;
+  installButton.hidden = false;
+});
+
+installButton.addEventListener("click", async () => {
+  if (installPrompt) {
+    installPrompt.prompt();
+
+    const result = await installPrompt.userChoice;
+
+    if (result.outcome === "accepted") {
+      showToast("AppZone o‘rnatish boshlandi!");
+    }
+
+    installPrompt = null;
+    installButton.hidden = true;
+    return;
+  }
+
+  const isApple = /iphone|ipad|ipod/i.test(navigator.userAgent);
+
+  if (isApple) {
+    showToast("Safari → Share → Add to Home Screen orqali qo‘shing.");
+  } else {
+    showToast("O‘rnatish uchun sayt HTTPS orqali ochilishi kerak.");
+  }
+});
+
+window.addEventListener("appinstalled", () => {
+  showToast("AppZone qurilmaga o‘rnatildi!");
+  installButton.hidden = true;
+});
+
+/* ===========================
+   SERVICE WORKER
+=========================== */
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", async () => {
+    const isSecure =
+      location.protocol === "https:" ||
+      location.hostname === "localhost" ||
+      location.hostname === "127.0.0.1";
+
+    if (!isSecure) return;
+
+    try {
+      await navigator.serviceWorker.register("./sw.js");
+      console.log("AppZone Service Worker ishga tushdi.");
+    } catch (error) {
+      console.warn("Service Worker xatosi:", error);
+    }
+  });
+}
+
+/* ===========================
+   BOSHLANG‘ICH ISHGA TUSHIRISH
+=========================== */
+
+renderCategories();
+renderApps();
+loadCloudApps();
+
+</script>
+
+</body>
+</html>
+

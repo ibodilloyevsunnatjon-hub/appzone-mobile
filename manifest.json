@@ -1,0 +1,17 @@
+{
+  "id": "./",
+  "name": "AppZone — Ilovalar do‘koni",
+  "short_name": "AppZone",
+  "description": "AppZone — ilovalar dunyosi",
+  "lang": "uz-UZ",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": [
+    "standalone",
+    "minimal-ui"
+  ],
+  "orientation": "portrait",
+  "background_color": "#0b1020",
+  "theme_color": "#7867ff"
+}
