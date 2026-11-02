@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="uz">
 <head>
@@ -43,7 +44,7 @@
       min-height: 100vh;
     }
 
-    button, input {
+    button, input, textarea, select {
       font: inherit;
     }
 
@@ -52,11 +53,15 @@
       border: none;
     }
 
+    [hidden] {
+      display: none !important;
+    }
+
     .header {
       position: sticky;
       top: 0;
       z-index: 20;
-      background: rgba(11,16,32,.94);
+      background: rgba(11,16,32,.96);
       backdrop-filter: blur(15px);
       border-bottom: 1px solid var(--border);
     }
@@ -68,7 +73,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 15px;
+      gap: 12px;
     }
 
     .logo {
@@ -78,6 +83,7 @@
       font-size: 23px;
       font-weight: 800;
       letter-spacing: -.7px;
+      flex-shrink: 0;
     }
 
     .logo-icon {
@@ -96,12 +102,14 @@
 
     .header-actions {
       display: flex;
-      gap: 9px;
+      gap: 8px;
       align-items: center;
+      justify-content: flex-end;
+      flex-wrap: wrap;
     }
 
     .btn {
-      padding: 11px 17px;
+      padding: 11px 16px;
       border-radius: 12px;
       font-weight: 700;
       color: white;
@@ -124,6 +132,10 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+    }
+
+    .admin-btn {
+      background: linear-gradient(135deg,#b45309,#f59e0b);
     }
 
     .container {
@@ -189,6 +201,32 @@
       color: white;
       padding: 14px;
       font-size: 15px;
+    }
+
+    .submit-area {
+      margin-top: 18px;
+    }
+
+    .submit-box {
+      background: linear-gradient(120deg,#202957,#172345);
+      border: 1px solid var(--border);
+      border-radius: 17px;
+      padding: 19px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .submit-box h3 {
+      margin-bottom: 7px;
+    }
+
+    .submit-box p {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
     }
 
     .section {
@@ -377,7 +415,7 @@
       position: fixed;
       inset: 0;
       z-index: 100;
-      background: rgba(0,0,0,.75);
+      background: rgba(0,0,0,.78);
       padding: 16px;
       align-items: center;
       justify-content: center;
@@ -389,7 +427,7 @@
 
     .modal-box {
       width: 100%;
-      max-width: 420px;
+      max-width: 440px;
       max-height: 90vh;
       overflow-y: auto;
       background: #141d31;
@@ -398,10 +436,15 @@
       padding: 23px;
     }
 
+    .admin-modal {
+      max-width: 850px;
+    }
+
     .modal-head {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 12px;
       margin-bottom: 20px;
     }
 
@@ -450,7 +493,9 @@
       font-size: 13px;
     }
 
-    .form-group input {
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
       width: 100%;
       padding: 14px;
       border-radius: 11px;
@@ -460,7 +505,19 @@
       color: white;
     }
 
-    .form-group input:focus {
+    .form-group textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .form-group select option {
+      background: #141d31;
+      color: white;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
       border-color: var(--accent);
     }
 
@@ -493,6 +550,7 @@
       color: #65dba1;
       font-size: 13px;
       margin-bottom: 12px;
+      line-height: 1.5;
     }
 
     .link-btn {
@@ -538,6 +596,122 @@
       transform: translateX(-50%) translateY(0);
     }
 
+    /* ADMIN PANEL */
+
+    .admin-filters {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 17px;
+    }
+
+    .admin-filter {
+      background: var(--surface2);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      padding: 9px 13px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .admin-filter.active {
+      background: var(--accent);
+      color: white;
+    }
+
+    .admin-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .admin-app {
+      background: #0d1527;
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      padding: 16px;
+    }
+
+    .admin-app h3 {
+      margin-bottom: 7px;
+      overflow-wrap: anywhere;
+    }
+
+    .admin-app p {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+      overflow-wrap: anywhere;
+      margin-top: 5px;
+    }
+
+    .admin-app-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .status {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .status-pending {
+      background: rgba(245,158,11,.15);
+      color: #fbbf24;
+    }
+
+    .status-approved {
+      background: rgba(34,197,94,.15);
+      color: #4ade80;
+    }
+
+    .status-rejected {
+      background: rgba(239,68,68,.15);
+      color: #fb7185;
+    }
+
+    .admin-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .admin-action {
+      padding: 9px 12px;
+      border-radius: 9px;
+      color: white;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .approve-btn {
+      background: #15803d;
+    }
+
+    .reject-btn {
+      background: #b45309;
+    }
+
+    .delete-btn {
+      background: #b91c1c;
+    }
+
+    .admin-empty {
+      text-align: center;
+      padding: 35px 12px;
+      color: var(--muted);
+      background: #0d1527;
+      border-radius: 14px;
+      line-height: 1.6;
+    }
+
     @media(max-width:750px) {
       .app-grid {
         grid-template-columns: repeat(2,minmax(0,1fr));
@@ -559,7 +733,7 @@
       }
     }
 
-    @media(max-width:420px) {
+    @media(max-width:480px) {
       .header-inner {
         padding: 11px;
       }
@@ -576,7 +750,7 @@
 
       .header-actions .btn {
         padding: 9px 10px;
-        font-size: 12px;
+        font-size: 11px;
       }
 
       .app-grid {
@@ -596,6 +770,10 @@
       .app-card h3 {
         font-size: 15px;
       }
+
+      .section-head h2 {
+        font-size: 20px;
+      }
     }
   </style>
 </head>
@@ -613,9 +791,16 @@
       <button class="btn btn-outline" id="installBtn" hidden>
         ⬇ O‘rnatish
       </button>
+
+      <button class="btn admin-btn" id="adminButton"
+              onclick="openAdminPanel()" hidden>
+        ⚙ Admin
+      </button>
+
       <button class="btn" id="authButton" onclick="openAuth()">
         Kirish
       </button>
+
       <button class="btn profile-btn" id="profileButton"
               onclick="openProfile()" hidden>
         Profil
@@ -645,11 +830,26 @@
            placeholder="Ilova nomini qidiring...">
   </div>
 
+  <!-- FAQAT TIZIMGA KIRGAN FOYDALANUVCHIGA KO‘RINADI -->
+  <section class="submit-area" id="submitArea" hidden>
+    <div class="submit-box">
+      <div>
+        <h3>📤 Ilovangizni AppZone'ga joylang</h3>
+        <p>
+          Ilova ma’lumotlarini yuboring. Admin tekshirganidan
+          keyin tasdiqlangan ilova katalogda ko‘rinadi.
+        </p>
+      </div>
+      <button class="btn" onclick="openSubmitApp()">
+        + Ilova yuborish
+      </button>
+    </div>
+  </section>
+
   <section class="section">
     <div class="section-head">
       <h2>Kategoriyalar</h2>
     </div>
-
     <div class="categories" id="categories"></div>
   </section>
 
@@ -658,7 +858,6 @@
       <h2>Ommabop ilovalar</h2>
       <span class="muted" id="appCount">6 ta ilova</span>
     </div>
-
     <div class="app-grid" id="appGrid"></div>
   </section>
 
@@ -776,11 +975,104 @@
     <div class="profile-info">
       <small>Akkaunt emaili</small>
       <h3 id="profileEmail" style="margin-top:7px"></h3>
+      <p id="profileRole" class="muted" style="margin-top:8px"></p>
     </div>
 
     <button class="submit-btn" onclick="logout()">
       Akkauntdan chiqish
     </button>
+  </div>
+</div>
+
+<!-- ILOVA YUBORISH -->
+<div class="modal" id="submitAppModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h2>Ilova yuborish</h2>
+      <button class="close-btn"
+              onclick="closeModal('submitAppModal')">×</button>
+    </div>
+
+    <div id="submitAppMessage"></div>
+
+    <form id="submitAppForm">
+      <div class="form-group">
+        <label>Ilova nomi</label>
+        <input id="newAppName" type="text" required
+               minlength="2" maxlength="60"
+               placeholder="Masalan: My Calculator">
+      </div>
+
+      <div class="form-group">
+        <label>Ilova haqida</label>
+        <textarea id="newAppDescription" required
+                  maxlength="600"
+                  placeholder="Ilovangiz haqida qisqacha yozing..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Kategoriya</label>
+        <select id="newAppCategory" required>
+          <option value="">Kategoriyani tanlang</option>
+          <option value="Ta’lim">Ta’lim</option>
+          <option value="Foto va video">Foto va video</option>
+          <option value="Vositalar">Vositalar</option>
+          <option value="O‘yinlar">O‘yinlar</option>
+          <option value="Boshqa">Boshqa</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Versiya</label>
+        <input id="newAppVersion" type="text" required
+               maxlength="20" placeholder="Masalan: 1.0">
+      </div>
+
+      <button class="submit-btn" id="submitAppSaveBtn" type="submit">
+        Yuborish
+      </button>
+    </form>
+
+    <p class="form-note">
+      Yuborilgan ilova avval admin tekshiruvidan o‘tadi.
+      Hozircha bu forma faqat ilova ma’lumotlarini yuboradi,
+      APK faylini yuklamaydi.
+    </p>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div class="modal" id="adminModal">
+  <div class="modal-box admin-modal">
+    <div class="modal-head">
+      <div>
+        <h2>⚙ AppZone Admin Panel</h2>
+        <p class="muted" style="margin-top:6px">
+          Ilovalarni boshqarish va tekshirish
+        </p>
+      </div>
+      <button class="close-btn"
+              onclick="closeModal('adminModal')">×</button>
+    </div>
+
+    <div class="admin-filters" id="adminFilters">
+      <button class="admin-filter active" data-filter="pending">
+        Tekshiruvda
+      </button>
+      <button class="admin-filter" data-filter="approved">
+        Tasdiqlangan
+      </button>
+      <button class="admin-filter" data-filter="rejected">
+        Rad etilgan
+      </button>
+      <button class="admin-filter" data-filter="all">
+        Barchasi
+      </button>
+    </div>
+
+    <div class="admin-list" id="adminList">
+      <div class="admin-empty">Ma’lumotlar yuklanmoqda...</div>
+    </div>
   </div>
 </div>
 
@@ -791,7 +1083,6 @@
       <h2 id="detailTitle">Ilova</h2>
       <button class="close-btn" onclick="closeModal('appModal')">×</button>
     </div>
-
     <div id="detailContent"></div>
   </div>
 </div>
@@ -799,9 +1090,9 @@
 <div class="toast" id="toast"></div>
 
 <script>
-/* ===========================
+/* =================================
    FIREBASE SOZLAMALARI
-=========================== */
+================================= */
 
 const firebaseConfig = {
   apiKey: "AIzaSyCI_7KqqOy2qPE7Qu5pMm1Jc7mZONtIy70",
@@ -817,9 +1108,9 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-/* ===========================
-   ILOVALAR
-=========================== */
+/* =================================
+   DEMO ILOVALAR
+================================= */
 
 const demoApps = [
   {
@@ -878,31 +1169,49 @@ const demoApps = [
   }
 ];
 
+/* =================================
+   UMUMIY O'ZGARUVCHILAR
+================================= */
+
 let apps = [...demoApps];
 let visibleApps = [...apps];
+
 let activeCategory = "Barchasi";
 let selectedAuth = "login";
+
+let currentUser = null;
+let isAdmin = false;
+
+let adminApps = [];
+let adminFilter = "pending";
+let authCheckNumber = 0;
 
 const categoriesList = [
   "Barchasi",
   "Ta’lim",
   "Foto va video",
   "Vositalar",
-  "O‘yinlar"
+  "O‘yinlar",
+  "Boshqa"
 ];
 
 let favorites = [];
 
 try {
-  favorites = JSON.parse(localStorage.getItem("appzoneFavorites") || "[]");
-  if (!Array.isArray(favorites)) favorites = [];
+  favorites = JSON.parse(
+    localStorage.getItem("appzoneFavorites") || "[]"
+  );
+
+  if (!Array.isArray(favorites)) {
+    favorites = [];
+  }
 } catch (error) {
   favorites = [];
 }
 
-/* ===========================
+/* =================================
    YORDAMCHI FUNKSIYALAR
-=========================== */
+================================= */
 
 function escapeHTML(value) {
   return String(value ?? "").replace(/[&<>"']/g, function(char) {
@@ -918,6 +1227,7 @@ function escapeHTML(value) {
 
 function showToast(message) {
   const toast = document.getElementById("toast");
+
   toast.textContent = message;
   toast.classList.add("show");
 
@@ -936,9 +1246,41 @@ function scrollToApps() {
   });
 }
 
-/* ===========================
+function formatDate(value) {
+  if (!value) return "Sana mavjud emas";
+
+  try {
+    const date = typeof value.toDate === "function"
+      ? value.toDate()
+      : new Date(value);
+
+    if (isNaN(date.getTime())) {
+      return "Sana mavjud emas";
+    }
+
+    return date.toLocaleString("uz-UZ");
+  } catch (error) {
+    return "Sana mavjud emas";
+  }
+}
+
+function getDateNumber(value) {
+  if (!value) return 0;
+
+  try {
+    if (typeof value.toMillis === "function") {
+      return value.toMillis();
+    }
+
+    return new Date(value).getTime() || 0;
+  } catch (error) {
+    return 0;
+  }
+}
+
+/* =================================
    KATEGORIYALAR
-=========================== */
+================================= */
 
 function renderCategories() {
   const box = document.getElementById("categories");
@@ -957,13 +1299,14 @@ document.getElementById("categories").addEventListener("click", event => {
   if (!button) return;
 
   activeCategory = button.dataset.category;
+
   renderCategories();
   filterApps();
 });
 
-/* ===========================
-   ILOVALAR RO‘YXATI
-=========================== */
+/* =================================
+   ILOVALAR RO'YXATI
+================================= */
 
 function renderApps() {
   const grid = document.getElementById("appGrid");
@@ -981,13 +1324,13 @@ function renderApps() {
     return;
   }
 
-  grid.innerHTML = visibleApps.map((app, index) => {
+  grid.innerHTML = visibleApps.map(app => {
     const isFavorite = favorites.includes(String(app.id));
 
     return `
       <article class="app-card">
         <div class="app-top">
-          <div class="app-icon ${app.css || "icon-1"}">
+          <div class="app-icon ${escapeHTML(app.css || "icon-1")}">
             ${escapeHTML(app.icon || "📱")}
           </div>
 
@@ -1039,9 +1382,9 @@ function filterApps() {
 document.getElementById("searchInput")
   .addEventListener("input", filterApps);
 
-/* ===========================
+/* =================================
    SEVIMLILAR VA BATAFSIL
-=========================== */
+================================= */
 
 document.getElementById("appGrid").addEventListener("click", event => {
   const favoriteButton = event.target.closest("[data-favorite]");
@@ -1074,8 +1417,8 @@ document.getElementById("appGrid").addEventListener("click", event => {
   if (!detailsButton) return;
 
   const id = detailsButton.dataset.openApp;
-  const app = visibleApps.find(item => String(item.id) === id);
 
+  const app = visibleApps.find(item => String(item.id) === id);
   if (!app) return;
 
   document.getElementById("detailTitle").textContent = app.name;
@@ -1083,17 +1426,23 @@ document.getElementById("appGrid").addEventListener("click", event => {
   document.getElementById("detailContent").innerHTML = `
     <div style="text-align:center;padding:10px">
       <div style="font-size:65px">${escapeHTML(app.icon || "📱")}</div>
-      <h3 style="margin:12px 0">${escapeHTML(app.name)}</h3>
+
+      <h3 style="margin:12px 0">
+        ${escapeHTML(app.name)}
+      </h3>
+
       <p style="color:#a1acc4;line-height:1.6">
         ${escapeHTML(app.description)}
       </p>
+
       <p style="margin-top:14px;color:#a1acc4;font-size:13px">
         Kategoriya: ${escapeHTML(app.category || "Ilova")}<br>
         Versiya: ${escapeHTML(app.version || "1.0")}
       </p>
+
       <p style="margin-top:17px;color:#a1acc4;font-size:12px">
-        Bu katalogdagi namuna. Haqiqiy yuklab olish imkoniyati
-        keyingi bosqichlarda qo‘shiladi.
+        Hozircha bu katalogda ilova haqida ma’lumot ko‘rsatiladi.
+        Haqiqiy yuklab olish imkoniyati keyingi bosqichda qo‘shiladi.
       </p>
     </div>
   `;
@@ -1101,10 +1450,10 @@ document.getElementById("appGrid").addEventListener("click", event => {
   document.getElementById("appModal").classList.add("show");
 });
 
-/* ===========================
+/* =================================
    FIRESTORE'DAN TASDIQLANGAN
    ILOVALARNI OLISH
-=========================== */
+================================= */
 
 async function loadCloudApps() {
   try {
@@ -1136,15 +1485,15 @@ async function loadCloudApps() {
     ];
 
     filterApps();
+
   } catch (error) {
     console.warn("Firestore ma'lumotlarini olishda xato:", error);
-    showToast("Katalogning namunaviy qismi ko‘rsatildi.");
   }
 }
 
-/* ===========================
+/* =================================
    AUTHENTICATION
-=========================== */
+================================= */
 
 function openAuth() {
   document.getElementById("authModal").classList.add("show");
@@ -1170,27 +1519,40 @@ function switchAuth(type) {
 
 function showAuthMessage(message, type = "error") {
   const box = document.getElementById("authMessage");
-  box.innerHTML = `<div class="${type}">${escapeHTML(message)}</div>`;
+
+  box.innerHTML = `
+    <div class="${type}">
+      ${escapeHTML(message)}
+    </div>
+  `;
 }
 
 function translateFirebaseError(error) {
   const messages = {
     "auth/email-already-in-use":
       "Bu email orqali oldin akkaunt yaratilgan.",
+
     "auth/invalid-email":
       "Email manzili noto‘g‘ri.",
+
     "auth/weak-password":
       "Parol juda oddiy. Boshqa parol tanlang.",
+
     "auth/user-not-found":
       "Bu email bilan akkaunt topilmadi.",
+
     "auth/wrong-password":
       "Parol noto‘g‘ri.",
+
     "auth/invalid-credential":
       "Email yoki parol noto‘g‘ri.",
+
     "auth/too-many-requests":
       "Juda ko‘p urinish bo‘ldi. Keyinroq qayta urinib ko‘ring.",
+
     "auth/network-request-failed":
       "Internet aloqasini tekshiring.",
+
     "auth/unauthorized-domain":
       "Bu sayt manzili Firebase'da ruxsat etilmagan."
   };
@@ -1213,6 +1575,7 @@ document.getElementById("loginForm")
 
       closeModal("authModal");
       showToast("AppZone'ga muvaffaqiyatli kirdingiz!");
+
     } catch (error) {
       showAuthMessage(translateFirebaseError(error));
     }
@@ -1238,6 +1601,7 @@ document.getElementById("registerForm")
 
       closeModal("authModal");
       showToast("Akkaunt muvaffaqiyatli yaratildi!");
+
     } catch (error) {
       showAuthMessage(translateFirebaseError(error));
     }
@@ -1253,18 +1617,20 @@ async function resetPassword() {
 
   try {
     await auth.sendPasswordResetEmail(email);
+
     showAuthMessage(
       "Parolni tiklash havolasi emailingizga yuborildi.",
       "success"
     );
+
   } catch (error) {
     showAuthMessage(translateFirebaseError(error));
   }
 }
 
-/* ===========================
+/* =================================
    PROFIL VA CHIQISH
-=========================== */
+================================= */
 
 function openProfile() {
   if (!auth.currentUser) return;
@@ -1272,36 +1638,446 @@ function openProfile() {
   document.getElementById("profileEmail").textContent =
     auth.currentUser.email || "Email mavjud emas";
 
+  document.getElementById("profileRole").textContent =
+    isAdmin ? "Administrator" : "Oddiy foydalanuvchi";
+
   document.getElementById("profileModal").classList.add("show");
 }
 
 async function logout() {
   try {
     await auth.signOut();
+
     closeModal("profileModal");
+    closeModal("adminModal");
+
     showToast("Akkauntdan chiqdingiz.");
+
   } catch (error) {
     showToast("Chiqishda xatolik yuz berdi.");
   }
 }
 
-auth.onAuthStateChanged(user => {
+/* =================================
+   FOYDALANUVCHI HOLATINI TEKSHIRISH
+   VA ADMIN HUQUQINI ANIQLASH
+================================= */
+
+auth.onAuthStateChanged(async user => {
+  const checkNumber = ++authCheckNumber;
+
+  currentUser = user || null;
+  isAdmin = false;
+
   const authButton = document.getElementById("authButton");
   const profileButton = document.getElementById("profileButton");
+  const adminButton = document.getElementById("adminButton");
+  const submitArea = document.getElementById("submitArea");
 
   if (user) {
     authButton.hidden = true;
     profileButton.hidden = false;
     profileButton.textContent = user.email || "Profil";
+    submitArea.hidden = false;
+
+    try {
+      const adminDoc = await db.collection("admins")
+        .doc(user.uid)
+        .get();
+
+      // Boshqa akkauntga o'tib ketilgan bo'lsa,
+      // eski tekshiruv natijasini ishlatmaymiz.
+      if (checkNumber !== authCheckNumber) return;
+
+      isAdmin = adminDoc.exists &&
+        adminDoc.data().role === "admin";
+
+    } catch (error) {
+      console.warn("Admin huquqini tekshirishda xato:", error);
+      isAdmin = false;
+    }
+
   } else {
     authButton.hidden = false;
     profileButton.hidden = true;
+    submitArea.hidden = true;
   }
+
+  if (checkNumber !== authCheckNumber) return;
+
+  adminButton.hidden = !isAdmin;
+
+  if (!isAdmin) {
+    closeModal("adminModal");
+  }
+
+  loadCloudApps();
 });
 
-/* ===========================
+/* =================================
+   ILOVA YUBORISH
+================================= */
+
+function openSubmitApp() {
+  if (!auth.currentUser) {
+    showToast("Avval akkauntingizga kiring.");
+    openAuth();
+    return;
+  }
+
+  document.getElementById("submitAppMessage").innerHTML = "";
+  document.getElementById("submitAppModal").classList.add("show");
+}
+
+document.getElementById("submitAppForm")
+  .addEventListener("submit", async event => {
+    event.preventDefault();
+
+    const user = auth.currentUser;
+
+    if (!user) {
+      showToast("Ilova yuborish uchun akkauntga kiring.");
+      closeModal("submitAppModal");
+      openAuth();
+      return;
+    }
+
+    const name = document.getElementById("newAppName")
+      .value.trim();
+
+    const description = document.getElementById("newAppDescription")
+      .value.trim();
+
+    const category = document.getElementById("newAppCategory")
+      .value;
+
+    const version = document.getElementById("newAppVersion")
+      .value.trim();
+
+    const messageBox = document.getElementById("submitAppMessage");
+    const saveButton = document.getElementById("submitAppSaveBtn");
+
+    if (name.length < 2 || name.length > 60) {
+      messageBox.innerHTML =
+        '<div class="error">Ilova nomi 2–60 belgi bo‘lishi kerak.</div>';
+      return;
+    }
+
+    if (description.length > 600) {
+      messageBox.innerHTML =
+        '<div class="error">Tavsif 600 belgidan oshmasligi kerak.</div>';
+      return;
+    }
+
+    if (!category || !version) {
+      messageBox.innerHTML =
+        '<div class="error">Barcha maydonlarni to‘ldiring.</div>';
+      return;
+    }
+
+    try {
+      saveButton.disabled = true;
+      saveButton.textContent = "Yuborilmoqda...";
+
+      await db.collection("apps").add({
+        name: name,
+        description: description,
+        category: category,
+        version: version,
+
+        ownerUid: user.uid,
+        ownerEmail: user.email || "",
+
+        status: "pending",
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+
+        iconUrl: "",
+        apkUrl: "",
+        apkName: "",
+        apkSize: 0
+      });
+
+      document.getElementById("submitAppForm").reset();
+      closeModal("submitAppModal");
+
+      showToast("Ilova tekshiruvga yuborildi!");
+
+    } catch (error) {
+      console.error("Ilova yuborish xatosi:", error);
+
+      messageBox.innerHTML = `
+        <div class="error">
+          Ilova yuborilmadi. Xatolik:
+          ${escapeHTML(error.message || "Noma'lum xato")}
+        </div>
+      `;
+
+    } finally {
+      saveButton.disabled = false;
+      saveButton.textContent = "Yuborish";
+    }
+  });
+
+/* =================================
+   ADMIN PANELNI OCHISH
+================================= */
+
+async function openAdminPanel() {
+  if (!auth.currentUser || !isAdmin) {
+    showToast("Admin panelga kirish huquqi yo‘q.");
+    return;
+  }
+
+  adminFilter = "pending";
+
+  renderAdminFilters();
+
+  document.getElementById("adminModal").classList.add("show");
+
+  await loadAdminApps();
+}
+
+/* =================================
+   ADMIN ILOVALARINI YUKLASH
+================================= */
+
+async function loadAdminApps() {
+  const list = document.getElementById("adminList");
+
+  if (!auth.currentUser || !isAdmin) {
+    list.innerHTML = `
+      <div class="admin-empty">
+        Admin huquqi mavjud emas.
+      </div>
+    `;
+    return;
+  }
+
+  list.innerHTML = `
+    <div class="admin-empty">
+      Ilovalar yuklanmoqda...
+    </div>
+  `;
+
+  try {
+    // Admin barcha ilovalarni ko‘rishi mumkin.
+    const snapshot = await db.collection("apps").get();
+
+    adminApps = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+
+    adminApps.sort((a, b) => {
+      return getDateNumber(b.createdAt) -
+        getDateNumber(a.createdAt);
+    });
+
+    renderAdminApps();
+
+  } catch (error) {
+    console.error("Admin ilovalarini yuklash xatosi:", error);
+
+    list.innerHTML = `
+      <div class="admin-empty">
+        Ilovalarni yuklashda xatolik yuz berdi.<br>
+        ${escapeHTML(error.message || "Ruxsatni tekshiring.")}
+      </div>
+    `;
+  }
+}
+
+/* =================================
+   ADMIN FILTRLARI
+================================= */
+
+function renderAdminFilters() {
+  document.querySelectorAll(".admin-filter").forEach(button => {
+    button.classList.toggle(
+      "active",
+      button.dataset.filter === adminFilter
+    );
+  });
+}
+
+document.getElementById("adminFilters")
+  .addEventListener("click", event => {
+    const button = event.target.closest("[data-filter]");
+    if (!button) return;
+
+    adminFilter = button.dataset.filter;
+
+    renderAdminFilters();
+    renderAdminApps();
+  });
+
+/* =================================
+   ADMIN ILOVALARINI KO‘RSATISH
+================================= */
+
+function statusLabel(status) {
+  const labels = {
+    pending: "Tekshiruvda",
+    approved: "Tasdiqlangan",
+    rejected: "Rad etilgan"
+  };
+
+  return labels[status] || "Noma’lum";
+}
+
+function renderAdminApps() {
+  const list = document.getElementById("adminList");
+
+  const filteredApps = adminApps.filter(app => {
+    if (adminFilter === "all") return true;
+    return app.status === adminFilter;
+  });
+
+  if (filteredApps.length === 0) {
+    list.innerHTML = `
+      <div class="admin-empty">
+        Bu bo‘limda hozircha ilovalar yo‘q.
+      </div>
+    `;
+    return;
+  }
+
+  list.innerHTML = filteredApps.map(app => {
+    const status = app.status || "unknown";
+
+    let actions = "";
+
+    if (status !== "approved") {
+      actions += `
+        <button class="admin-action approve-btn"
+          data-admin-action="approve"
+          data-id="${escapeHTML(app.id)}">
+          ✓ Tasdiqlash
+        </button>
+      `;
+    }
+
+    if (status !== "rejected") {
+      actions += `
+        <button class="admin-action reject-btn"
+          data-admin-action="reject"
+          data-id="${escapeHTML(app.id)}">
+          ✕ Rad etish
+        </button>
+      `;
+    }
+
+    actions += `
+      <button class="admin-action delete-btn"
+        data-admin-action="delete"
+        data-id="${escapeHTML(app.id)}">
+        🗑 O‘chirish
+      </button>
+    `;
+
+    return `
+      <article class="admin-app">
+        <div class="admin-app-top">
+          <h3>${escapeHTML(app.name || "Nomsiz ilova")}</h3>
+
+          <span class="status status-${escapeHTML(status)}">
+            ${escapeHTML(statusLabel(status))}
+          </span>
+        </div>
+
+        <p>${escapeHTML(app.description || "Tavsif yo‘q")}</p>
+
+        <p>
+          <b>Kategoriya:</b> ${escapeHTML(app.category || "Ko‘rsatilmagan")}
+          <br>
+          <b>Versiya:</b> ${escapeHTML(app.version || "Ko‘rsatilmagan")}
+          <br>
+          <b>Yuboruvchi:</b> ${escapeHTML(app.ownerEmail || "Email yo‘q")}
+          <br>
+          <b>Yuborilgan vaqt:</b> ${escapeHTML(formatDate(app.createdAt))}
+        </p>
+
+        <div class="admin-actions">
+          ${actions}
+        </div>
+      </article>
+    `;
+  }).join("");
+}
+
+/* =================================
+   ADMIN: TASDIQLASH, RAD ETISH,
+   O'CHIRISH
+================================= */
+
+document.getElementById("adminList")
+  .addEventListener("click", async event => {
+    const button = event.target.closest("[data-admin-action]");
+    if (!button) return;
+
+    if (!auth.currentUser || !isAdmin) {
+      showToast("Admin huquqi mavjud emas.");
+      return;
+    }
+
+    const action = button.dataset.adminAction;
+    const id = button.dataset.id;
+
+    if (!id) return;
+
+    if (action === "delete") {
+      const confirmed = confirm(
+        "Bu ilovani butunlay o‘chirmoqchimisiz?"
+      );
+
+      if (!confirmed) return;
+    }
+
+    const oldText = button.textContent;
+    button.disabled = true;
+    button.textContent = "Bajarilmoqda...";
+
+    try {
+      const appRef = db.collection("apps").doc(id);
+
+      if (action === "approve") {
+        await appRef.update({
+          status: "approved"
+        });
+
+        showToast("Ilova tasdiqlandi!");
+
+      } else if (action === "reject") {
+        await appRef.update({
+          status: "rejected"
+        });
+
+        showToast("Ilova rad etildi.");
+
+      } else if (action === "delete") {
+        await appRef.delete();
+
+        showToast("Ilova o‘chirildi.");
+      }
+
+      await loadAdminApps();
+      await loadCloudApps();
+
+    } catch (error) {
+      console.error("Admin amalida xatolik:", error);
+
+      showToast(
+        "Xatolik: " + (error.message || "Amal bajarilmadi.")
+      );
+
+      button.disabled = false;
+      button.textContent = oldText;
+    }
+  });
+
+/* =================================
    PWA — ILOVANI O‘RNATISH
-=========================== */
+================================= */
 
 let installPrompt = null;
 
@@ -1309,6 +2085,7 @@ const installButton = document.getElementById("installBtn");
 
 window.addEventListener("beforeinstallprompt", event => {
   event.preventDefault();
+
   installPrompt = event;
   installButton.hidden = false;
 });
@@ -1342,9 +2119,9 @@ window.addEventListener("appinstalled", () => {
   installButton.hidden = true;
 });
 
-/* ===========================
+/* =================================
    SERVICE WORKER
-=========================== */
+================================= */
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", async () => {
@@ -1358,15 +2135,16 @@ if ("serviceWorker" in navigator) {
     try {
       await navigator.serviceWorker.register("./sw.js");
       console.log("AppZone Service Worker ishga tushdi.");
+
     } catch (error) {
       console.warn("Service Worker xatosi:", error);
     }
   });
 }
 
-/* ===========================
+/* =================================
    BOSHLANG‘ICH ISHGA TUSHIRISH
-=========================== */
+================================= */
 
 renderCategories();
 renderApps();
@@ -1376,4 +2154,3 @@ loadCloudApps();
 
 </body>
 </html>
-
