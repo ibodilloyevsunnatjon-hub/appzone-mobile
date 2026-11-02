@@ -712,6 +712,51 @@
       line-height: 1.6;
     }
 
+    /* APK ADMIN FORMA */
+
+    .admin-apk-form {
+      margin-top: 16px;
+      padding: 14px;
+      border: 1px solid var(--border);
+      background: #141d31;
+      border-radius: 13px;
+    }
+
+    .admin-apk-form h4 {
+      margin-bottom: 12px;
+      font-size: 14px;
+    }
+
+    .admin-apk-form .form-group {
+      margin-bottom: 10px;
+    }
+
+    .admin-apk-form .form-group input {
+      font-size: 13px;
+      padding: 12px;
+    }
+
+    .apk-save-btn {
+      background: #3156a5;
+    }
+
+    .download-btn {
+      display: block;
+      width: 100%;
+      text-align: center;
+      text-decoration: none;
+      color: white;
+      background: linear-gradient(135deg,#16834b,#20ad72);
+      padding: 14px;
+      border-radius: 12px;
+      font-weight: 800;
+      margin-top: 20px;
+    }
+
+    .download-btn:hover {
+      opacity: .9;
+    }
+
     @media(max-width:750px) {
       .app-grid {
         grid-template-columns: repeat(2,minmax(0,1fr));
@@ -830,7 +875,6 @@
            placeholder="Ilova nomini qidiring...">
   </div>
 
-  <!-- FAQAT TIZIMGA KIRGAN FOYDALANUVCHIGA KO‘RINADI -->
   <section class="submit-area" id="submitArea" hidden>
     <div class="submit-box">
       <div>
@@ -1035,8 +1079,7 @@
 
     <p class="form-note">
       Yuborilgan ilova avval admin tekshiruvidan o‘tadi.
-      Hozircha bu forma faqat ilova ma’lumotlarini yuboradi,
-      APK faylini yuklamaydi.
+      APK faylini admin biriktiradi.
     </p>
   </div>
 </div>
@@ -1107,6 +1150,17 @@ firebase.initializeApp(firebaseConfig);
 
 const auth = firebase.auth();
 const db = firebase.firestore();
+
+/* =================================
+   APK URL TEKSHIRUVI
+================================= */
+
+const APK_URL_PATTERN =
+  /^https:\/\/lfbnvltgemyqjsbhrqlo\.supabase\.co\/storage\/v1\/object\/public\/appzone-apks\/[A-Za-z0-9._-]+\.apk$/;
+
+function isAllowedApkUrl(url) {
+  return APK_URL_PATTERN.test(String(url || "").trim());
+}
 
 /* =================================
    DEMO ILOVALAR
@@ -1423,6 +1477,33 @@ document.getElementById("appGrid").addEventListener("click", event => {
 
   document.getElementById("detailTitle").textContent = app.name;
 
+  let downloadSection = "";
+
+  if (isAllowedApkUrl(app.apkUrl)) {
+    downloadSection = `
+      <a
+        class="download-btn"
+        href="${escapeHTML(app.apkUrl)}"
+        target="_blank"
+        rel="noopener noreferrer">
+        ⬇ APK yuklab olish
+      </a>
+
+      <p style="margin-top:9px;color:#a1acc4;font-size:12px;text-align:center">
+        Fayl: ${escapeHTML(app.apkName || "Ilova.apk")}
+        ${Number(app.apkSize) > 0
+          ? " • " + escapeHTML(app.apkSize) + " MB"
+          : ""}
+      </p>
+    `;
+  } else {
+    downloadSection = `
+      <p style="margin-top:20px;padding:13px;background:#1b2740;border-radius:10px;color:#a1acc4;font-size:13px;text-align:center">
+        ⏳ Bu ilova uchun yuklab olish fayli hali joylanmagan.
+      </p>
+    `;
+  }
+
   document.getElementById("detailContent").innerHTML = `
     <div style="text-align:center;padding:10px">
       <div style="font-size:65px">${escapeHTML(app.icon || "📱")}</div>
@@ -1440,10 +1521,7 @@ document.getElementById("appGrid").addEventListener("click", event => {
         Versiya: ${escapeHTML(app.version || "1.0")}
       </p>
 
-      <p style="margin-top:17px;color:#a1acc4;font-size:12px">
-        Hozircha bu katalogda ilova haqida ma’lumot ko‘rsatiladi.
-        Haqiqiy yuklab olish imkoniyati keyingi bosqichda qo‘shiladi.
-      </p>
+      ${downloadSection}
     </div>
   `;
 
@@ -1471,7 +1549,12 @@ async function loadCloudApps() {
         category: data.category || "Boshqa",
         version: data.version || "1.0",
         icon: "📱",
-        css: "icon-1"
+        css: "icon-1",
+
+        // APK ma'lumotlari
+        apkUrl: data.apkUrl || "",
+        apkName: data.apkName || "",
+        apkSize: Number(data.apkSize) || 0
       };
     });
 
@@ -1660,7 +1743,6 @@ async function logout() {
 
 /* =================================
    FOYDALANUVCHI HOLATINI TEKSHIRISH
-   VA ADMIN HUQUQINI ANIQLASH
 ================================= */
 
 auth.onAuthStateChanged(async user => {
@@ -1685,8 +1767,6 @@ auth.onAuthStateChanged(async user => {
         .doc(user.uid)
         .get();
 
-      // Boshqa akkauntga o'tib ketilgan bo'lsa,
-      // eski tekshiruv natijasini ishlatmaymiz.
       if (checkNumber !== authCheckNumber) return;
 
       isAdmin = adminDoc.exists &&
@@ -1860,7 +1940,6 @@ async function loadAdminApps() {
   `;
 
   try {
-    // Admin barcha ilovalarni ko‘rishi mumkin.
     const snapshot = await db.collection("apps").get();
 
     adminApps = snapshot.docs.map(doc => ({
@@ -1997,6 +2076,48 @@ function renderAdminApps() {
           <b>Yuborilgan vaqt:</b> ${escapeHTML(formatDate(app.createdAt))}
         </p>
 
+        <!-- ADMIN APK MA'LUMOTLARINI KIRITADI -->
+        <div class="admin-apk-form">
+          <h4>📦 APK faylini biriktirish</h4>
+
+          <div class="form-group">
+            <label>Supabase APK URL manzili</label>
+            <input
+              type="url"
+              data-apk-url
+              value="${escapeHTML(app.apkUrl || "")}"
+              placeholder="https://.../storage/v1/object/public/appzone-apks/Ilova.apk">
+          </div>
+
+          <div class="form-group">
+            <label>APK fayl nomi</label>
+            <input
+              type="text"
+              data-apk-name
+              maxlength="120"
+              value="${escapeHTML(app.apkName || "")}"
+              placeholder="Masalan: Calculator.apk">
+          </div>
+
+          <div class="form-group">
+            <label>Fayl hajmi (MB, butun son)</label>
+            <input
+              type="number"
+              data-apk-size
+              min="0"
+              step="1"
+              value="${Number(app.apkSize) || 0}"
+              placeholder="Masalan: 25">
+          </div>
+
+          <button
+            class="admin-action apk-save-btn"
+            data-admin-action="save-apk"
+            data-id="${escapeHTML(app.id)}">
+            💾 APK ma’lumotlarini saqlash
+          </button>
+        </div>
+
         <div class="admin-actions">
           ${actions}
         </div>
@@ -2006,8 +2127,9 @@ function renderAdminApps() {
 }
 
 /* =================================
-   ADMIN: TASDIQLASH, RAD ETISH,
-   O'CHIRISH
+   ADMIN AMALLARI:
+   APK SAQLASH, TASDIQLASH,
+   RAD ETISH, O'CHIRISH
 ================================= */
 
 document.getElementById("adminList")
@@ -2040,7 +2162,64 @@ document.getElementById("adminList")
     try {
       const appRef = db.collection("apps").doc(id);
 
-      if (action === "approve") {
+      if (action === "save-apk") {
+        const card = button.closest(".admin-app");
+
+        const url = card.querySelector("[data-apk-url]")
+          .value.trim();
+
+        let name = card.querySelector("[data-apk-name]")
+          .value.trim();
+
+        const sizeText = card.querySelector("[data-apk-size]")
+          .value.trim();
+
+        const size = sizeText === "" ? 0 : Number(sizeText);
+
+        if (url && !isAllowedApkUrl(url)) {
+          showToast(
+            "Noto‘g‘ri URL. Faqat AppZone Supabase omboridagi .apk havolasini kiriting."
+          );
+          button.disabled = false;
+          button.textContent = oldText;
+          return;
+        }
+
+        if (url && !name) {
+          name = url.split("/").pop();
+        }
+
+        if (name.length > 120) {
+          showToast("Fayl nomi 120 belgidan oshmasligi kerak.");
+          button.disabled = false;
+          button.textContent = oldText;
+          return;
+        }
+
+        if (!Number.isInteger(size) || size < 0) {
+          showToast("Fayl hajmini butun son bilan kiriting.");
+          button.disabled = false;
+          button.textContent = oldText;
+          return;
+        }
+
+        if (!url) {
+          name = "";
+        }
+
+        await appRef.update({
+          apkUrl: url,
+          apkName: name,
+          apkSize: size
+        });
+
+        showToast(
+          url
+            ? "APK ma’lumotlari saqlandi!"
+            : "APK havolasi olib tashlandi."
+        );
+
+      } else if (action === "approve") {
         await appRef.update({
           status: "approved"
         });
@@ -2154,3 +2333,4 @@ loadCloudApps();
 
 </body>
 </html>
+
