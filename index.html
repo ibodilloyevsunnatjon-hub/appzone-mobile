@@ -1,844 +1,1351 @@
-
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#101827">
-  <meta name="description" content="AppZone — ilovalar dunyosi">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="AppZone">
-
-  <title>AppZone — Ilovalar do‘koni</title>
-
-  <link rel="manifest" href="./manifest.json">
-  <link rel="icon" href="./icon.svg" type="image/svg+xml">
-
-  <script src="https://www.gstatic.com/firebasejs/13.1.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/13.1.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/13.1.0/firebase-firestore-compat.js"></script>
-
-  <style>
-    :root {
-      --bg: #0b1020;
-      --surface: #141d31;
-      --surface2: #1b2740;
-      --text: #f5f7ff;
-      --muted: #a1acc4;
-      --accent: #7867ff;
-      --accent2: #4b8bff;
-      --border: rgba(255,255,255,.09);
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: Arial, sans-serif;
-      min-height: 100vh;
-    }
-
-    button, input, textarea, select {
-      font: inherit;
-    }
-
-    button {
-      cursor: pointer;
-      border: none;
-    }
-
-    [hidden] {
-      display: none !important;
-    }
-
-    .header {
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      background: rgba(11,16,32,.96);
-      backdrop-filter: blur(15px);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .header-inner {
-      max-width: 1150px;
-      margin: auto;
-      padding: 15px 18px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 23px;
-      font-weight: 800;
-      letter-spacing: -.7px;
-      flex-shrink: 0;
-    }
-
-    .logo-icon {
-      background: linear-gradient(135deg,var(--accent),var(--accent2));
-      width: 42px;
-      height: 42px;
-      border-radius: 14px;
-      display: grid;
-      place-items: center;
-      font-size: 23px;
-    }
-
-    .logo span {
-      color: #9c91ff;
-    }
-
-    .header-actions {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      justify-content: flex-end;
-      flex-wrap: wrap;
-    }
-
-    .btn {
-      padding: 11px 16px;
-      border-radius: 12px;
-      font-weight: 700;
-      color: white;
-      background: linear-gradient(135deg,var(--accent),var(--accent2));
-      transition: .2s;
-    }
-
-    .btn:hover {
-      transform: translateY(-2px);
-      opacity: .92;
-    }
-
-    .btn-outline {
-      background: var(--surface);
-      border: 1px solid var(--border);
-    }
-
-    .profile-btn {
-      max-width: 190px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .admin-btn {
-      background: linear-gradient(135deg,#b45309,#f59e0b);
-    }
-
-    .container {
-      max-width: 1150px;
-      margin: auto;
-      padding: 25px 18px;
-    }
-
-    .hero {
-      position: relative;
-      overflow: hidden;
-      border-radius: 25px;
-      padding: 48px 35px;
-      background:
-        radial-gradient(circle at 85% 20%,rgba(111,94,255,.48),transparent 35%),
-        linear-gradient(120deg,#202957,#172345 55%,#253e6c);
-      border: 1px solid var(--border);
-    }
-
-    .hero h1 {
-      font-size: clamp(30px,6vw,49px);
-      max-width: 650px;
-      line-height: 1.15;
-      margin-bottom: 15px;
-    }
-
-    .hero h1 span {
-      color: #b3aaff;
-    }
-
-    .hero p {
-      color: #d4d9ed;
-      max-width: 570px;
-      line-height: 1.7;
-      margin-bottom: 23px;
-    }
-
-    .hero-art {
-      position: absolute;
-      right: 55px;
-      top: 40px;
-      font-size: 115px;
-      opacity: .85;
-    }
-
-    .search-box {
-      margin-top: 24px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 15px;
-      padding: 5px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .search-box input {
-      flex: 1;
-      min-width: 0;
-      background: transparent;
-      border: none;
-      outline: none;
-      color: white;
-      padding: 14px;
-      font-size: 15px;
-    }
-
-    .submit-area {
-      margin-top: 18px;
-    }
-
-    .submit-box {
-      background: linear-gradient(120deg,#202957,#172345);
-      border: 1px solid var(--border);
-      border-radius: 17px;
-      padding: 19px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 15px;
-      flex-wrap: wrap;
-    }
-
-    .submit-box h3 {
-      margin-bottom: 7px;
-    }
-
-    .submit-box p {
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.5;
-    }
-
-    .section {
-      margin-top: 35px;
-    }
-
-    .section-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 19px;
-    }
-
-    .section-head h2 {
-      font-size: 23px;
-    }
-
-    .muted {
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .categories {
-      display: flex;
-      gap: 9px;
-      overflow-x: auto;
-      padding-bottom: 9px;
-    }
-
-    .category {
-      flex-shrink: 0;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      padding: 11px 16px;
-      color: var(--muted);
-      border-radius: 12px;
-      font-weight: 600;
-    }
-
-    .category.active {
-      background: linear-gradient(135deg,var(--accent),var(--accent2));
-      color: white;
-      border-color: transparent;
-    }
-
-    .app-grid {
-      display: grid;
-      grid-template-columns: repeat(3,minmax(0,1fr));
-      gap: 16px;
-    }
-
-    .app-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      padding: 17px;
-      border-radius: 19px;
-      transition: .2s;
-      min-width: 0;
-    }
-
-    .app-card:hover {
-      transform: translateY(-4px);
-      border-color: rgba(120,103,255,.6);
-    }
-
-    .app-top {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 10px;
-    }
-
-    .app-icon {
-      width: 60px;
-      height: 60px;
-      border-radius: 17px;
-      display: grid;
-      place-items: center;
-      font-size: 30px;
-      flex-shrink: 0;
-    }
-
-    .icon-1 { background: linear-gradient(135deg,#7459ff,#bc69ff); }
-    .icon-2 { background: linear-gradient(135deg,#00a8a8,#54d7c3); }
-    .icon-3 { background: linear-gradient(135deg,#ef8d46,#ffbc63); }
-    .icon-4 { background: linear-gradient(135deg,#e34a80,#ff8da9); }
-    .icon-5 { background: linear-gradient(135deg,#2876dc,#55b5fa); }
-    .icon-6 { background: linear-gradient(135deg,#b647e8,#7356ff); }
-
-    .favorite {
-      color: #aab2c7;
-      background: var(--surface2);
-      padding: 8px;
-      border-radius: 10px;
-    }
-
-    .favorite.active {
-      color: #ff708c;
-    }
-
-    .app-card h3 {
-      font-size: 17px;
-      margin-top: 14px;
-      margin-bottom: 6px;
-    }
-
-    .app-card p {
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.5;
-      min-height: 39px;
-    }
-
-    .app-meta {
-      margin-top: 14px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    .details-btn {
-      margin-top: 15px;
-      width: 100%;
-      border-radius: 11px;
-      padding: 11px;
-      color: white;
-      background: var(--surface2);
-      font-weight: 700;
-    }
-
-    .details-btn:hover {
-      background: #2c3c60;
-    }
-
-    .empty {
-      grid-column: 1/-1;
-      text-align: center;
-      color: var(--muted);
-      padding: 35px 10px;
-    }
-
-    .feature-grid {
-      display: grid;
-      grid-template-columns: repeat(3,1fr);
-      gap: 14px;
-    }
-
-    .feature {
-      border: 1px solid var(--border);
-      background: var(--surface);
-      padding: 22px;
-      border-radius: 18px;
-    }
-
-    .feature .emoji {
-      font-size: 27px;
-      margin-bottom: 12px;
-    }
-
-    .feature h3 {
-      font-size: 16px;
-      margin-bottom: 8px;
-    }
-
-    .feature p {
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.6;
-    }
-
-    .footer {
-      margin-top: 45px;
-      border-top: 1px solid var(--border);
-      padding: 25px 18px;
-      text-align: center;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 100;
-      background: rgba(0,0,0,.78);
-      padding: 16px;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .modal.show {
-      display: flex;
-    }
-
-    .modal-box {
-      width: 100%;
-      max-width: 440px;
-      max-height: 90vh;
-      overflow-y: auto;
-      background: #141d31;
-      border: 1px solid var(--border);
-      border-radius: 22px;
-      padding: 23px;
-    }
-
-    .admin-modal {
-      max-width: 850px;
-    }
-
-    .modal-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-
-    .modal-head h2 {
-      font-size: 21px;
-    }
-
-    .close-btn {
-      background: var(--surface2);
-      color: white;
-      border-radius: 9px;
-      padding: 8px 12px;
-      font-size: 18px;
-    }
-
-    .auth-tabs {
-      display: flex;
-      background: #0d1527;
-      padding: 5px;
-      border-radius: 12px;
-      margin-bottom: 18px;
-    }
-
-    .auth-tab {
-      flex: 1;
-      padding: 11px 6px;
-      background: transparent;
-      color: var(--muted);
-      border-radius: 9px;
-      font-weight: 700;
-    }
-
-    .auth-tab.active {
-      color: white;
-      background: var(--accent);
-    }
-
-    .form-group {
-      margin-bottom: 13px;
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 8px;
-      color: #c5cce0;
-      font-size: 13px;
-    }
-
-    .form-group input,
-    .form-group textarea,
-    .form-group select {
-      width: 100%;
-      padding: 14px;
-      border-radius: 11px;
-      outline: none;
-      border: 1px solid var(--border);
-      background: #0d1527;
-      color: white;
-    }
-
-    .form-group textarea {
-      resize: vertical;
-      min-height: 100px;
-    }
-
-    .form-group select option {
-      background: #141d31;
-      color: white;
-    }
-
-    .form-group input:focus,
-    .form-group textarea:focus,
-    .form-group select:focus {
-      border-color: var(--accent);
-    }
-
-    .submit-btn {
-      width: 100%;
-      padding: 14px;
-      border-radius: 12px;
-      background: linear-gradient(135deg,var(--accent),var(--accent2));
-      color: white;
-      font-weight: 800;
-      margin-top: 5px;
-    }
-
-    .form-note {
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 14px;
-      line-height: 1.5;
-      text-align: center;
-    }
-
-    .error {
-      color: #ff8295;
-      font-size: 13px;
-      margin-bottom: 12px;
-      line-height: 1.5;
-    }
-
-    .success {
-      color: #65dba1;
-      font-size: 13px;
-      margin-bottom: 12px;
-      line-height: 1.5;
-    }
-
-    .link-btn {
-      display: block;
-      background: transparent;
-      color: #a99fff;
-      margin: 13px auto 0;
-      font-size: 13px;
-    }
-
-    .profile-info {
-      padding: 18px;
-      background: var(--surface2);
-      border-radius: 14px;
-      margin-bottom: 15px;
-      overflow-wrap: anywhere;
-    }
-
-    .profile-info small {
-      color: var(--muted);
-    }
-
-    .toast {
-      position: fixed;
-      bottom: 22px;
-      left: 50%;
-      transform: translateX(-50%) translateY(100px);
-      opacity: 0;
-      z-index: 200;
-      background: #263858;
-      border: 1px solid var(--border);
-      color: white;
-      padding: 13px 19px;
-      border-radius: 13px;
-      transition: .3s;
-      max-width: 90%;
-      text-align: center;
-      font-size: 13px;
-    }
-
-    .toast.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-
-    /* ADMIN PANEL */
-
-    .admin-filters {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-bottom: 17px;
-    }
-
-    .admin-filter {
-      background: var(--surface2);
-      color: var(--muted);
-      border: 1px solid var(--border);
-      padding: 9px 13px;
-      border-radius: 10px;
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    .admin-filter.active {
-      background: var(--accent);
-      color: white;
-    }
-
-    .admin-list {
-      display: grid;
-      gap: 12px;
-    }
-
-    .admin-app {
-      background: #0d1527;
-      border: 1px solid var(--border);
-      border-radius: 15px;
-      padding: 16px;
-    }
-
-    .admin-app h3 {
-      margin-bottom: 7px;
-      overflow-wrap: anywhere;
-    }
-
-    .admin-app p {
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.55;
-      overflow-wrap: anywhere;
-      margin-top: 5px;
-    }
-
-    .admin-app-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .status {
-      display: inline-block;
-      padding: 6px 10px;
-      border-radius: 8px;
-      font-size: 11px;
-      font-weight: 800;
-    }
-
-    .status-pending {
-      background: rgba(245,158,11,.15);
-      color: #fbbf24;
-    }
-
-    .status-approved {
-      background: rgba(34,197,94,.15);
-      color: #4ade80;
-    }
-
-    .status-rejected {
-      background: rgba(239,68,68,.15);
-      color: #fb7185;
-    }
-
-    .admin-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 14px;
-    }
-
-    .admin-action {
-      padding: 9px 12px;
-      border-radius: 9px;
-      color: white;
-      font-size: 12px;
-      font-weight: 700;
-    }
-
-    .approve-btn {
-      background: #15803d;
-    }
-
-    .reject-btn {
-      background: #b45309;
-    }
-
-    .delete-btn {
-      background: #b91c1c;
-    }
-
-    .admin-empty {
-      text-align: center;
-      padding: 35px 12px;
-      color: var(--muted);
-      background: #0d1527;
-      border-radius: 14px;
-      line-height: 1.6;
-    }
-
-    /* APK ADMIN FORMA */
-
-    .admin-apk-form {
-      margin-top: 16px;
-      padding: 14px;
-      border: 1px solid var(--border);
-      background: #141d31;
-      border-radius: 13px;
-    }
-
-    .admin-apk-form h4 {
-      margin-bottom: 12px;
-      font-size: 14px;
-    }
-
-    .admin-apk-form .form-group {
-      margin-bottom: 10px;
-    }
-
-    .admin-apk-form .form-group input {
-      font-size: 13px;
-      padding: 12px;
-    }
-
-    .apk-save-btn {
-      background: #3156a5;
-    }
-
-    .download-btn {
-      display: block;
-      width: 100%;
-      text-align: center;
-      text-decoration: none;
-      color: white;
-      background: linear-gradient(135deg,#16834b,#20ad72);
-      padding: 14px;
-      border-radius: 12px;
-      font-weight: 800;
-      margin-top: 20px;
-    }
-
-    .download-btn:hover {
-      opacity: .9;
-    }
-
-    @media(max-width:750px) {
-      .app-grid {
-        grid-template-columns: repeat(2,minmax(0,1fr));
-      }
-
-      .hero-art {
-        right: 15px;
-        top: 70px;
-        font-size: 65px;
-        opacity: .35;
-      }
-
-      .hero {
-        padding: 35px 22px;
-      }
-
-      .feature-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media(max-width:480px) {
-      .header-inner {
-        padding: 11px;
-      }
-
-      .logo {
-        font-size: 19px;
-      }
-
-      .logo-icon {
-        width: 36px;
-        height: 36px;
-        border-radius: 11px;
-      }
-
-      .header-actions .btn {
-        padding: 9px 10px;
-        font-size: 11px;
-      }
-
-      .app-grid {
-        gap: 10px;
-      }
-
-      .app-card {
-        padding: 12px;
-      }
-
-      .app-icon {
-        width: 51px;
-        height: 51px;
-        font-size: 26px;
-      }
-
-      .app-card h3 {
-        font-size: 15px;
-      }
-
-      .section-head h2 {
-        font-size: 20px;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#090e1b">
+<meta name="description" content="AppZone — yangi avlod ilovalar do‘koni">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="AppZone">
+
+<title>AppZone — Ilovalar do‘koni</title>
+
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" href="./icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script src="https://www.gstatic.com/firebasejs/13.1.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/13.1.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/13.1.0/firebase-firestore-compat.js"></script>
+
+<style>
+:root {
+  --bg:#080d19;
+  --surface:#10192b;
+  --surface2:#17243a;
+  --surface3:#1c2c46;
+  --text:#f5f7ff;
+  --muted:#9ba9c2;
+  --accent:#8069ff;
+  --accent2:#4c91ff;
+  --green:#23c98b;
+  --border:rgba(255,255,255,.085);
+  --shadow:0 18px 50px rgba(0,0,0,.22);
+}
+
+* {
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+html {
+  scroll-behavior:smooth;
+}
+
+body {
+  min-height:100vh;
+  color:var(--text);
+  background:
+    radial-gradient(ellipse at 12% 0%,rgba(97,76,210,.13),transparent 35%),
+    radial-gradient(ellipse at 90% 25%,rgba(40,111,205,.09),transparent 32%),
+    var(--bg);
+  font-family:"Manrope",Arial,sans-serif;
+}
+
+button,input,textarea,select {
+  font:inherit;
+}
+
+button {
+  border:0;
+  cursor:pointer;
+}
+
+a {
+  color:inherit;
+}
+
+[hidden] {
+  display:none!important;
+}
+
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline:2px solid var(--accent);
+  outline-offset:3px;
+}
+
+/* HEADER */
+
+.header {
+  position:sticky;
+  top:0;
+  z-index:30;
+  background:rgba(8,13,25,.88);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+}
+
+.header-inner {
+  max-width:1280px;
+  min-height:76px;
+  margin:auto;
+  padding:12px 22px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+}
+
+.logo {
+  display:flex;
+  align-items:center;
+  gap:11px;
+  font-size:23px;
+  font-weight:800;
+  letter-spacing:-1px;
+  white-space:nowrap;
+}
+
+.logo-word span {
+  color:#a99aff;
+}
+
+.logo-icon {
+  width:43px;
+  height:43px;
+  display:grid;
+  place-items:center;
+  color:white;
+  font-size:24px;
+  font-weight:800;
+  border-radius:15px;
+  background:linear-gradient(135deg,#896aff,#397ff4);
+  box-shadow:0 7px 22px rgba(108,91,255,.32);
+}
+
+.nav {
+  display:flex;
+  align-items:center;
+  gap:7px;
+}
+
+.nav button {
+  padding:10px 14px;
+  color:var(--muted);
+  background:transparent;
+  border-radius:11px;
+  font-size:13px;
+  font-weight:700;
+  transition:.2s;
+}
+
+.nav button:hover,
+.nav button.active {
+  color:white;
+  background:var(--surface2);
+}
+
+.header-actions {
+  display:flex;
+  gap:9px;
+  align-items:center;
+}
+
+.btn {
+  display:inline-flex;
+  justify-content:center;
+  align-items:center;
+  gap:8px;
+  padding:12px 17px;
+  border-radius:12px;
+  color:white;
+  font-weight:800;
+  font-size:13px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  box-shadow:0 8px 22px rgba(103,96,255,.18);
+  transition:transform .2s,opacity .2s;
+}
+
+.btn:hover {
+  transform:translateY(-2px);
+  opacity:.94;
+}
+
+.btn-outline {
+  background:var(--surface);
+  border:1px solid var(--border);
+  box-shadow:none;
+}
+
+.btn-admin {
+  background:linear-gradient(135deg,#a65b16,#e9a33a);
+  box-shadow:none;
+}
+
+.profile-btn {
+  max-width:180px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+/* MAIN */
+
+.container {
+  max-width:1280px;
+  margin:auto;
+  padding:28px 22px 110px;
+}
+
+/* HERO */
+
+.hero {
+  position:relative;
+  min-height:330px;
+  padding:47px;
+  border-radius:28px;
+  overflow:hidden;
+  border:1px solid rgba(160,150,255,.19);
+  background:
+    radial-gradient(circle at 80% 25%,rgba(146,116,255,.35),transparent 29%),
+    radial-gradient(circle at 100% 100%,rgba(34,136,255,.25),transparent 36%),
+    linear-gradient(120deg,#1b2250 0%,#202c5c 48%,#142d51 100%);
+  box-shadow:var(--shadow);
+}
+
+.hero-content {
+  position:relative;
+  z-index:2;
+  max-width:660px;
+}
+
+.eyebrow {
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 12px;
+  margin-bottom:20px;
+  color:#d7d1ff;
+  border:1px solid rgba(255,255,255,.15);
+  background:rgba(255,255,255,.08);
+  border-radius:30px;
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:.8px;
+  text-transform:uppercase;
+}
+
+.eyebrow-dot {
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:#64e4b1;
+  box-shadow:0 0 12px #64e4b1;
+}
+
+.hero h1 {
+  font-size:clamp(32px,5.4vw,55px);
+  line-height:1.1;
+  letter-spacing:-2px;
+  margin-bottom:17px;
+}
+
+.hero h1 span {
+  color:#b8adff;
+}
+
+.hero p {
+  max-width:560px;
+  color:#d0d8ef;
+  font-size:14px;
+  line-height:1.85;
+  margin-bottom:26px;
+}
+
+.hero-buttons {
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+}
+
+.hero-art {
+  position:absolute;
+  right:7%;
+  top:50%;
+  transform:translateY(-50%);
+  width:290px;
+  height:240px;
+  display:grid;
+  place-items:center;
+}
+
+.art-circle {
+  position:absolute;
+  width:220px;
+  height:220px;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,.16);
+  box-shadow:0 0 65px rgba(153,125,255,.18);
+}
+
+.art-circle:before,
+.art-circle:after {
+  content:"";
+  position:absolute;
+  inset:20px;
+  border:1px solid rgba(255,255,255,.11);
+  border-radius:50%;
+}
+
+.art-circle:after {
+  inset:43px;
+}
+
+.art-phone {
+  position:relative;
+  z-index:1;
+  width:142px;
+  height:190px;
+  padding:13px;
+  border:2px solid rgba(255,255,255,.4);
+  border-radius:27px;
+  background:linear-gradient(145deg,#273c7b,#17284d);
+  box-shadow:0 25px 65px rgba(0,0,0,.35);
+  transform:rotate(8deg);
+}
+
+.art-phone-top {
+  width:40px;
+  height:5px;
+  background:rgba(255,255,255,.45);
+  margin:0 auto 13px;
+  border-radius:20px;
+}
+
+.art-icons {
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:9px;
+}
+
+.art-icons div {
+  height:43px;
+  display:grid;
+  place-items:center;
+  font-size:21px;
+  border-radius:12px;
+  background:rgba(255,255,255,.13);
+}
+
+/* INFO STRIP */
+
+.info-strip {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  margin:18px 0 25px;
+}
+
+.info-item {
+  display:flex;
+  align-items:center;
+  gap:13px;
+  padding:17px;
+  background:rgba(16,25,43,.82);
+  border:1px solid var(--border);
+  border-radius:16px;
+}
+
+.info-icon {
+  flex-shrink:0;
+  width:42px;
+  height:42px;
+  display:grid;
+  place-items:center;
+  border-radius:13px;
+  background:var(--surface2);
+  font-size:20px;
+}
+
+.info-item strong {
+  display:block;
+  font-size:13px;
+  margin-bottom:3px;
+}
+
+.info-item small {
+  color:var(--muted);
+  font-size:11px;
+}
+
+/* SEARCH */
+
+.search-row {
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin:26px 0 12px;
+}
+
+.search-box {
+  flex:1;
+  min-width:0;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:5px 17px;
+  border:1px solid var(--border);
+  background:var(--surface);
+  border-radius:15px;
+  transition:.2s;
+}
+
+.search-box:focus-within {
+  border-color:rgba(128,105,255,.75);
+  box-shadow:0 0 0 3px rgba(128,105,255,.09);
+}
+
+.search-icon {
+  color:var(--muted);
+  font-size:19px;
+}
+
+.search-box input {
+  flex:1;
+  min-width:0;
+  padding:13px 0;
+  color:white;
+  background:transparent;
+  border:0;
+  outline:none;
+  font-size:14px;
+}
+
+.search-box input::placeholder {
+  color:#71809b;
+}
+
+/* SECTIONS */
+
+.section {
+  margin-top:34px;
+}
+
+.section-head {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  margin-bottom:17px;
+}
+
+.section-head h2 {
+  font-size:21px;
+  letter-spacing:-.6px;
+}
+
+.section-subtitle {
+  color:var(--muted);
+  font-size:12px;
+  margin-top:5px;
+}
+
+.muted {
+  color:var(--muted);
+  font-size:12px;
+}
+
+/* CATEGORIES */
+
+.categories {
+  display:flex;
+  gap:9px;
+  overflow-x:auto;
+  padding:2px 1px 10px;
+  scrollbar-width:thin;
+}
+
+.category {
+  flex-shrink:0;
+  padding:11px 16px;
+  color:#aab6cc;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:12px;
+  font-size:12px;
+  font-weight:800;
+  transition:.2s;
+}
+
+.category:hover {
+  border-color:rgba(128,105,255,.5);
+}
+
+.category.active {
+  color:white;
+  background:linear-gradient(135deg,#8069ff,#4c80e9);
+  border-color:transparent;
+  box-shadow:0 7px 18px rgba(103,96,255,.2);
+}
+
+/* APP GRID */
+
+.app-grid {
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:16px;
+}
+
+.app-card {
+  position:relative;
+  min-width:0;
+  padding:18px;
+  overflow:hidden;
+  border:1px solid var(--border);
+  border-radius:20px;
+  background:linear-gradient(145deg,#121d31,#0f192a);
+  transition:transform .22s,border-color .22s,box-shadow .22s;
+}
+
+.app-card:hover {
+  transform:translateY(-4px);
+  border-color:rgba(128,105,255,.48);
+  box-shadow:0 15px 35px rgba(0,0,0,.23);
+}
+
+.app-card-top {
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:12px;
+}
+
+.app-icon {
+  width:67px;
+  height:67px;
+  display:grid;
+  place-items:center;
+  flex-shrink:0;
+  overflow:hidden;
+  border-radius:19px;
+  font-size:32px;
+  box-shadow:0 9px 22px rgba(0,0,0,.19);
+}
+
+.app-icon img {
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.icon-1 {background:linear-gradient(135deg,#7459ff,#bc69ff)}
+.icon-2 {background:linear-gradient(135deg,#00a8a8,#54d7c3)}
+.icon-3 {background:linear-gradient(135deg,#ef8d46,#ffbc63)}
+.icon-4 {background:linear-gradient(135deg,#e34a80,#ff8da9)}
+.icon-5 {background:linear-gradient(135deg,#2876dc,#55b5fa)}
+.icon-6 {background:linear-gradient(135deg,#b647e8,#7356ff)}
+
+.favorite {
+  width:35px;
+  height:35px;
+  display:grid;
+  place-items:center;
+  color:#aab5ca;
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:11px;
+  font-size:19px;
+  transition:.2s;
+}
+
+.favorite.active {
+  color:#ff7695;
+  background:rgba(255,92,135,.1);
+  border-color:rgba(255,92,135,.19);
+}
+
+.app-card h3 {
+  margin-top:16px;
+  margin-bottom:6px;
+  font-size:16px;
+  letter-spacing:-.3px;
+}
+
+.app-description {
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.7;
+  min-height:41px;
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+}
+
+.app-meta {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:7px;
+  margin-top:14px;
+  color:#9ca9c1;
+  font-size:10px;
+}
+
+.app-tag {
+  padding:5px 8px;
+  color:#c4baff;
+  border:1px solid rgba(128,105,255,.2);
+  background:rgba(128,105,255,.1);
+  border-radius:7px;
+  font-weight:800;
+  font-size:9px;
+  text-transform:uppercase;
+}
+
+.details-btn {
+  width:100%;
+  margin-top:15px;
+  padding:11px;
+  color:white;
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:11px;
+  font-size:12px;
+  font-weight:800;
+  transition:.2s;
+}
+
+.details-btn:hover {
+  background:#263b5d;
+  border-color:rgba(128,105,255,.4);
+}
+
+.empty {
+  grid-column:1/-1;
+  padding:48px 15px;
+  text-align:center;
+  color:var(--muted);
+  border:1px dashed var(--border);
+  border-radius:18px;
+  background:rgba(16,25,43,.5);
+}
+
+.empty-icon {
+  font-size:35px;
+  margin-bottom:12px;
+}
+
+/* SUBMIT AREA */
+
+.submit-area {
+  margin-top:24px;
+}
+
+.submit-box {
+  position:relative;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:20px;
+  padding:23px;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 95% 10%,rgba(119,98,255,.24),transparent 35%),
+    linear-gradient(115deg,#172344,#172d4a);
+  border:1px solid rgba(128,105,255,.22);
+  border-radius:19px;
+}
+
+.submit-box h3 {
+  font-size:16px;
+  margin-bottom:7px;
+}
+
+.submit-box p {
+  max-width:570px;
+  color:#aebbd3;
+  font-size:12px;
+  line-height:1.7;
+}
+
+/* FEATURES */
+
+.feature-grid {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
+}
+
+.feature {
+  padding:21px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:17px;
+}
+
+.feature-icon {
+  width:44px;
+  height:44px;
+  display:grid;
+  place-items:center;
+  margin-bottom:14px;
+  border-radius:13px;
+  background:var(--surface2);
+  font-size:21px;
+}
+
+.feature h3 {
+  font-size:14px;
+  margin-bottom:8px;
+}
+
+.feature p {
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.7;
+}
+
+/* FOOTER */
+
+.footer {
+  margin-top:45px;
+  padding:28px 18px;
+  text-align:center;
+  color:var(--muted);
+  border-top:1px solid var(--border);
+  font-size:11px;
+}
+
+.footer .logo {
+  justify-content:center;
+  margin-bottom:13px;
+  font-size:20px;
+}
+
+.footer .logo-icon {
+  width:35px;
+  height:35px;
+  border-radius:12px;
+  font-size:19px;
+}
+
+/* MODALS */
+
+.modal {
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:100;
+  padding:16px;
+  align-items:center;
+  justify-content:center;
+  background:rgba(2,6,15,.79);
+  backdrop-filter:blur(9px);
+}
+
+.modal.show {
+  display:flex;
+}
+
+.modal-box {
+  width:100%;
+  max-width:460px;
+  max-height:91vh;
+  overflow:auto;
+  padding:24px;
+  color:var(--text);
+  background:#111b2e;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:22px;
+  box-shadow:0 25px 80px rgba(0,0,0,.5);
+  animation:modalIn .22s ease;
+}
+
+@keyframes modalIn {
+  from {opacity:0;transform:translateY(12px) scale(.98)}
+  to {opacity:1;transform:translateY(0) scale(1)}
+}
+
+.admin-modal {
+  max-width:850px;
+}
+
+.modal-head {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  margin-bottom:20px;
+}
+
+.modal-head h2 {
+  font-size:19px;
+}
+
+.close-btn {
+  width:36px;
+  height:36px;
+  flex-shrink:0;
+  color:white;
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:10px;
+  font-size:21px;
+}
+
+/* FORMS */
+
+.auth-tabs {
+  display:flex;
+  gap:5px;
+  padding:5px;
+  margin-bottom:18px;
+  background:#0a1221;
+  border-radius:12px;
+}
+
+.auth-tab {
+  flex:1;
+  padding:11px 6px;
+  color:var(--muted);
+  background:transparent;
+  border-radius:9px;
+  font-size:12px;
+  font-weight:800;
+}
+
+.auth-tab.active {
+  color:white;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+}
+
+.form-group {
+  margin-bottom:13px;
+}
+
+.form-group label {
+  display:block;
+  margin-bottom:7px;
+  color:#c4cde0;
+  font-size:12px;
+  font-weight:700;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width:100%;
+  padding:13px 14px;
+  color:white;
+  background:#0b1424;
+  border:1px solid var(--border);
+  border-radius:11px;
+  outline:none;
+  font-size:13px;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  border-color:var(--accent);
+}
+
+.form-group textarea {
+  min-height:100px;
+  resize:vertical;
+}
+
+.form-group select option {
+  color:white;
+  background:#111b2e;
+}
+
+.submit-btn {
+  width:100%;
+  padding:14px;
+  margin-top:5px;
+  color:white;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  border-radius:12px;
+  font-size:13px;
+  font-weight:800;
+}
+
+.submit-btn:disabled {
+  opacity:.6;
+  cursor:wait;
+}
+
+.form-note {
+  margin-top:13px;
+  color:var(--muted);
+  text-align:center;
+  font-size:11px;
+  line-height:1.7;
+}
+
+.error {
+  margin-bottom:12px;
+  padding:10px 12px;
+  color:#ff9ba8;
+  background:rgba(255,80,110,.09);
+  border:1px solid rgba(255,80,110,.17);
+  border-radius:10px;
+  font-size:12px;
+  line-height:1.5;
+}
+
+.success {
+  margin-bottom:12px;
+  padding:10px 12px;
+  color:#75e5b5;
+  background:rgba(35,201,139,.09);
+  border:1px solid rgba(35,201,139,.17);
+  border-radius:10px;
+  font-size:12px;
+  line-height:1.5;
+}
+
+.link-btn {
+  display:block;
+  margin:13px auto 0;
+  color:#b4a7ff;
+  background:transparent;
+  font-size:12px;
+}
+
+.profile-info {
+  padding:17px;
+  margin-bottom:15px;
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:14px;
+  overflow-wrap:anywhere;
+}
+
+.profile-info small {
+  color:var(--muted);
+  font-size:11px;
+}
+
+/* ADMIN */
+
+.admin-filters {
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-bottom:16px;
+}
+
+.admin-filter {
+  padding:9px 13px;
+  color:var(--muted);
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:9px;
+  font-size:11px;
+  font-weight:800;
+}
+
+.admin-filter.active {
+  color:white;
+  background:var(--accent);
+}
+
+.admin-list {
+  display:grid;
+  gap:12px;
+}
+
+.admin-app {
+  padding:16px;
+  background:#0b1424;
+  border:1px solid var(--border);
+  border-radius:15px;
+}
+
+.admin-app-top {
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  flex-wrap:wrap;
+  gap:10px;
+}
+
+.admin-app h3 {
+  font-size:15px;
+  overflow-wrap:anywhere;
+}
+
+.admin-app p {
+  margin-top:7px;
+  color:var(--muted);
+  font-size:11px;
+  line-height:1.7;
+  overflow-wrap:anywhere;
+}
+
+.status {
+  display:inline-block;
+  padding:6px 9px;
+  border-radius:7px;
+  font-size:10px;
+  font-weight:800;
+}
+
+.status-pending {
+  color:#ffcf65;
+  background:rgba(245,158,11,.13);
+}
+
+.status-approved {
+  color:#69e5a4;
+  background:rgba(34,197,94,.13);
+}
+
+.status-rejected {
+  color:#ff8595;
+  background:rgba(239,68,68,.13);
+}
+
+.admin-apk-form {
+  padding:14px;
+  margin-top:14px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:12px;
+}
+
+.admin-apk-form h4 {
+  margin-bottom:12px;
+  font-size:12px;
+}
+
+.admin-apk-form .form-group {
+  margin-bottom:9px;
+}
+
+.admin-apk-form .form-group label {
+  font-size:11px;
+}
+
+.admin-apk-form .form-group input {
+  padding:11px;
+  font-size:11px;
+}
+
+.admin-actions {
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:13px;
+}
+
+.admin-action {
+  padding:9px 12px;
+  color:white;
+  border-radius:9px;
+  font-size:11px;
+  font-weight:800;
+}
+
+.approve-btn {background:#167a4a}
+.reject-btn {background:#a65b16}
+.delete-btn {background:#a52b3f}
+.apk-save-btn {background:#315da8}
+
+.admin-empty {
+  padding:30px 12px;
+  color:var(--muted);
+  text-align:center;
+  background:#0b1424;
+  border:1px dashed var(--border);
+  border-radius:13px;
+  font-size:12px;
+  line-height:1.7;
+}
+
+/* DOWNLOAD */
+
+.download-btn {
+  display:block;
+  width:100%;
+  margin-top:20px;
+  padding:14px;
+  color:white;
+  text-align:center;
+  text-decoration:none;
+  background:linear-gradient(135deg,#13834d,#20b87d);
+  border-radius:12px;
+  font-size:13px;
+  font-weight:800;
+}
+
+.download-btn:hover {
+  opacity:.9;
+}
+
+/* TOAST */
+
+.toast {
+  position:fixed;
+  z-index:200;
+  left:50%;
+  bottom:25px;
+  max-width:90%;
+  padding:13px 18px;
+  color:white;
+  background:#223552;
+  border:1px solid var(--border);
+  border-radius:12px;
+  box-shadow:var(--shadow);
+  text-align:center;
+  font-size:12px;
+  opacity:0;
+  pointer-events:none;
+  transform:translate(-50%,25px);
+  transition:.25s;
+}
+
+.toast.show {
+  opacity:1;
+  transform:translate(-50%,0);
+}
+
+/* MOBILE NAVIGATION */
+
+.mobile-nav {
+  display:none;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:900px) {
+  .nav {display:none}
+  .app-grid {grid-template-columns:repeat(2,minmax(0,1fr))}
+  .hero-art {right:2%;opacity:.72}
+}
+
+@media(max-width:650px) {
+  .header-inner {
+    min-height:66px;
+    padding:10px 13px;
+    gap:8px;
+  }
+
+  .logo {
+    font-size:20px;
+    gap:8px;
+  }
+
+  .logo-icon {
+    width:37px;
+    height:37px;
+    border-radius:12px;
+    font-size:20px;
+  }
+
+  .header-actions {gap:6px}
+  .header-actions .btn {
+    padding:10px 11px;
+    font-size:11px;
+  }
+
+  .profile-btn {max-width:100px}
+
+  .container {
+    padding:17px 13px 105px;
+  }
+
+  .hero {
+    min-height:315px;
+    padding:29px 22px;
+    border-radius:21px;
+  }
+
+  .hero h1 {
+    max-width:470px;
+    font-size:36px;
+    letter-spacing:-1.5px;
+  }
+
+  .hero p {
+    max-width:390px;
+    font-size:12px;
+  }
+
+  .hero-art {
+    right:-65px;
+    top:65%;
+    transform:translateY(-50%) scale(.78);
+    opacity:.3;
+  }
+
+  .info-strip {
+    grid-template-columns:1fr;
+    gap:8px;
+    margin:12px 0 20px;
+  }
+
+  .info-item {
+    padding:12px;
+  }
+
+  .info-icon {
+    width:37px;
+    height:37px;
+  }
+
+  .section {
+    margin-top:27px;
+  }
+
+  .section-head h2 {
+    font-size:18px;
+  }
+
+  .app-grid {
+    gap:10px;
+  }
+
+  .app-card {
+    padding:13px;
+    border-radius:16px;
+  }
+
+  .app-icon {
+    width:54px;
+    height:54px;
+    border-radius:15px;
+    font-size:26px;
+  }
+
+  .app-card h3 {
+    font-size:14px;
+    margin-top:13px;
+  }
+
+  .app-description {
+    font-size:11px;
+    min-height:38px;
+  }
+
+  .app-meta {
+    flex-wrap:wrap;
+    font-size:9px;
+  }
+
+  .details-btn {
+    padding:10px 6px;
+    font-size:10px;
+  }
+
+  .feature-grid {
+    grid-template-columns:1fr;
+    gap:9px;
+  }
+
+  .feature {
+    padding:16px;
+  }
+
+  .submit-box {
+    align-items:flex-start;
+    flex-direction:column;
+    padding:18px;
+  }
+
+  .submit-box .btn {
+    width:100%;
+  }
+
+  .mobile-nav {
+    position:fixed;
+    z-index:40;
+    left:10px;
+    right:10px;
+    bottom:9px;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:5px;
+    padding:8px;
+    background:rgba(16,25,43,.95);
+    border:1px solid var(--border);
+    border-radius:17px;
+    box-shadow:0 10px 40px rgba(0,0,0,.4);
+    backdrop-filter:blur(18px);
+  }
+
+  .mobile-nav button {
+    padding:9px 4px;
+    color:var(--muted);
+    background:transparent;
+    border-radius:10px;
+    font-size:10px;
+    font-weight:800;
+  }
+
+  .mobile-nav button.active {
+    color:white;
+    background:var(--surface3);
+  }
+
+  .mobile-nav span {
+    display:block;
+    margin-bottom:4px;
+    font-size:17px;
+  }
+
+  .footer {
+    margin-top:30px;
+  }
+
+  .modal-box {
+    padding:19px;
+    border-radius:18px;
+  }
+}
+
+@media(max-width:370px) {
+  .hero h1 {font-size:30px}
+  .app-grid {grid-template-columns:1fr}
+  .app-card {padding:16px}
+  .header-actions .btn {padding:9px}
+}
+</style>
 </head>
 
 <body>
 
 <header class="header">
   <div class="header-inner">
+
     <div class="logo">
       <div class="logo-icon">A</div>
-      App<span>Zone</span>
+      <div class="logo-word">App<span>Zone</span></div>
     </div>
+
+    <nav class="nav">
+      <button class="active" onclick="showHome()">Bosh sahifa</button>
+      <button onclick="scrollToApps()">Ilovalar</button>
+      <button onclick="showFavorites()">Sevimlilar</button>
+    </nav>
 
     <div class="header-actions">
       <button class="btn btn-outline" id="installBtn" hidden>
         ⬇ O‘rnatish
       </button>
 
-      <button class="btn admin-btn" id="adminButton"
-              onclick="openAdminPanel()" hidden>
+      <button class="btn btn-admin" id="adminButton"
+        onclick="openAdminPanel()" hidden>
         ⚙ Admin
       </button>
 
@@ -847,104 +1354,232 @@
       </button>
 
       <button class="btn profile-btn" id="profileButton"
-              onclick="openProfile()" hidden>
+        onclick="openProfile()" hidden>
         Profil
       </button>
     </div>
+
   </div>
 </header>
 
 <main class="container">
 
-  <section class="hero">
-    <div class="hero-art">📱</div>
-    <h1>Ilovalar dunyosiga <span>xush kelibsiz!</span></h1>
-    <p>
-      AppZone — sevimli ilovalaringizni topish, o‘rganish
-      va yangi raqamli imkoniyatlarni kashf qilish uchun
-      yaratilgan platforma.
-    </p>
-    <button class="btn" onclick="scrollToApps()">
-      Ilovalarni ko‘rish →
-    </button>
+  <section class="hero" id="homeSection">
+
+    <div class="hero-content">
+
+      <div class="eyebrow">
+        <span class="eyebrow-dot"></span>
+        YANGI AVLOD ILOVALAR PLATFORMASI
+      </div>
+
+      <h1>
+        Raqamli dunyoni
+        <span>AppZone</span> bilan kashf eting.
+      </h1>
+
+      <p>
+        Sevimli ilovalaringizni toping, yangi imkoniyatlarni kashf qiling
+        va o‘z ilovangizni AppZone hamjamiyatiga taqdim eting.
+      </p>
+
+      <div class="hero-buttons">
+        <button class="btn" onclick="scrollToApps()">
+          Ilovalarni ko‘rish →
+        </button>
+
+        <button class="btn btn-outline" onclick="openSubmitApp()">
+          + Ilova joylash
+        </button>
+      </div>
+
+    </div>
+
+    <div class="hero-art">
+      <div class="art-circle"></div>
+
+      <div class="art-phone">
+        <div class="art-phone-top"></div>
+
+        <div class="art-icons">
+          <div>📸</div>
+          <div>🎮</div>
+          <div>📚</div>
+          <div>🎵</div>
+          <div>🧮</div>
+          <div>🚀</div>
+        </div>
+      </div>
+    </div>
+
   </section>
 
-  <div class="search-box">
-    <span style="padding-left:12px">🔍</span>
-    <input id="searchInput" type="search"
-           placeholder="Ilova nomini qidiring...">
+  <section class="info-strip">
+
+    <div class="info-item">
+      <div class="info-icon">🔎</div>
+      <div>
+        <strong>Oson qidiruv</strong>
+        <small>Kerakli ilovani tez toping</small>
+      </div>
+    </div>
+
+    <div class="info-item">
+      <div class="info-icon">🛡️</div>
+      <div>
+        <strong>Admin tekshiruvi</strong>
+        <small>Yuborilgan ilovalar nazorat qilinadi</small>
+      </div>
+    </div>
+
+    <div class="info-item">
+      <div class="info-icon">🚀</div>
+      <div>
+        <strong>Dasturchilar uchun</strong>
+        <small>O‘z ilovangizni taqdim eting</small>
+      </div>
+    </div>
+
+  </section>
+
+  <div class="search-row">
+    <div class="search-box">
+      <span class="search-icon">⌕</span>
+      <input id="searchInput" type="search"
+        placeholder="Ilovalar, o‘yinlar va vositalarni qidiring...">
+      <span class="muted">⌕</span>
+    </div>
   </div>
 
   <section class="submit-area" id="submitArea" hidden>
     <div class="submit-box">
+
       <div>
         <h3>📤 Ilovangizni AppZone'ga joylang</h3>
         <p>
-          Ilova ma’lumotlarini yuboring. Admin tekshirganidan
-          keyin tasdiqlangan ilova katalogda ko‘rinadi.
+          Ilova ma’lumotlarini yuboring. Admin tekshiruvidan
+          so‘ng tasdiqlangan ilova katalogda ko‘rinadi.
         </p>
       </div>
+
       <button class="btn" onclick="openSubmitApp()">
         + Ilova yuborish
       </button>
+
     </div>
   </section>
 
-  <section class="section">
+  <section class="section" id="categoriesSection">
+
     <div class="section-head">
-      <h2>Kategoriyalar</h2>
+      <div>
+        <h2>Kategoriyalar</h2>
+        <p class="section-subtitle">
+          O‘zingizga kerakli yo‘nalishni tanlang
+        </p>
+      </div>
     </div>
+
     <div class="categories" id="categories"></div>
+
   </section>
 
   <section class="section" id="appsSection">
+
     <div class="section-head">
-      <h2>Ommabop ilovalar</h2>
-      <span class="muted" id="appCount">6 ta ilova</span>
+      <div>
+        <h2 id="appsTitle">Ommabop ilovalar</h2>
+        <p class="section-subtitle" id="appsSubtitle">
+          AppZone katalogidagi ilovalar
+        </p>
+      </div>
+
+      <span class="muted" id="appCount">0 ta ilova</span>
     </div>
+
     <div class="app-grid" id="appGrid"></div>
+
   </section>
 
   <section class="section">
+
     <div class="section-head">
-      <h2>Nega AppZone?</h2>
+      <div>
+        <h2>Nega AppZone?</h2>
+        <p class="section-subtitle">
+          Foydalanuvchilar va dasturchilar uchun yagona platforma
+        </p>
+      </div>
     </div>
 
     <div class="feature-grid">
+
       <div class="feature">
-        <div class="emoji">🔎</div>
+        <div class="feature-icon">🔍</div>
         <h3>Oson qidiruv</h3>
-        <p>Kerakli ilovalarni kategoriyalar va qidiruv orqali toping.</p>
+        <p>
+          Ilovalarni nomi, tavsifi va kategoriyasi orqali topish mumkin.
+        </p>
       </div>
 
       <div class="feature">
-        <div class="emoji">⭐</div>
+        <div class="feature-icon">⭐</div>
         <h3>Sevimlilar</h3>
-        <p>O‘zingiz yoqtirgan ilovalarni ro‘yxatga saqlang.</p>
+        <p>
+          O‘zingiz yoqtirgan ilovalarni sevimlilar ro‘yxatiga saqlang.
+        </p>
       </div>
 
       <div class="feature">
-        <div class="emoji">🔐</div>
+        <div class="feature-icon">🔐</div>
         <h3>Shaxsiy profil</h3>
-        <p>O‘z akkauntingiz orqali tizimga kiring va profilingizni boshqaring.</p>
+        <p>
+          Akkauntingiz orqali tizimga kiring va ilovalaringizni boshqaring.
+        </p>
       </div>
+
     </div>
+
   </section>
 
 </main>
 
 <footer class="footer">
-  <div class="logo" style="justify-content:center;margin-bottom:10px">
+
+  <div class="logo">
     <div class="logo-icon">A</div>
-    App<span>Zone</span>
+    <div class="logo-word">App<span>Zone</span></div>
   </div>
+
   <p>© 2026 AppZone. Barcha huquqlar himoyalangan.</p>
-  <p style="margin-top:7px">Ilovalar dunyosi — bir joyda.</p>
+  <p style="margin-top:7px">
+    Ilovalar dunyosi — bir joyda.
+  </p>
+
 </footer>
 
-<!-- KIRISH VA RO‘YXATDAN O‘TISH -->
+<nav class="mobile-nav">
+  <button class="active" id="mobileHome" onclick="showHome()">
+    <span>⌂</span>
+    Bosh sahifa
+  </button>
+
+  <button id="mobileApps" onclick="scrollToApps()">
+    <span>▦</span>
+    Ilovalar
+  </button>
+
+  <button id="mobileFavorites" onclick="showFavorites()">
+    <span>♡</span>
+    Sevimlilar
+  </button>
+</nav>
+
+<!-- AUTH MODAL -->
+
 <div class="modal" id="authModal">
   <div class="modal-box">
+
     <div class="modal-head">
       <h2>AppZone akkaunti</h2>
       <button class="close-btn" onclick="closeModal('authModal')">×</button>
@@ -952,65 +1587,80 @@
 
     <div class="auth-tabs">
       <button class="auth-tab active" id="loginTab"
-              onclick="switchAuth('login')">Kirish</button>
+        onclick="switchAuth('login')">
+        Kirish
+      </button>
+
       <button class="auth-tab" id="registerTab"
-              onclick="switchAuth('register')">Ro‘yxatdan o‘tish</button>
+        onclick="switchAuth('register')">
+        Ro‘yxatdan o‘tish
+      </button>
     </div>
 
     <div id="authMessage"></div>
 
     <form id="loginForm">
+
       <div class="form-group">
         <label>Email manzilingiz</label>
         <input type="email" id="loginEmail" required
-               placeholder="example@gmail.com">
+          placeholder="example@gmail.com">
       </div>
 
       <div class="form-group">
         <label>Parol</label>
         <input type="password" id="loginPassword"
-               required minlength="6" placeholder="Parolingiz">
+          required minlength="6" placeholder="Parolingiz">
       </div>
 
-      <button class="submit-btn" type="submit">Akkauntga kirish</button>
+      <button class="submit-btn" type="submit">
+        Akkauntga kirish
+      </button>
+
       <button class="link-btn" type="button" onclick="resetPassword()">
         Parolni unutdingizmi?
       </button>
+
     </form>
 
     <form id="registerForm" hidden>
+
       <div class="form-group">
         <label>Email manzilingiz</label>
-        <input type="email" id="registerEmail" required
-               placeholder="example@gmail.com">
+        <input type="email" id="registerEmail"
+          required placeholder="example@gmail.com">
       </div>
 
       <div class="form-group">
         <label>Parol</label>
         <input type="password" id="registerPassword"
-               required minlength="6" placeholder="Kamida 6 ta belgi">
+          required minlength="6" placeholder="Kamida 6 ta belgi">
       </div>
 
       <div class="form-group">
         <label>Parolni tasdiqlang</label>
         <input type="password" id="confirmPassword"
-               required minlength="6" placeholder="Parolni qayta kiriting">
+          required minlength="6" placeholder="Parolni qayta kiriting">
       </div>
 
       <button class="submit-btn" type="submit">
         Akkaunt yaratish
       </button>
+
     </form>
 
     <p class="form-note">
-      AppZone akkauntingiz orqali xizmatlardan foydalanishingiz mumkin.
+      AppZone akkauntingiz orqali platforma xizmatlaridan foydalaning.
     </p>
+
   </div>
 </div>
 
-<!-- PROFIL -->
+<!-- PROFILE MODAL -->
+
 <div class="modal" id="profileModal">
   <div class="modal-box">
+
     <div class="modal-head">
       <h2>Shaxsiy profil</h2>
       <button class="close-btn" onclick="closeModal('profileModal')">×</button>
@@ -1025,33 +1675,37 @@
     <button class="submit-btn" onclick="logout()">
       Akkauntdan chiqish
     </button>
+
   </div>
 </div>
 
-<!-- ILOVA YUBORISH -->
+<!-- SUBMIT APP MODAL -->
+
 <div class="modal" id="submitAppModal">
   <div class="modal-box">
+
     <div class="modal-head">
       <h2>Ilova yuborish</h2>
       <button class="close-btn"
-              onclick="closeModal('submitAppModal')">×</button>
+        onclick="closeModal('submitAppModal')">×</button>
     </div>
 
     <div id="submitAppMessage"></div>
 
     <form id="submitAppForm">
+
       <div class="form-group">
         <label>Ilova nomi</label>
         <input id="newAppName" type="text" required
-               minlength="2" maxlength="60"
-               placeholder="Masalan: My Calculator">
+          minlength="2" maxlength="60"
+          placeholder="Masalan: My Calculator">
       </div>
 
       <div class="form-group">
         <label>Ilova haqida</label>
         <textarea id="newAppDescription" required
-                  maxlength="600"
-                  placeholder="Ilovangiz haqida qisqacha yozing..."></textarea>
+          maxlength="600"
+          placeholder="Ilovangiz haqida qisqacha yozing..."></textarea>
       </div>
 
       <div class="form-group">
@@ -1069,24 +1723,28 @@
       <div class="form-group">
         <label>Versiya</label>
         <input id="newAppVersion" type="text" required
-               maxlength="20" placeholder="Masalan: 1.0">
+          maxlength="20" placeholder="Masalan: 1.0">
       </div>
 
       <button class="submit-btn" id="submitAppSaveBtn" type="submit">
         Yuborish
       </button>
+
     </form>
 
     <p class="form-note">
       Yuborilgan ilova avval admin tekshiruvidan o‘tadi.
       APK faylini admin biriktiradi.
     </p>
+
   </div>
 </div>
 
-<!-- ADMIN PANEL -->
+<!-- ADMIN MODAL -->
+
 <div class="modal" id="adminModal">
   <div class="modal-box admin-modal">
+
     <div class="modal-head">
       <div>
         <h2>⚙ AppZone Admin Panel</h2>
@@ -1094,20 +1752,24 @@
           Ilovalarni boshqarish va tekshirish
         </p>
       </div>
+
       <button class="close-btn"
-              onclick="closeModal('adminModal')">×</button>
+        onclick="closeModal('adminModal')">×</button>
     </div>
 
     <div class="admin-filters" id="adminFilters">
       <button class="admin-filter active" data-filter="pending">
         Tekshiruvda
       </button>
+
       <button class="admin-filter" data-filter="approved">
         Tasdiqlangan
       </button>
+
       <button class="admin-filter" data-filter="rejected">
         Rad etilgan
       </button>
+
       <button class="admin-filter" data-filter="all">
         Barchasi
       </button>
@@ -1116,26 +1778,29 @@
     <div class="admin-list" id="adminList">
       <div class="admin-empty">Ma’lumotlar yuklanmoqda...</div>
     </div>
+
   </div>
 </div>
 
-<!-- ILOVA MA'LUMOTLARI -->
+<!-- APP DETAILS MODAL -->
+
 <div class="modal" id="appModal">
   <div class="modal-box">
+
     <div class="modal-head">
       <h2 id="detailTitle">Ilova</h2>
       <button class="close-btn" onclick="closeModal('appModal')">×</button>
     </div>
+
     <div id="detailContent"></div>
+
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-/* =================================
-   FIREBASE SOZLAMALARI
-================================= */
+/* FIREBASE */
 
 const firebaseConfig = {
   apiKey: "AIzaSyCI_7KqqOy2qPE7Qu5pMm1Jc7mZONtIy70",
@@ -1146,92 +1811,108 @@ const firebaseConfig = {
   appId: "1:685330977059:web:bf686fa47088a70cb33c96"
 };
 
-firebase.initializeApp(firebaseConfig);
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
 
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-/* =================================
-   APK URL TEKSHIRUVI
-================================= */
+/* APK URL TEKSHIRUVI */
 
-const APK_URL_PATTERN =
-  /^https:\/\/lfbnvltgemyqjsbhrqlo\.supabase\.co\/storage\/v1\/object\/public\/appzone-apks\/[A-Za-z0-9._-]+\.apk$/;
+function isAllowedApkUrl(value) {
+  try {
+    const url = new URL(String(value || "").trim());
 
-function isAllowedApkUrl(url) {
-  return APK_URL_PATTERN.test(String(url || "").trim());
+    return (
+      url.protocol === "https:" &&
+      url.hostname === "lfbnvltgemyqjsbhrqlo.supabase.co" &&
+      url.pathname.startsWith(
+        "/storage/v1/object/public/appzone-apks/"
+      ) &&
+      /\.apk$/i.test(url.pathname) &&
+      !url.search &&
+      !url.hash
+    );
+
+  } catch (error) {
+    return false;
+  }
 }
 
-/* =================================
-   DEMO ILOVALAR
-================================= */
+/* DEMO ILOVALAR */
 
 const demoApps = [
   {
-    id: "demo-1",
-    name: "Photo Editor",
-    description: "Suratlarni tahrirlash va chiroyli effektlar.",
-    category: "Foto va video",
-    icon: "📸",
-    css: "icon-1",
-    version: "1.0"
+    id:"demo-1",
+    name:"Photo Editor",
+    description:"Suratlarni tahrirlash va chiroyli effektlar.",
+    category:"Foto va video",
+    icon:"📸",
+    css:"icon-1",
+    version:"1.0",
+    demo:true
   },
   {
-    id: "demo-2",
-    name: "Brain Test",
-    description: "Mantiqiy fikrlashni rivojlantiruvchi o‘yin.",
-    category: "O‘yinlar",
-    icon: "🧠",
-    css: "icon-2",
-    version: "1.0"
+    id:"demo-2",
+    name:"Brain Test",
+    description:"Mantiqiy fikrlashni rivojlantiruvchi o‘yin.",
+    category:"O‘yinlar",
+    icon:"🧠",
+    css:"icon-2",
+    version:"1.0",
+    demo:true
   },
   {
-    id: "demo-3",
-    name: "English Master",
-    description: "Ingliz tilini o‘rganish uchun yordamchi.",
-    category: "Ta’lim",
-    icon: "📚",
-    css: "icon-3",
-    version: "1.0"
+    id:"demo-3",
+    name:"English Master",
+    description:"Ingliz tilini o‘rganish uchun yordamchi.",
+    category:"Ta’lim",
+    icon:"📚",
+    css:"icon-3",
+    version:"1.0",
+    demo:true
   },
   {
-    id: "demo-4",
-    name: "Video Maker",
-    description: "Videolar tayyorlash uchun qulay vosita.",
-    category: "Foto va video",
-    icon: "🎬",
-    css: "icon-4",
-    version: "1.0"
+    id:"demo-4",
+    name:"Video Maker",
+    description:"Videolar tayyorlash uchun qulay vosita.",
+    category:"Foto va video",
+    icon:"🎬",
+    css:"icon-4",
+    version:"1.0",
+    demo:true
   },
   {
-    id: "demo-5",
-    name: "Calculator Pro",
-    description: "Kundalik hisob-kitoblar uchun kalkulyator.",
-    category: "Vositalar",
-    icon: "🧮",
-    css: "icon-5",
-    version: "1.0"
+    id:"demo-5",
+    name:"Calculator Pro",
+    description:"Kundalik hisob-kitoblar uchun kalkulyator.",
+    category:"Vositalar",
+    icon:"🧮",
+    css:"icon-5",
+    version:"1.0",
+    demo:true
   },
   {
-    id: "demo-6",
-    name: "Speed Racing",
-    description: "Tezlik va poyga mavzusidagi o‘yin.",
-    category: "O‘yinlar",
-    icon: "🏎️",
-    css: "icon-6",
-    version: "1.0"
+    id:"demo-6",
+    name:"Speed Racing",
+    description:"Tezlik va poyga mavzusidagi o‘yin.",
+    category:"O‘yinlar",
+    icon:"🏎️",
+    css:"icon-6",
+    version:"1.0",
+    demo:true
   }
 ];
 
-/* =================================
-   UMUMIY O'ZGARUVCHILAR
-================================= */
+/* HOLATLAR */
 
 let apps = [...demoApps];
 let visibleApps = [...apps];
 
 let activeCategory = "Barchasi";
-let selectedAuth = "login";
+let favorites = [];
+let favoritesOnly = false;
 
 let currentUser = null;
 let isAdmin = false;
@@ -1249,8 +1930,6 @@ const categoriesList = [
   "Boshqa"
 ];
 
-let favorites = [];
-
 try {
   favorites = JSON.parse(
     localStorage.getItem("appzoneFavorites") || "[]"
@@ -1259,25 +1938,33 @@ try {
   if (!Array.isArray(favorites)) {
     favorites = [];
   }
+
 } catch (error) {
   favorites = [];
 }
 
-/* =================================
-   YORDAMCHI FUNKSIYALAR
-================================= */
+/* YORDAMCHI FUNKSIYALAR */
 
 function escapeHTML(value) {
-  return String(value ?? "").replace(/[&<>"']/g, function(char) {
-    return {
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#039;"
-    }[char];
-  });
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#039;"
+  })[char]);
 }
+
+function safeImageUrl(value) {
+  try {
+    const url = new URL(String(value || ""));
+    return url.protocol === "https:" ? url.href : "";
+  } catch (error) {
+    return "";
+  }
+}
+
+let toastTimer;
 
 function showToast(message) {
   const toast = document.getElementById("toast");
@@ -1285,7 +1972,9 @@ function showToast(message) {
   toast.textContent = message;
   toast.classList.add("show");
 
-  setTimeout(() => {
+  clearTimeout(toastTimer);
+
+  toastTimer = setTimeout(() => {
     toast.classList.remove("show");
   }, 2800);
 }
@@ -1294,10 +1983,20 @@ function closeModal(id) {
   document.getElementById(id).classList.remove("show");
 }
 
+document.querySelectorAll(".modal").forEach(modal => {
+  modal.addEventListener("click", event => {
+    if (event.target === modal) {
+      modal.classList.remove("show");
+    }
+  });
+});
+
 function scrollToApps() {
   document.getElementById("appsSection").scrollIntoView({
-    behavior: "smooth"
+    behavior:"smooth"
   });
+
+  setMobileNav("apps");
 }
 
 function formatDate(value) {
@@ -1313,6 +2012,7 @@ function formatDate(value) {
     }
 
     return date.toLocaleString("uz-UZ");
+
   } catch (error) {
     return "Sana mavjud emas";
   }
@@ -1327,14 +2027,66 @@ function getDateNumber(value) {
     }
 
     return new Date(value).getTime() || 0;
+
   } catch (error) {
     return 0;
   }
 }
 
-/* =================================
-   KATEGORIYALAR
-================================= */
+/* MOBIL NAVIGATION */
+
+function setMobileNav(name) {
+  document.getElementById("mobileHome")
+    .classList.toggle("active", name === "home");
+
+  document.getElementById("mobileApps")
+    .classList.toggle("active", name === "apps");
+
+  document.getElementById("mobileFavorites")
+    .classList.toggle("active", name === "favorites");
+}
+
+function showHome() {
+  favoritesOnly = false;
+  activeCategory = "Barchasi";
+
+  document.getElementById("appsTitle").textContent =
+    "Ommabop ilovalar";
+
+  document.getElementById("appsSubtitle").textContent =
+    "AppZone katalogidagi ilovalar";
+
+  renderCategories();
+  filterApps();
+
+  setMobileNav("home");
+
+  document.getElementById("homeSection").scrollIntoView({
+    behavior:"smooth"
+  });
+}
+
+function showFavorites() {
+  favoritesOnly = true;
+  activeCategory = "Barchasi";
+
+  document.getElementById("appsTitle").textContent =
+    "Sevimli ilovalar";
+
+  document.getElementById("appsSubtitle").textContent =
+    "Siz saqlagan ilovalar ro‘yxati";
+
+  renderCategories();
+  filterApps();
+
+  setMobileNav("favorites");
+
+  document.getElementById("appsSection").scrollIntoView({
+    behavior:"smooth"
+  });
+}
+
+/* KATEGORIYALAR */
 
 function renderCategories() {
   const box = document.getElementById("categories");
@@ -1348,19 +2100,25 @@ function renderCategories() {
   `).join("");
 }
 
-document.getElementById("categories").addEventListener("click", event => {
-  const button = event.target.closest("[data-category]");
-  if (!button) return;
+document.getElementById("categories")
+  .addEventListener("click", event => {
 
-  activeCategory = button.dataset.category;
+    const button = event.target.closest("[data-category]");
+    if (!button) return;
 
-  renderCategories();
-  filterApps();
-});
+    activeCategory = button.dataset.category;
+    favoritesOnly = false;
 
-/* =================================
-   ILOVALAR RO'YXATI
-================================= */
+    document.getElementById("appsTitle").textContent =
+      activeCategory === "Barchasi"
+        ? "Ommabop ilovalar"
+        : activeCategory;
+
+    renderCategories();
+    filterApps();
+  });
+
+/* ILOVALARNI CHIQARISH */
 
 function renderApps() {
   const grid = document.getElementById("appGrid");
@@ -1371,44 +2129,66 @@ function renderApps() {
   if (visibleApps.length === 0) {
     grid.innerHTML = `
       <div class="empty">
-        <div style="font-size:35px;margin-bottom:10px">🔎</div>
-        Bu qidiruv bo‘yicha ilova topilmadi.
+        <div class="empty-icon">🔎</div>
+        <h3>Ilova topilmadi</h3>
+        <p style="margin-top:8px;font-size:12px">
+          Qidiruv yoki kategoriyani o‘zgartirib ko‘ring.
+        </p>
       </div>
     `;
     return;
   }
 
   grid.innerHTML = visibleApps.map(app => {
-    const isFavorite = favorites.includes(String(app.id));
+
+    const id = String(app.id);
+    const isFavorite = favorites.includes(id);
+    const image = safeImageUrl(app.iconUrl);
+
+    const iconHTML = image
+      ? `<img src="${escapeHTML(image)}" alt="">`
+      : escapeHTML(app.icon || "📱");
 
     return `
       <article class="app-card">
-        <div class="app-top">
+
+        <div class="app-card-top">
+
           <div class="app-icon ${escapeHTML(app.css || "icon-1")}">
-            ${escapeHTML(app.icon || "📱")}
+            ${iconHTML}
           </div>
 
           <button
             class="favorite ${isFavorite ? "active" : ""}"
-            data-favorite="${escapeHTML(app.id)}"
+            data-favorite="${escapeHTML(id)}"
             aria-label="Sevimlilarga qo‘shish">
             ${isFavorite ? "♥" : "♡"}
           </button>
+
         </div>
 
         <h3>${escapeHTML(app.name)}</h3>
-        <p>${escapeHTML(app.description)}</p>
+
+        <p class="app-description">
+          ${escapeHTML(app.description)}
+        </p>
 
         <div class="app-meta">
           <span>${escapeHTML(app.category || "Ilova")}</span>
-          <span>v${escapeHTML(app.version || "1.0")}</span>
+
+          ${
+            app.demo
+              ? '<span class="app-tag">Namuna</span>'
+              : `<span>v${escapeHTML(app.version || "1.0")}</span>`
+          }
         </div>
 
         <button
           class="details-btn"
-          data-open-app="${escapeHTML(app.id)}">
-          Batafsil →
+          data-open-app="${escapeHTML(id)}">
+          Batafsil ko‘rish →
         </button>
+
       </article>
     `;
   }).join("");
@@ -1419,6 +2199,7 @@ function filterApps() {
     .value.trim().toLowerCase();
 
   visibleApps = apps.filter(app => {
+
     const matchCategory =
       activeCategory === "Barchasi" ||
       app.category === activeCategory;
@@ -1427,7 +2208,10 @@ function filterApps() {
       String(app.name || "").toLowerCase().includes(search) ||
       String(app.description || "").toLowerCase().includes(search);
 
-    return matchCategory && matchSearch;
+    const matchFavorite =
+      !favoritesOnly || favorites.includes(String(app.id));
+
+    return matchCategory && matchSearch && matchFavorite;
   });
 
   renderApps();
@@ -1436,102 +2220,120 @@ function filterApps() {
 document.getElementById("searchInput")
   .addEventListener("input", filterApps);
 
-/* =================================
-   SEVIMLILAR VA BATAFSIL
-================================= */
+/* SEVIMLILAR VA BATAFSIL */
 
-document.getElementById("appGrid").addEventListener("click", event => {
-  const favoriteButton = event.target.closest("[data-favorite]");
+document.getElementById("appGrid")
+  .addEventListener("click", event => {
 
-  if (favoriteButton) {
-    const id = favoriteButton.dataset.favorite;
+    const favoriteButton = event.target.closest("[data-favorite]");
 
-    if (favorites.includes(id)) {
-      favorites = favorites.filter(item => item !== id);
-      showToast("Sevimlilardan olib tashlandi");
+    if (favoriteButton) {
+      const id = favoriteButton.dataset.favorite;
+
+      if (favorites.includes(id)) {
+        favorites = favorites.filter(item => item !== id);
+        showToast("Sevimlilardan olib tashlandi");
+      } else {
+        favorites.push(id);
+        showToast("Sevimlilarga qo‘shildi");
+      }
+
+      try {
+        localStorage.setItem(
+          "appzoneFavorites",
+          JSON.stringify(favorites)
+        );
+      } catch (error) {
+        console.warn("Sevimlilar saqlanmadi.");
+      }
+
+      filterApps();
+      return;
+    }
+
+    const detailsButton = event.target.closest("[data-open-app]");
+    if (!detailsButton) return;
+
+    const id = detailsButton.dataset.openApp;
+
+    const app = visibleApps.find(item => String(item.id) === id);
+    if (!app) return;
+
+    document.getElementById("detailTitle").textContent = app.name;
+
+    let downloadSection = "";
+
+    if (isAllowedApkUrl(app.apkUrl)) {
+      downloadSection = `
+        <a
+          class="download-btn"
+          href="${escapeHTML(app.apkUrl)}"
+          target="_blank"
+          rel="noopener noreferrer">
+          ⬇ APK yuklab olish
+        </a>
+
+        <p style="margin-top:9px;color:#9ba9c2;font-size:11px;text-align:center">
+          Fayl: ${escapeHTML(app.apkName || "Ilova.apk")}
+          ${
+            Number(app.apkSize) > 0
+              ? " • " + escapeHTML(app.apkSize) + " MB"
+              : ""
+          }
+        </p>
+      `;
     } else {
-      favorites.push(id);
-      showToast("Sevimlilarga qo‘shildi");
+      downloadSection = `
+        <p style="margin-top:20px;padding:13px;background:#17243a;border-radius:10px;color:#9ba9c2;font-size:12px;text-align:center">
+          ⏳ Bu ilova uchun yuklab olish fayli hali joylanmagan.
+        </p>
+      `;
     }
 
-    try {
-      localStorage.setItem(
-        "appzoneFavorites",
-        JSON.stringify(favorites)
-      );
-    } catch (error) {
-      console.warn("Sevimlilar saqlanmadi.");
-    }
+    const image = safeImageUrl(app.iconUrl);
 
-    filterApps();
-    return;
-  }
+    const detailIcon = image
+      ? `<img src="${escapeHTML(image)}" alt=""
+          style="width:75px;height:75px;object-fit:cover;border-radius:20px">`
+      : `<div class="app-icon ${escapeHTML(app.css || "icon-1")}"
+          style="width:75px;height:75px;margin:auto;font-size:36px">
+          ${escapeHTML(app.icon || "📱")}
+        </div>`;
 
-  const detailsButton = event.target.closest("[data-open-app]");
-  if (!detailsButton) return;
+    document.getElementById("detailContent").innerHTML = `
+      <div style="text-align:center;padding:10px 2px">
 
-  const id = detailsButton.dataset.openApp;
+        ${detailIcon}
 
-  const app = visibleApps.find(item => String(item.id) === id);
-  if (!app) return;
+        <h3 style="margin:14px 0 8px">
+          ${escapeHTML(app.name)}
+        </h3>
 
-  document.getElementById("detailTitle").textContent = app.name;
+        <p style="color:#9ba9c2;line-height:1.7;font-size:12px">
+          ${escapeHTML(app.description)}
+        </p>
 
-  let downloadSection = "";
+        <div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:15px">
 
-  if (isAllowedApkUrl(app.apkUrl)) {
-    downloadSection = `
-      <a
-        class="download-btn"
-        href="${escapeHTML(app.apkUrl)}"
-        target="_blank"
-        rel="noopener noreferrer">
-        ⬇ APK yuklab olish
-      </a>
+          <span class="app-tag">
+            ${escapeHTML(app.category || "Ilova")}
+          </span>
 
-      <p style="margin-top:9px;color:#a1acc4;font-size:12px;text-align:center">
-        Fayl: ${escapeHTML(app.apkName || "Ilova.apk")}
-        ${Number(app.apkSize) > 0
-          ? " • " + escapeHTML(app.apkSize) + " MB"
-          : ""}
-      </p>
+          <span class="app-tag">
+            Versiya ${escapeHTML(app.version || "1.0")}
+          </span>
+
+        </div>
+
+        ${downloadSection}
+
+      </div>
     `;
-  } else {
-    downloadSection = `
-      <p style="margin-top:20px;padding:13px;background:#1b2740;border-radius:10px;color:#a1acc4;font-size:13px;text-align:center">
-        ⏳ Bu ilova uchun yuklab olish fayli hali joylanmagan.
-      </p>
-    `;
-  }
 
-  document.getElementById("detailContent").innerHTML = `
-    <div style="text-align:center;padding:10px">
-      <div style="font-size:65px">${escapeHTML(app.icon || "📱")}</div>
+    document.getElementById("appModal").classList.add("show");
+  });
 
-      <h3 style="margin:12px 0">
-        ${escapeHTML(app.name)}
-      </h3>
-
-      <p style="color:#a1acc4;line-height:1.6">
-        ${escapeHTML(app.description)}
-      </p>
-
-      <p style="margin-top:14px;color:#a1acc4;font-size:13px">
-        Kategoriya: ${escapeHTML(app.category || "Ilova")}<br>
-        Versiya: ${escapeHTML(app.version || "1.0")}
-      </p>
-
-      ${downloadSection}
-    </div>
-  `;
-
-  document.getElementById("appModal").classList.add("show");
-});
-
-/* =================================
-   FIRESTORE'DAN TASDIQLANGAN
-   ILOVALARNI OLISH
-================================= */
+/* FIRESTORE'DAN TASDIQLANGAN ILOVALAR */
 
 async function loadCloudApps() {
   try {
@@ -1543,18 +2345,18 @@ async function loadCloudApps() {
       const data = doc.data();
 
       return {
-        id: doc.id,
-        name: data.name || "Nomsiz ilova",
-        description: data.description || "",
-        category: data.category || "Boshqa",
-        version: data.version || "1.0",
-        icon: "📱",
-        css: "icon-1",
-
-        // APK ma'lumotlari
-        apkUrl: data.apkUrl || "",
-        apkName: data.apkName || "",
-        apkSize: Number(data.apkSize) || 0
+        id:doc.id,
+        name:data.name || "Nomsiz ilova",
+        description:data.description || "",
+        category:data.category || "Boshqa",
+        version:data.version || "1.0",
+        icon:"📱",
+        css:"icon-1",
+        iconUrl:data.iconUrl || "",
+        apkUrl:data.apkUrl || "",
+        apkName:data.apkName || "",
+        apkSize:Number(data.apkSize) || 0,
+        demo:false
       };
     });
 
@@ -1570,13 +2372,12 @@ async function loadCloudApps() {
     filterApps();
 
   } catch (error) {
-    console.warn("Firestore ma'lumotlarini olishda xato:", error);
+    console.warn("Firestore ma’lumotlarini olishda xato:", error);
+    filterApps();
   }
 }
 
-/* =================================
-   AUTHENTICATION
-================================= */
+/* AUTH */
 
 function openAuth() {
   document.getElementById("authModal").classList.add("show");
@@ -1584,26 +2385,25 @@ function openAuth() {
 }
 
 function switchAuth(type) {
-  selectedAuth = type;
+  document.getElementById("loginForm").hidden =
+    type !== "login";
 
-  document.getElementById("loginForm").hidden = type !== "login";
-  document.getElementById("registerForm").hidden = type !== "register";
+  document.getElementById("registerForm").hidden =
+    type !== "register";
 
   document.getElementById("loginTab").classList.toggle(
-    "active", type === "login"
+    "active",type === "login"
   );
 
   document.getElementById("registerTab").classList.toggle(
-    "active", type === "register"
+    "active",type === "register"
   );
 
   document.getElementById("authMessage").innerHTML = "";
 }
 
-function showAuthMessage(message, type = "error") {
-  const box = document.getElementById("authMessage");
-
-  box.innerHTML = `
+function showAuthMessage(message,type="error") {
+  document.getElementById("authMessage").innerHTML = `
     <div class="${type}">
       ${escapeHTML(message)}
     </div>
@@ -1641,20 +2441,24 @@ function translateFirebaseError(error) {
   };
 
   return messages[error.code] ||
-    "Xatolik yuz berdi: " + (error.message || "Noma'lum xato");
+    "Xatolik yuz berdi: " + (error.message || "Noma’lum xato");
 }
 
 document.getElementById("loginForm")
-  .addEventListener("submit", async event => {
+  .addEventListener("submit",async event => {
+
     event.preventDefault();
 
-    const email = document.getElementById("loginEmail").value.trim();
-    const password = document.getElementById("loginPassword").value;
+    const email = document.getElementById("loginEmail")
+      .value.trim();
+
+    const password = document.getElementById("loginPassword")
+      .value;
 
     try {
-      showAuthMessage("Kirilmoqda...", "success");
+      showAuthMessage("Kirilmoqda...","success");
 
-      await auth.signInWithEmailAndPassword(email, password);
+      await auth.signInWithEmailAndPassword(email,password);
 
       closeModal("authModal");
       showToast("AppZone'ga muvaffaqiyatli kirdingiz!");
@@ -1665,12 +2469,18 @@ document.getElementById("loginForm")
   });
 
 document.getElementById("registerForm")
-  .addEventListener("submit", async event => {
+  .addEventListener("submit",async event => {
+
     event.preventDefault();
 
-    const email = document.getElementById("registerEmail").value.trim();
-    const password = document.getElementById("registerPassword").value;
-    const confirm = document.getElementById("confirmPassword").value;
+    const email = document.getElementById("registerEmail")
+      .value.trim();
+
+    const password = document.getElementById("registerPassword")
+      .value;
+
+    const confirm = document.getElementById("confirmPassword")
+      .value;
 
     if (password !== confirm) {
       showAuthMessage("Parollar bir xil emas.");
@@ -1678,9 +2488,9 @@ document.getElementById("registerForm")
     }
 
     try {
-      showAuthMessage("Akkaunt yaratilmoqda...", "success");
+      showAuthMessage("Akkaunt yaratilmoqda...","success");
 
-      await auth.createUserWithEmailAndPassword(email, password);
+      await auth.createUserWithEmailAndPassword(email,password);
 
       closeModal("authModal");
       showToast("Akkaunt muvaffaqiyatli yaratildi!");
@@ -1691,7 +2501,8 @@ document.getElementById("registerForm")
   });
 
 async function resetPassword() {
-  const email = document.getElementById("loginEmail").value.trim();
+  const email = document.getElementById("loginEmail")
+    .value.trim();
 
   if (!email) {
     showAuthMessage("Avval email manzilingizni kiriting.");
@@ -1711,9 +2522,7 @@ async function resetPassword() {
   }
 }
 
-/* =================================
-   PROFIL VA CHIQISH
-================================= */
+/* PROFIL VA CHIQISH */
 
 function openProfile() {
   if (!auth.currentUser) return;
@@ -1741,11 +2550,10 @@ async function logout() {
   }
 }
 
-/* =================================
-   FOYDALANUVCHI HOLATINI TEKSHIRISH
-================================= */
+/* FOYDALANUVCHI HOLATI */
 
 auth.onAuthStateChanged(async user => {
+
   const checkNumber = ++authCheckNumber;
 
   currentUser = user || null;
@@ -1757,6 +2565,7 @@ auth.onAuthStateChanged(async user => {
   const submitArea = document.getElementById("submitArea");
 
   if (user) {
+
     authButton.hidden = true;
     profileButton.hidden = false;
     profileButton.textContent = user.email || "Profil";
@@ -1773,14 +2582,16 @@ auth.onAuthStateChanged(async user => {
         adminDoc.data().role === "admin";
 
     } catch (error) {
-      console.warn("Admin huquqini tekshirishda xato:", error);
+      console.warn("Admin huquqini tekshirishda xato:",error);
       isAdmin = false;
     }
 
   } else {
+
     authButton.hidden = false;
     profileButton.hidden = true;
     submitArea.hidden = true;
+
   }
 
   if (checkNumber !== authCheckNumber) return;
@@ -1794,9 +2605,7 @@ auth.onAuthStateChanged(async user => {
   loadCloudApps();
 });
 
-/* =================================
-   ILOVA YUBORISH
-================================= */
+/* ILOVA YUBORISH */
 
 function openSubmitApp() {
   if (!auth.currentUser) {
@@ -1810,7 +2619,8 @@ function openSubmitApp() {
 }
 
 document.getElementById("submitAppForm")
-  .addEventListener("submit", async event => {
+  .addEventListener("submit",async event => {
+
     event.preventDefault();
 
     const user = auth.currentUser;
@@ -1860,35 +2670,36 @@ document.getElementById("submitAppForm")
       saveButton.textContent = "Yuborilmoqda...";
 
       await db.collection("apps").add({
-        name: name,
-        description: description,
-        category: category,
-        version: version,
+        name,
+        description,
+        category,
+        version,
 
-        ownerUid: user.uid,
-        ownerEmail: user.email || "",
+        ownerUid:user.uid,
+        ownerEmail:user.email || "",
 
-        status: "pending",
-        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        status:"pending",
+        createdAt:firebase.firestore.FieldValue.serverTimestamp(),
 
-        iconUrl: "",
-        apkUrl: "",
-        apkName: "",
-        apkSize: 0
+        iconUrl:"",
+        apkUrl:"",
+        apkName:"",
+        apkSize:0
       });
 
       document.getElementById("submitAppForm").reset();
+
       closeModal("submitAppModal");
 
       showToast("Ilova tekshiruvga yuborildi!");
 
     } catch (error) {
-      console.error("Ilova yuborish xatosi:", error);
+      console.error("Ilova yuborish xatosi:",error);
 
       messageBox.innerHTML = `
         <div class="error">
-          Ilova yuborilmadi. Xatolik:
-          ${escapeHTML(error.message || "Noma'lum xato")}
+          Ilova yuborilmadi.
+          ${escapeHTML(error.message || "Noma’lum xato")}
         </div>
       `;
 
@@ -1898,9 +2709,7 @@ document.getElementById("submitAppForm")
     }
   });
 
-/* =================================
-   ADMIN PANELNI OCHISH
-================================= */
+/* ADMIN PANEL */
 
 async function openAdminPanel() {
   if (!auth.currentUser || !isAdmin) {
@@ -1916,10 +2725,6 @@ async function openAdminPanel() {
 
   await loadAdminApps();
 }
-
-/* =================================
-   ADMIN ILOVALARINI YUKLASH
-================================= */
 
 async function loadAdminApps() {
   const list = document.getElementById("adminList");
@@ -1943,19 +2748,18 @@ async function loadAdminApps() {
     const snapshot = await db.collection("apps").get();
 
     adminApps = snapshot.docs.map(doc => ({
-      id: doc.id,
+      id:doc.id,
       ...doc.data()
     }));
 
-    adminApps.sort((a, b) => {
-      return getDateNumber(b.createdAt) -
-        getDateNumber(a.createdAt);
-    });
+    adminApps.sort((a,b) =>
+      getDateNumber(b.createdAt) - getDateNumber(a.createdAt)
+    );
 
     renderAdminApps();
 
   } catch (error) {
-    console.error("Admin ilovalarini yuklash xatosi:", error);
+    console.error("Admin ilovalarini yuklash xatosi:",error);
 
     list.innerHTML = `
       <div class="admin-empty">
@@ -1966,9 +2770,7 @@ async function loadAdminApps() {
   }
 }
 
-/* =================================
-   ADMIN FILTRLARI
-================================= */
+/* ADMIN FILTRLARI */
 
 function renderAdminFilters() {
   document.querySelectorAll(".admin-filter").forEach(button => {
@@ -1980,7 +2782,8 @@ function renderAdminFilters() {
 }
 
 document.getElementById("adminFilters")
-  .addEventListener("click", event => {
+  .addEventListener("click",event => {
+
     const button = event.target.closest("[data-filter]");
     if (!button) return;
 
@@ -1990,15 +2793,13 @@ document.getElementById("adminFilters")
     renderAdminApps();
   });
 
-/* =================================
-   ADMIN ILOVALARINI KO‘RSATISH
-================================= */
+/* ADMIN ILOVALARI */
 
 function statusLabel(status) {
   const labels = {
-    pending: "Tekshiruvda",
-    approved: "Tasdiqlangan",
-    rejected: "Rad etilgan"
+    pending:"Tekshiruvda",
+    approved:"Tasdiqlangan",
+    rejected:"Rad etilgan"
   };
 
   return labels[status] || "Noma’lum";
@@ -2022,6 +2823,7 @@ function renderAdminApps() {
   }
 
   list.innerHTML = filteredApps.map(app => {
+
     const status = app.status || "unknown";
 
     let actions = "";
@@ -2056,6 +2858,7 @@ function renderAdminApps() {
 
     return `
       <article class="admin-app">
+
         <div class="admin-app-top">
           <h3>${escapeHTML(app.name || "Nomsiz ilova")}</h3>
 
@@ -2067,32 +2870,39 @@ function renderAdminApps() {
         <p>${escapeHTML(app.description || "Tavsif yo‘q")}</p>
 
         <p>
-          <b>Kategoriya:</b> ${escapeHTML(app.category || "Ko‘rsatilmagan")}
+          <b>Kategoriya:</b>
+          ${escapeHTML(app.category || "Ko‘rsatilmagan")}
           <br>
-          <b>Versiya:</b> ${escapeHTML(app.version || "Ko‘rsatilmagan")}
+
+          <b>Versiya:</b>
+          ${escapeHTML(app.version || "Ko‘rsatilmagan")}
           <br>
-          <b>Yuboruvchi:</b> ${escapeHTML(app.ownerEmail || "Email yo‘q")}
+
+          <b>Yuboruvchi:</b>
+          ${escapeHTML(app.ownerEmail || "Email yo‘q")}
           <br>
-          <b>Yuborilgan vaqt:</b> ${escapeHTML(formatDate(app.createdAt))}
+
+          <b>Yuborilgan vaqt:</b>
+          ${escapeHTML(formatDate(app.createdAt))}
         </p>
 
-        <!-- ADMIN APK MA'LUMOTLARINI KIRITADI -->
         <div class="admin-apk-form">
-          <h4>📦 APK faylini biriktirish</h4>
+
+          <h4>📦 APK fayl ma’lumotlari</h4>
 
           <div class="form-group">
             <label>Supabase APK URL manzili</label>
-            <input
-              type="url"
+
+            <input type="url"
               data-apk-url
               value="${escapeHTML(app.apkUrl || "")}"
-              placeholder="https://.../storage/v1/object/public/appzone-apks/Ilova.apk">
+              placeholder="https://.../appzone-apks/Ilova.apk">
           </div>
 
           <div class="form-group">
             <label>APK fayl nomi</label>
-            <input
-              type="text"
+
+            <input type="text"
               data-apk-name
               maxlength="120"
               value="${escapeHTML(app.apkName || "")}"
@@ -2100,9 +2910,9 @@ function renderAdminApps() {
           </div>
 
           <div class="form-group">
-            <label>Fayl hajmi (MB, butun son)</label>
-            <input
-              type="number"
+            <label>Fayl hajmi (MB)</label>
+
+            <input type="number"
               data-apk-size
               min="0"
               step="1"
@@ -2116,24 +2926,23 @@ function renderAdminApps() {
             data-id="${escapeHTML(app.id)}">
             💾 APK ma’lumotlarini saqlash
           </button>
+
         </div>
 
         <div class="admin-actions">
           ${actions}
         </div>
+
       </article>
     `;
   }).join("");
 }
 
-/* =================================
-   ADMIN AMALLARI:
-   APK SAQLASH, TASDIQLASH,
-   RAD ETISH, O'CHIRISH
-================================= */
+/* ADMIN AMALLARI */
 
 document.getElementById("adminList")
-  .addEventListener("click", async event => {
+  .addEventListener("click",async event => {
+
     const button = event.target.closest("[data-admin-action]");
     if (!button) return;
 
@@ -2156,6 +2965,7 @@ document.getElementById("adminList")
     }
 
     const oldText = button.textContent;
+
     button.disabled = true;
     button.textContent = "Bajarilmoqda...";
 
@@ -2163,6 +2973,7 @@ document.getElementById("adminList")
       const appRef = db.collection("apps").doc(id);
 
       if (action === "save-apk") {
+
         const card = button.closest(".admin-app");
 
         const url = card.querySelector("[data-apk-url]")
@@ -2177,9 +2988,8 @@ document.getElementById("adminList")
         const size = sizeText === "" ? 0 : Number(sizeText);
 
         if (url && !isAllowedApkUrl(url)) {
-          showToast(
-            "Noto‘g‘ri URL. Faqat AppZone Supabase omboridagi .apk havolasini kiriting."
-          );
+          showToast("Noto‘g‘ri Supabase APK URL manzili.");
+
           button.disabled = false;
           button.textContent = oldText;
           return;
@@ -2191,6 +3001,7 @@ document.getElementById("adminList")
 
         if (name.length > 120) {
           showToast("Fayl nomi 120 belgidan oshmasligi kerak.");
+
           button.disabled = false;
           button.textContent = oldText;
           return;
@@ -2198,6 +3009,7 @@ document.getElementById("adminList")
 
         if (!Number.isInteger(size) || size < 0) {
           showToast("Fayl hajmini butun son bilan kiriting.");
+
           button.disabled = false;
           button.textContent = oldText;
           return;
@@ -2208,9 +3020,9 @@ document.getElementById("adminList")
         }
 
         await appRef.update({
-          apkUrl: url,
-          apkName: name,
-          apkSize: size
+          apkUrl:url,
+          apkName:name,
+          apkSize:size
         });
 
         showToast(
@@ -2220,20 +3032,23 @@ document.getElementById("adminList")
         );
 
       } else if (action === "approve") {
+
         await appRef.update({
-          status: "approved"
+          status:"approved"
         });
 
         showToast("Ilova tasdiqlandi!");
 
       } else if (action === "reject") {
+
         await appRef.update({
-          status: "rejected"
+          status:"rejected"
         });
 
         showToast("Ilova rad etildi.");
 
       } else if (action === "delete") {
+
         await appRef.delete();
 
         showToast("Ilova o‘chirildi.");
@@ -2243,7 +3058,7 @@ document.getElementById("adminList")
       await loadCloudApps();
 
     } catch (error) {
-      console.error("Admin amalida xatolik:", error);
+      console.error("Admin amalida xatolik:",error);
 
       showToast(
         "Xatolik: " + (error.message || "Amal bajarilmadi.")
@@ -2254,23 +3069,23 @@ document.getElementById("adminList")
     }
   });
 
-/* =================================
-   PWA — ILOVANI O‘RNATISH
-================================= */
+/* PWA O‘RNATISH */
 
 let installPrompt = null;
 
 const installButton = document.getElementById("installBtn");
 
-window.addEventListener("beforeinstallprompt", event => {
+window.addEventListener("beforeinstallprompt",event => {
   event.preventDefault();
 
   installPrompt = event;
   installButton.hidden = false;
 });
 
-installButton.addEventListener("click", async () => {
+installButton.addEventListener("click",async () => {
+
   if (installPrompt) {
+
     installPrompt.prompt();
 
     const result = await installPrompt.userChoice;
@@ -2293,17 +3108,17 @@ installButton.addEventListener("click", async () => {
   }
 });
 
-window.addEventListener("appinstalled", () => {
+window.addEventListener("appinstalled",() => {
   showToast("AppZone qurilmaga o‘rnatildi!");
   installButton.hidden = true;
 });
 
-/* =================================
-   SERVICE WORKER
-================================= */
+/* SERVICE WORKER */
 
 if ("serviceWorker" in navigator) {
-  window.addEventListener("load", async () => {
+
+  window.addEventListener("load",async () => {
+
     const isSecure =
       location.protocol === "https:" ||
       location.hostname === "localhost" ||
@@ -2316,14 +3131,12 @@ if ("serviceWorker" in navigator) {
       console.log("AppZone Service Worker ishga tushdi.");
 
     } catch (error) {
-      console.warn("Service Worker xatosi:", error);
+      console.warn("Service Worker xatosi:",error);
     }
   });
 }
 
-/* =================================
-   BOSHLANG‘ICH ISHGA TUSHIRISH
-================================= */
+/* BOSHLANG‘ICH ISHGA TUSHIRISH */
 
 renderCategories();
 renderApps();
@@ -2333,4 +3146,3 @@ loadCloudApps();
 
 </body>
 </html>
-
