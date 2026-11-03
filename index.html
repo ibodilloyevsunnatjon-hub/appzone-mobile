@@ -1,26 +1,19 @@
-
 <!DOCTYPE html>
 <html lang="uz">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#080d19">
 <meta name="description" content="AppZone — ilovalar va o‘yinlar do‘koni">
 <title>AppZone — Ilovalar do‘koni</title>
 <link rel="manifest" href="./manifest.json">
 <link rel="icon" href="./icon.svg" type="image/svg+xml">
-
 <script src="https://www.gstatic.com/firebasejs/13.1.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/13.1.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/13.1.0/firebase-firestore-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <style>
-:root{
-  --bg:#080d19;--panel:#111b2e;--panel2:#192741;
-  --text:#f5f7ff;--muted:#9ba9c2;--purple:#8069ff;
-  --blue:#438fff;--green:#20b87d;--border:rgba(255,255,255,.09);
-}
+:root{--bg:#080d19;--panel:#111b2e;--panel2:#192741;--text:#f5f7ff;--muted:#9ba9c2;--purple:#8069ff;--blue:#438fff;--green:#20b87d;--border:rgba(255,255,255,.09)}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{min-height:100vh;background:radial-gradient(ellipse at 10% 0%,#7157ff20,transparent 35%),var(--bg);color:var(--text);font-family:Arial,sans-serif}
@@ -62,7 +55,7 @@ button{cursor:pointer;border:0}
 .categories{display:flex;gap:9px;overflow-x:auto;padding-bottom:9px}
 .category{flex-shrink:0;padding:11px 15px;border-radius:11px;color:var(--muted);background:var(--panel);border:1px solid var(--border);font-size:12px;font-weight:800}
 .category.active{color:white;background:linear-gradient(135deg,var(--purple),var(--blue))}
-.app-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.app-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px}
 .app-card{min-width:0;padding:17px;border-radius:18px;background:linear-gradient(145deg,#142039,#10192b);border:1px solid var(--border);transition:.2s}
 .app-card:hover{transform:translateY(-3px);border-color:#8069ff77}
 .app-top{display:flex;justify-content:space-between;align-items:flex-start}
@@ -72,8 +65,8 @@ button{cursor:pointer;border:0}
 .favorite.active{color:#ff7695}
 .app-card h3{margin:14px 0 6px;font-size:16px}
 .app-description{min-height:39px;color:var(--muted);font-size:12px;line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.app-meta{display:flex;justify-content:space-between;gap:8px;margin-top:13px;color:var(--muted);font-size:10px}
-.app-tag{padding:5px 8px;background:#8069ff18;color:#c9bdff;border-radius:7px;font-size:9px;font-weight:800}
+.app-meta{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:13px;color:var(--muted);font-size:10px}
+.app-tag{padding:5px 8px;background:#8069ff18;color:#c9bdff;border-radius:7px;font-size:9px;font-weight:800;white-space:nowrap}
 .details-btn{width:100%;margin-top:14px;padding:11px;border-radius:10px;color:white;background:var(--panel2);font-size:12px;font-weight:800}
 .empty{grid-column:1/-1;text-align:center;padding:42px 15px;border:1px dashed var(--border);border-radius:16px;color:var(--muted);line-height:1.8}
 .submit-box{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:21px;border-radius:17px;background:linear-gradient(120deg,#1d2a51,#183553);border:1px solid #8069ff44}
@@ -111,7 +104,6 @@ button{cursor:pointer;border:0}
 .success{color:#75e5b5;background:#23c98b18}
 .link-btn{display:block;margin:13px auto 0;color:#b4a7ff;background:none;font-size:12px}
 .profile-info{padding:17px;background:var(--panel2);border-radius:13px;margin-bottom:14px;overflow-wrap:anywhere}
-.profile-info small{color:var(--muted)}
 .admin-filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:15px}
 .admin-filter{padding:9px 12px;color:var(--muted);background:var(--panel2);border-radius:9px;font-size:11px;font-weight:800}
 .admin-filter.active{background:var(--purple);color:white}
@@ -136,207 +128,205 @@ button{cursor:pointer;border:0}
 .apk-upload-btn{background:linear-gradient(135deg,#158451,#20b87d)}
 .upload-status{margin-top:9px;color:var(--muted);font-size:11px;line-height:1.5;overflow-wrap:anywhere}
 .admin-empty{text-align:center;padding:28px;color:var(--muted);background:#0b1424;border-radius:12px;font-size:12px}
-.download-btn{display:block;margin-top:18px;padding:14px;text-align:center;color:white;text-decoration:none;border-radius:11px;background:linear-gradient(135deg,#13834d,#20b87d);font-weight:800;font-size:13px}
+.download-btn{display:block;margin-top:12px;padding:14px;text-align:center;color:white;text-decoration:none;border-radius:11px;background:linear-gradient(135deg,#13834d,#20b87d);font-weight:800;font-size:13px}
+.play-btn{background:linear-gradient(135deg,#6654e8,#438fff)}
 .toast{position:fixed;z-index:200;left:50%;bottom:25px;max-width:90%;padding:13px 17px;border-radius:12px;color:white;background:#263858;border:1px solid var(--border);text-align:center;font-size:12px;opacity:0;pointer-events:none;transform:translate(-50%,25px);transition:.25s}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 .mobile-nav{display:none}
-@media(max-width:850px){.app-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hero-art{right:0;opacity:.23}}
+@media(max-width:1000px){.app-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:760px){.app-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hero-art{right:0;opacity:.23}}
 @media(max-width:620px){
-  .header-inner{padding:10px 12px;min-height:62px}
-  .logo{font-size:19px;gap:8px}.logo-icon{width:36px;height:36px}
-  .header-actions{gap:5px}.header-actions .btn{font-size:10px;padding:9px}
-  .profile-btn{max-width:85px}
-  .container{padding:15px 12px 100px}
-  .hero{padding:29px 20px;border-radius:20px;min-height:300px}
-  .hero h1{font-size:35px}.hero p{font-size:12px}
-  .hero-art{right:-60px;top:70%;font-size:110px}
-  .info-strip{grid-template-columns:1fr;gap:8px}.info-item{padding:12px}
-  .section{margin-top:26px}.section-head h2{font-size:18px}
-  .app-grid{gap:9px}.app-card{padding:12px;border-radius:15px}
-  .app-icon{width:52px;height:52px;font-size:25px}
-  .app-card h3{font-size:14px}.app-description{font-size:11px}
-  .details-btn{font-size:10px}
-  .feature-grid{grid-template-columns:1fr}
-  .submit-box{align-items:flex-start;flex-direction:column}
-  .submit-box .btn{width:100%}
-  .mobile-nav{position:fixed;z-index:40;display:grid;grid-template-columns:repeat(3,1fr);left:10px;right:10px;bottom:9px;padding:7px;background:#111b2eef;border:1px solid var(--border);border-radius:15px;backdrop-filter:blur(15px)}
-  .mobile-nav button{padding:8px 4px;color:var(--muted);background:transparent;font-size:10px;font-weight:800}
-  .mobile-nav button.active{color:white;background:var(--panel2);border-radius:9px}
-  .mobile-nav span{display:block;font-size:17px;margin-bottom:3px}
+.header-inner{padding:10px 12px;min-height:62px}
+.logo{font-size:19px;gap:8px}.logo-icon{width:36px;height:36px}
+.header-actions{gap:5px}.header-actions .btn{font-size:10px;padding:9px}
+.profile-btn{max-width:85px}
+.container{padding:15px 12px 100px}
+.hero{padding:29px 20px;border-radius:20px;min-height:300px}
+.hero h1{font-size:35px}.hero p{font-size:12px}
+.hero-art{right:-60px;top:70%;font-size:110px}
+.info-strip{grid-template-columns:1fr;gap:8px}.info-item{padding:12px}
+.section{margin-top:26px}.section-head h2{font-size:18px}
+.app-grid{gap:9px}.app-card{padding:12px;border-radius:15px}
+.app-icon{width:52px;height:52px;font-size:25px}
+.app-card h3{font-size:14px}.app-description{font-size:11px}
+.details-btn{font-size:10px}
+.feature-grid{grid-template-columns:1fr}
+.submit-box{align-items:flex-start;flex-direction:column}
+.submit-box .btn{width:100%}
+.mobile-nav{position:fixed;z-index:40;display:grid;grid-template-columns:repeat(3,1fr);left:10px;right:10px;bottom:9px;padding:7px;background:#111b2eef;border:1px solid var(--border);border-radius:15px;backdrop-filter:blur(15px)}
+.mobile-nav button{padding:8px 4px;color:var(--muted);background:transparent;font-size:10px;font-weight:800}
+.mobile-nav button.active{color:white;background:var(--panel2);border-radius:9px}
+.mobile-nav span{display:block;font-size:17px;margin-bottom:3px}
 }
 @media(max-width:370px){.app-grid{grid-template-columns:1fr}.hero h1{font-size:30px}}
 </style>
 </head>
-
 <body>
+
 <header class="header">
-  <div class="header-inner">
-    <div class="logo">
-      <div class="logo-icon">A</div>
-      <div>App<b>Zone</b></div>
-    </div>
-    <div class="header-actions">
-      <button class="btn btn-admin" id="adminButton" onclick="openAdminPanel()" hidden>⚙ Admin</button>
-      <button class="btn" id="authButton" onclick="openAuth()">Kirish</button>
-      <button class="btn profile-btn" id="profileButton" onclick="openProfile()" hidden>Profil</button>
-    </div>
+<div class="header-inner">
+  <div class="logo"><div class="logo-icon">A</div><div>App<b>Zone</b></div></div>
+  <div class="header-actions">
+    <button class="btn btn-admin" id="adminButton" onclick="openAdminPanel()" hidden>⚙ Admin</button>
+    <button class="btn" id="authButton" onclick="openAuth()">Kirish</button>
+    <button class="btn profile-btn" id="profileButton" onclick="openProfile()" hidden>Profil</button>
   </div>
+</div>
 </header>
 
 <main class="container">
-  <section class="hero" id="homeSection">
-    <div class="hero-art">📱</div>
-    <div class="hero-content">
-      <div class="eyebrow">✦ YANGI AVLOD ILOVALAR PLATFORMASI</div>
-      <h1>Raqamli dunyoni <span>AppZone</span> bilan kashf eting.</h1>
-      <p>Sevimli ilovalaringizni toping, yangi imkoniyatlarni kashf qiling va o‘z ilovangizni AppZone hamjamiyatiga taqdim eting.</p>
-      <div class="hero-buttons">
-        <button class="btn" onclick="scrollToApps()">Ilovalarni ko‘rish →</button>
-        <button class="btn btn-outline" onclick="openSubmitApp()">+ Ilova joylash</button>
-      </div>
-    </div>
-  </section>
-
-  <section class="info-strip">
-    <div class="info-item"><div class="info-icon">🔎</div><div><strong>Oson qidiruv</strong><small>Kerakli ilovani tez toping</small></div></div>
-    <div class="info-item"><div class="info-icon">🛡️</div><div><strong>Admin tekshiruvi</strong><small>Ilovalar nazoratdan o‘tadi</small></div></div>
-    <div class="info-item"><div class="info-icon">🚀</div><div><strong>Dasturchilar uchun</strong><small>O‘z ilovangizni taqdim eting</small></div></div>
-  </section>
-
-  <div class="search-box">
-    <span>⌕</span>
-    <input id="searchInput" type="search" placeholder="Ilovalar va o‘yinlarni qidiring...">
+<section class="hero" id="homeSection">
+<div class="hero-art">📱</div>
+<div class="hero-content">
+  <div class="eyebrow">✦ YANGI AVLOD ILOVALAR PLATFORMASI</div>
+  <h1>Raqamli dunyoni <span>AppZone</span> bilan kashf eting.</h1>
+  <p>Mashhur ilovalarni toping, rasmiy do‘kon orqali o‘rnating yoki o‘z ilovangizni AppZone hamjamiyatiga taqdim eting.</p>
+  <div class="hero-buttons">
+    <button class="btn" onclick="scrollToApps()">Ilovalarni ko‘rish →</button>
+    <button class="btn btn-outline" onclick="openSubmitApp()">+ Ilova joylash</button>
   </div>
+</div>
+</section>
 
-  <section class="section" id="submitArea" hidden>
-    <div class="submit-box">
-      <div><h3>📤 Ilovangizni AppZone'ga joylang</h3><p>Ilova ma’lumotlarini yuboring. Admin tekshirganidan keyin katalogda ko‘rinadi.</p></div>
-      <button class="btn" onclick="openSubmitApp()">+ Ilova yuborish</button>
-    </div>
-  </section>
+<section class="info-strip">
+<div class="info-item"><div class="info-icon">🔎</div><div><strong>Oson qidiruv</strong><small>Kerakli ilovani tez toping</small></div></div>
+<div class="info-item"><div class="info-icon">🛡️</div><div><strong>Admin tekshiruvi</strong><small>Foydalanuvchi ilovalari nazoratdan o‘tadi</small></div></div>
+<div class="info-item"><div class="info-icon">📲</div><div><strong>Rasmiy o‘rnatish</strong><small>Mashhur ilovalar Google Play orqali</small></div></div>
+</section>
 
-  <section class="section">
-    <div class="section-head"><div><h2>Kategoriyalar</h2><p class="subtitle">Kerakli yo‘nalishni tanlang</p></div></div>
-    <div class="categories" id="categories"></div>
-  </section>
+<div class="search-box"><span>⌕</span><input id="searchInput" type="search" placeholder="Ilovalar va o‘yinlarni qidiring..."></div>
 
-  <section class="section" id="appsSection">
-    <div class="section-head">
-      <div><h2 id="appsTitle">Ilovalar katalogi</h2><p class="subtitle" id="appsSubtitle">AppZone’da tasdiqlangan ilovalar</p></div>
-      <span class="muted" id="appCount">0 ta ilova</span>
-    </div>
-    <div class="app-grid" id="appGrid"><div class="empty">Ilovalar yuklanmoqda...</div></div>
-  </section>
+<section class="section" id="submitArea" hidden>
+<div class="submit-box">
+  <div><h3>📤 Ilovangizni AppZone'ga joylang</h3><p>Ilova ma’lumotlarini yuboring. Admin tekshirganidan keyin katalogda ko‘rinadi.</p></div>
+  <button class="btn" onclick="openSubmitApp()">+ Ilova yuborish</button>
+</div>
+</section>
 
-  <section class="section">
-    <div class="section-head"><div><h2>Nega AppZone?</h2><p class="subtitle">Foydalanuvchi va dasturchilar uchun platforma</p></div></div>
-    <div class="feature-grid">
-      <div class="feature"><div class="feature-icon">🔍</div><h3>Oson qidiruv</h3><p>Ilovalarni nomi, tavsifi va kategoriyasi orqali toping.</p></div>
-      <div class="feature"><div class="feature-icon">⭐</div><h3>Sevimlilar</h3><p>Yoqtirgan ilovalaringizni sevimlilar ro‘yxatiga saqlang.</p></div>
-      <div class="feature"><div class="feature-icon">🔐</div><h3>Shaxsiy profil</h3><p>Akkauntingiz orqali platformaga kiring va profilingizni boshqaring.</p></div>
-    </div>
-  </section>
+<section class="section">
+<div class="section-head"><div><h2>Kategoriyalar</h2><p class="subtitle">Kerakli yo‘nalishni tanlang</p></div></div>
+<div class="categories" id="categories"></div>
+</section>
+
+<section class="section" id="appsSection">
+<div class="section-head">
+  <div><h2 id="appsTitle">Mashhur ilovalar</h2><p class="subtitle" id="appsSubtitle">Rasmiy Google Play havolalari va AppZone ilovalari</p></div>
+  <span class="muted" id="appCount">0 ta ilova</span>
+</div>
+<div class="app-grid" id="appGrid"><div class="empty">Ilovalar yuklanmoqda...</div></div>
+</section>
+
+<section class="section">
+<div class="section-head"><div><h2>Nega AppZone?</h2><p class="subtitle">Foydalanuvchi va dasturchilar uchun platforma</p></div></div>
+<div class="feature-grid">
+  <div class="feature"><div class="feature-icon">🔍</div><h3>Oson qidiruv</h3><p>Ilovalarni nomi, tavsifi va kategoriyasi orqali toping.</p></div>
+  <div class="feature"><div class="feature-icon">⭐</div><h3>Sevimlilar</h3><p>Yoqtirgan ilovalaringizni sevimlilar ro‘yxatiga saqlang.</p></div>
+  <div class="feature"><div class="feature-icon">🔐</div><h3>Shaxsiy profil</h3><p>Akkauntingiz orqali platformaga kiring va profilingizni boshqaring.</p></div>
+</div>
+</section>
 </main>
 
 <footer class="footer">
-  <div class="logo"><div class="logo-icon">A</div><div>App<b>Zone</b></div></div>
-  <p>© 2026 AppZone. Barcha huquqlar himoyalangan.</p>
-  <p style="margin-top:7px">Ilovalar dunyosi — bir joyda.</p>
+<div class="logo"><div class="logo-icon">A</div><div>App<b>Zone</b></div></div>
+<p>© 2026 AppZone. Barcha huquqlar himoyalangan.</p>
+<p style="margin-top:7px">Ilovalar dunyosi — bir joyda.</p>
 </footer>
 
 <nav class="mobile-nav">
-  <button class="active" id="mobileHome" onclick="showHome()"><span>⌂</span>Bosh sahifa</button>
-  <button id="mobileApps" onclick="scrollToApps()"><span>▦</span>Ilovalar</button>
-  <button id="mobileFavorites" onclick="showFavorites()"><span>♡</span>Sevimlilar</button>
+<button class="active" id="mobileHome" onclick="showHome()"><span>⌂</span>Bosh sahifa</button>
+<button id="mobileApps" onclick="scrollToApps()"><span>▦</span>Ilovalar</button>
+<button id="mobileFavorites" onclick="showFavorites()"><span>♡</span>Sevimlilar</button>
 </nav>
 
 <!-- AUTH -->
 <div class="modal" id="authModal">
-  <div class="modal-box">
-    <div class="modal-head"><h2>AppZone akkaunti</h2><button class="close-btn" onclick="closeModal('authModal')">×</button></div>
-    <div class="auth-tabs">
-      <button class="auth-tab active" id="loginTab" onclick="switchAuth('login')">Kirish</button>
-      <button class="auth-tab" id="registerTab" onclick="switchAuth('register')">Ro‘yxatdan o‘tish</button>
-    </div>
-    <div id="authMessage"></div>
-    <form id="loginForm">
-      <div class="form-group"><label>Email</label><input type="email" id="loginEmail" required placeholder="example@gmail.com"></div>
-      <div class="form-group"><label>Parol</label><input type="password" id="loginPassword" required minlength="6" placeholder="Parolingiz"></div>
-      <button class="submit-btn" type="submit">Akkauntga kirish</button>
-      <button class="link-btn" type="button" onclick="resetPassword()">Parolni unutdingizmi?</button>
-    </form>
-    <form id="registerForm" hidden>
-      <div class="form-group"><label>Email</label><input type="email" id="registerEmail" required placeholder="example@gmail.com"></div>
-      <div class="form-group"><label>Parol</label><input type="password" id="registerPassword" required minlength="6" placeholder="Kamida 6 ta belgi"></div>
-      <div class="form-group"><label>Parolni tasdiqlang</label><input type="password" id="confirmPassword" required minlength="6" placeholder="Parolni qayta kiriting"></div>
-      <button class="submit-btn" type="submit">Akkaunt yaratish</button>
-    </form>
-    <p class="form-note">Akkauntingiz orqali AppZone xizmatlaridan foydalaning.</p>
-  </div>
+<div class="modal-box">
+<div class="modal-head"><h2>AppZone akkaunti</h2><button class="close-btn" onclick="closeModal('authModal')">×</button></div>
+<div class="auth-tabs">
+<button class="auth-tab active" id="loginTab" onclick="switchAuth('login')">Kirish</button>
+<button class="auth-tab" id="registerTab" onclick="switchAuth('register')">Ro‘yxatdan o‘tish</button>
+</div>
+<div id="authMessage"></div>
+<form id="loginForm">
+<div class="form-group"><label>Email</label><input type="email" id="loginEmail" required placeholder="example@gmail.com"></div>
+<div class="form-group"><label>Parol</label><input type="password" id="loginPassword" required minlength="6" placeholder="Parolingiz"></div>
+<button class="submit-btn" type="submit">Akkauntga kirish</button>
+<button class="link-btn" type="button" onclick="resetPassword()">Parolni unutdingizmi?</button>
+</form>
+<form id="registerForm" hidden>
+<div class="form-group"><label>Email</label><input type="email" id="registerEmail" required placeholder="example@gmail.com"></div>
+<div class="form-group"><label>Parol</label><input type="password" id="registerPassword" required minlength="6" placeholder="Kamida 6 ta belgi"></div>
+<div class="form-group"><label>Parolni tasdiqlang</label><input type="password" id="confirmPassword" required minlength="6" placeholder="Parolni qayta kiriting"></div>
+<button class="submit-btn" type="submit">Akkaunt yaratish</button>
+</form>
+<p class="form-note">Akkauntingiz orqali AppZone xizmatlaridan foydalaning.</p>
+</div>
 </div>
 
 <!-- PROFILE -->
 <div class="modal" id="profileModal">
-  <div class="modal-box">
-    <div class="modal-head"><h2>Shaxsiy profil</h2><button class="close-btn" onclick="closeModal('profileModal')">×</button></div>
-    <div class="profile-info"><small>Akkaunt emaili</small><h3 id="profileEmail" style="margin-top:7px"></h3><p id="profileRole" class="muted" style="margin-top:8px"></p></div>
-    <button class="submit-btn" onclick="logout()">Akkauntdan chiqish</button>
-  </div>
+<div class="modal-box">
+<div class="modal-head"><h2>Shaxsiy profil</h2><button class="close-btn" onclick="closeModal('profileModal')">×</button></div>
+<div class="profile-info"><small>Akkaunt emaili</small><h3 id="profileEmail" style="margin-top:7px"></h3><p id="profileRole" class="muted" style="margin-top:8px"></p></div>
+<button class="submit-btn" onclick="logout()">Akkauntdan chiqish</button>
+</div>
 </div>
 
 <!-- SUBMIT APP -->
 <div class="modal" id="submitAppModal">
-  <div class="modal-box">
-    <div class="modal-head"><h2>Ilova yuborish</h2><button class="close-btn" onclick="closeModal('submitAppModal')">×</button></div>
-    <div id="submitAppMessage"></div>
-    <form id="submitAppForm">
-      <div class="form-group"><label>Ilova nomi</label><input id="newAppName" required minlength="2" maxlength="60" placeholder="Masalan: My Calculator"></div>
-      <div class="form-group"><label>Ilova haqida</label><textarea id="newAppDescription" required maxlength="600" placeholder="Ilovangiz haqida yozing..."></textarea></div>
-      <div class="form-group">
-        <label>Kategoriya</label>
-        <select id="newAppCategory" required>
-          <option value="">Kategoriyani tanlang</option>
-          <option>Ta’lim</option><option>Foto va video</option><option>Vositalar</option><option>O‘yinlar</option><option>Boshqa</option>
-        </select>
-      </div>
-      <div class="form-group"><label>Versiya</label><input id="newAppVersion" required maxlength="20" placeholder="1.0"></div>
-      <div class="form-group"><label>Ilova rasmi havolasi (ixtiyoriy)</label><input id="newAppIcon" type="url" placeholder="https://..."></div>
-      <button class="submit-btn" id="submitAppSaveBtn" type="submit">Yuborish</button>
-    </form>
-    <p class="form-note">Yuborilgan ilova avval admin tekshiruvidan o‘tadi.</p>
-  </div>
+<div class="modal-box">
+<div class="modal-head"><h2>Ilova yuborish</h2><button class="close-btn" onclick="closeModal('submitAppModal')">×</button></div>
+<div id="submitAppMessage"></div>
+<form id="submitAppForm">
+<div class="form-group"><label>Ilova nomi</label><input id="newAppName" required minlength="2" maxlength="60" placeholder="Masalan: My Calculator"></div>
+<div class="form-group"><label>Ilova haqida</label><textarea id="newAppDescription" required maxlength="600" placeholder="Ilovangiz haqida yozing..."></textarea></div>
+<div class="form-group">
+<label>Kategoriya</label>
+<select id="newAppCategory" required>
+<option value="">Kategoriyani tanlang</option>
+<option>Ta’lim</option><option>Foto va video</option><option>Vositalar</option>
+<option>O‘yinlar</option><option>Muloqot</option><option>Ijtimoiy tarmoqlar</option>
+<option>Xaritalar</option><option>Ko‘ngilochar</option><option>Boshqa</option>
+</select>
+</div>
+<div class="form-group"><label>Versiya</label><input id="newAppVersion" required maxlength="20" placeholder="1.0"></div>
+<div class="form-group"><label>Ilova rasmi havolasi (ixtiyoriy)</label><input id="newAppIcon" type="url" placeholder="https://..."></div>
+<button class="submit-btn" id="submitAppSaveBtn" type="submit">Yuborish</button>
+</form>
+<p class="form-note">Yuborilgan ilova avval admin tekshiruvidan o‘tadi.</p>
+</div>
 </div>
 
 <!-- ADMIN -->
 <div class="modal" id="adminModal">
-  <div class="modal-box admin-modal">
-    <div class="modal-head">
-      <div><h2>⚙ AppZone Admin Panel</h2><p class="muted" style="margin-top:6px">Ilovalarni boshqarish</p></div>
-      <button class="close-btn" onclick="closeModal('adminModal')">×</button>
-    </div>
-    <div class="admin-filters" id="adminFilters">
-      <button class="admin-filter" data-filter="pending">Tekshiruvda</button>
-      <button class="admin-filter" data-filter="approved">Tasdiqlangan</button>
-      <button class="admin-filter" data-filter="rejected">Rad etilgan</button>
-      <button class="admin-filter active" data-filter="all">Barchasi</button>
-    </div>
-    <div class="admin-list" id="adminList"><div class="admin-empty">Ma’lumotlar yuklanmoqda...</div></div>
-  </div>
+<div class="modal-box admin-modal">
+<div class="modal-head">
+<div><h2>⚙ AppZone Admin Panel</h2><p class="muted" style="margin-top:6px">Ilovalarni boshqarish</p></div>
+<button class="close-btn" onclick="closeModal('adminModal')">×</button>
+</div>
+<div class="admin-filters" id="adminFilters">
+<button class="admin-filter" data-filter="pending">Tekshiruvda</button>
+<button class="admin-filter" data-filter="approved">Tasdiqlangan</button>
+<button class="admin-filter" data-filter="rejected">Rad etilgan</button>
+<button class="admin-filter active" data-filter="all">Barchasi</button>
+</div>
+<div class="admin-list" id="adminList"><div class="admin-empty">Ma’lumotlar yuklanmoqda...</div></div>
+</div>
 </div>
 
 <!-- APP DETAILS -->
 <div class="modal" id="appModal">
-  <div class="modal-box">
-    <div class="modal-head"><h2 id="detailTitle">Ilova</h2><button class="close-btn" onclick="closeModal('appModal')">×</button></div>
-    <div id="detailContent"></div>
-  </div>
+<div class="modal-box">
+<div class="modal-head"><h2 id="detailTitle">Ilova</h2><button class="close-btn" onclick="closeModal('appModal')">×</button></div>
+<div id="detailContent"></div>
+</div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-/* FIREBASE CONFIG */
-const firebaseConfig = {
+/* FIREBASE CONFIG — sen yuborgan haqiqiy sozlamalar */
+const firebaseConfig={
   apiKey:"AIzaSyCI_7KqqOy2qPE7Qu5pMm1Jc7mZONtIy70",
   authDomain:"appzone-19115.firebaseapp.com",
   projectId:"appzone-19115",
@@ -345,189 +335,220 @@ const firebaseConfig = {
   appId:"1:685330977059:web:bf686fa47088a70cb33c96"
 };
 
-if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
+if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+const auth=firebase.auth();
+const db=firebase.firestore();
 
-/* SUPABASE CONFIG */
-const SUPABASE_URL = "https://lfbnvltgemyqjsbhrqlo.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_ZcE0Jugxq59Uyziw-WkOHQ_D3kMhExO";
-const SUPABASE_BUCKET = "appzone-apks";
-const MAX_APK_SIZE = 50 * 1024 * 1024;
-const APK_FUNCTION_URL = SUPABASE_URL + "/functions/v1/create-apk-upload-url";
+/* SUPABASE CONFIG — sen yuborgan haqiqiy sozlamalar */
+const SUPABASE_URL="https://lfbnvltgemyqjsbhrqlo.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY="sb_publishable_ZcE0Jugxq59Uyziw-WkOHQ_D3kMhExO";
+const SUPABASE_BUCKET="appzone-apks";
+const MAX_APK_SIZE=50*1024*1024;
+const APK_FUNCTION_URL=SUPABASE_URL+"/functions/v1/create-apk-upload-url";
 
-const supabaseClient = window.supabase.createClient(
+const supabaseClient=window.supabase.createClient(
   SUPABASE_URL,
   SUPABASE_PUBLISHABLE_KEY
 );
 
+/* MASHHUR ILOVALAR — RASMIY GOOGLE PLAY HAVOLALARI */
+const FEATURED_APPS=[
+  {id:"play-whatsapp",name:"WhatsApp",description:"Xabar almashish, ovozli va video qo‘ng‘iroqlar.",category:"Muloqot",icon:"💬",developer:"WhatsApp LLC",packageId:"com.whatsapp"},
+  {id:"play-telegram",name:"Telegram",description:"Tezkor xabar almashish, guruhlar va kanallar.",category:"Muloqot",icon:"✈️",developer:"Telegram FZ-LLC",packageId:"org.telegram.messenger"},
+  {id:"play-instagram",name:"Instagram",description:"Foto, video va ijodiy kontent platformasi.",category:"Ijtimoiy tarmoqlar",icon:"📸",developer:"Instagram",packageId:"com.instagram.android"},
+  {id:"play-youtube",name:"YouTube",description:"Videolar tomosha qilish va ijodkorlarni kuzatish.",category:"Foto va video",icon:"▶️",developer:"Google LLC",packageId:"com.google.android.youtube"},
+  {id:"play-gmail",name:"Gmail",description:"Elektron xatlarni yuborish va qabul qilish.",category:"Vositalar",icon:"✉️",developer:"Google LLC",packageId:"com.google.android.gm"},
+  {id:"play-maps",name:"Google Maps",description:"Manzillar, xaritalar va yo‘nalishlarni topish.",category:"Xaritalar",icon:"📍",developer:"Google LLC",packageId:"com.google.android.apps.maps"},
+  {id:"play-chrome",name:"Google Chrome",description:"Internet sahifalarini tez va qulay ochish.",category:"Vositalar",icon:"🌐",developer:"Google LLC",packageId:"com.android.chrome"},
+  {id:"play-canva",name:"Canva",description:"Dizayn, taqdimot, poster va video yaratish.",category:"Foto va video",icon:"🎨",developer:"Canva",packageId:"com.canva.editor"},
+  {id:"play-duolingo",name:"Duolingo",description:"Chet tillarini o‘rganish platformasi.",category:"Ta’lim",icon:"🦉",developer:"Duolingo",packageId:"com.duolingo"},
+  {id:"play-drive",name:"Google Drive",description:"Fayllarni bulutda saqlash va boshqarish.",category:"Vositalar",icon:"☁️",developer:"Google LLC",packageId:"com.google.android.apps.docs"},
+  {id:"play-tiktok",name:"TikTok",description:"Qisqa videolar va ijodiy kontent.",category:"Ijtimoiy tarmoqlar",icon:"🎵",developer:"TikTok Pte. Ltd.",packageId:"com.zhiliaoapp.musically"},
+  {id:"play-facebook",name:"Facebook",description:"Do‘stlar va hamjamiyatlar bilan aloqada bo‘ling.",category:"Ijtimoiy tarmoqlar",icon:"f",developer:"Meta Platforms, Inc.",packageId:"com.facebook.katana"},
+  {id:"play-spotify",name:"Spotify",description:"Musiqa va podkast platformasi.",category:"Ko‘ngilochar",icon:"🎧",developer:"Spotify AB",packageId:"com.spotify.music"},
+  {id:"play-subway",name:"Subway Surfers",description:"Mashhur yugurish va sarguzasht o‘yini.",category:"O‘yinlar",icon:"🏃",developer:"SYBO Games",packageId:"com.kiloo.subwaysurf"},
+  {id:"play-roblox",name:"Roblox",description:"Turli interaktiv o‘yinlar va tajribalar olami.",category:"O‘yinlar",icon:"🧱",developer:"Roblox Corporation",packageId:"com.roblox.client"},
+  {id:"play-chatgpt",name:"ChatGPT",description:"Savollar, g‘oyalar va o‘rganish uchun AI yordamchi.",category:"Ta’lim",icon:"✳️",developer:"OpenAI",packageId:"com.openai.chatgpt"}
+].map(app=>({
+  ...app,
+  source:"googleplay",
+  playUrl:"https://play.google.com/store/apps/details?id="+app.packageId,
+  version:"Google Play"
+}));
+
 /* STATE */
-let apps = [];
-let visibleApps = [];
-let favorites = [];
-let activeCategory = "Barchasi";
-let favoritesOnly = false;
-let currentUser = null;
-let isAdmin = false;
-let adminApps = [];
-let adminFilter = "all";
-let authCheckNumber = 0;
-let toastTimer = null;
+let apps=[...FEATURED_APPS];
+let visibleApps=[];
+let favorites=[];
+let activeCategory="Barchasi";
+let favoritesOnly=false;
+let currentUser=null;
+let isAdmin=false;
+let adminApps=[];
+let adminFilter="all";
+let authCheckNumber=0;
+let toastTimer=null;
 
-const categoriesList = ["Barchasi","Ta’lim","Foto va video","Vositalar","O‘yinlar","Boshqa"];
+const categoriesList=[
+  "Barchasi","Ijtimoiy tarmoqlar","Muloqot","Ta’lim",
+  "Foto va video","O‘yinlar","Vositalar","Xaritalar",
+  "Ko‘ngilochar","Boshqa"
+];
 
-try {
-  favorites = JSON.parse(localStorage.getItem("appzoneFavorites") || "[]");
-  if (!Array.isArray(favorites)) favorites = [];
-} catch {
-  favorites = [];
+try{
+  favorites=JSON.parse(localStorage.getItem("appzoneFavorites")||"[]");
+  if(!Array.isArray(favorites)) favorites=[];
+}catch{
+  favorites=[];
 }
 
-/* HELPERS */
-function escapeHTML(value) {
-  return String(value ?? "").replace(/[&<>"']/g, c => ({
+/* YORDAMCHI FUNKSIYALAR */
+function escapeHTML(value){
+  return String(value??"").replace(/[&<>"']/g,c=>({
     "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
   })[c]);
 }
 
-function safeImageUrl(value) {
-  try {
-    const url = new URL(String(value || ""));
-    return url.protocol === "https:" ? url.href : "";
-  } catch {
-    return "";
-  }
+function safeImageUrl(value){
+  try{
+    const url=new URL(String(value||""));
+    return url.protocol==="https:"?url.href:"";
+  }catch{return "";}
 }
 
-function isAllowedApkUrl(value) {
-  try {
-    const url = new URL(String(value || "").trim());
-    return url.protocol === "https:" &&
-      url.hostname === "lfbnvltgemyqjsbhrqlo.supabase.co" &&
+function isAllowedApkUrl(value){
+  try{
+    const url=new URL(String(value||"").trim());
+    return url.protocol==="https:" &&
+      url.hostname==="lfbnvltgemyqjsbhrqlo.supabase.co" &&
       url.pathname.startsWith("/storage/v1/object/public/appzone-apks/") &&
       /\.apk$/i.test(url.pathname) &&
       !url.search && !url.hash &&
       !url.pathname.includes("..");
-  } catch {
-    return false;
-  }
+  }catch{return false;}
 }
 
-function showToast(message) {
-  const toast = document.getElementById("toast");
-  toast.textContent = message;
+function showToast(message){
+  const toast=document.getElementById("toast");
+  toast.textContent=message;
   toast.classList.add("show");
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => toast.classList.remove("show"),3000);
+  toastTimer=setTimeout(()=>toast.classList.remove("show"),3200);
 }
 
-function closeModal(id) {
+function closeModal(id){
   document.getElementById(id).classList.remove("show");
 }
 
-document.querySelectorAll(".modal").forEach(modal => {
-  modal.addEventListener("click",event => {
-    if (event.target === modal) modal.classList.remove("show");
-  });
-});
-
-document.addEventListener("keydown",event => {
-  if (event.key === "Escape") {
-    document.querySelectorAll(".modal.show").forEach(modal => modal.classList.remove("show"));
-  }
-});
-
-function formatDate(value) {
-  if (!value) return "Sana mavjud emas";
-  try {
-    const date = typeof value.toDate === "function" ? value.toDate() : new Date(value);
-    return isNaN(date.getTime()) ? "Sana mavjud emas" : date.toLocaleString("uz-UZ");
-  } catch {
-    return "Sana mavjud emas";
-  }
+function formatDate(value){
+  if(!value)return "Sana mavjud emas";
+  try{
+    const date=typeof value.toDate==="function"?value.toDate():new Date(value);
+    return isNaN(date.getTime())?"Sana mavjud emas":date.toLocaleString("uz-UZ");
+  }catch{return "Sana mavjud emas";}
 }
 
-function getDateNumber(value) {
-  if (!value) return 0;
-  try {
-    return typeof value.toMillis === "function" ? value.toMillis() : new Date(value).getTime() || 0;
-  } catch {
-    return 0;
-  }
+function getDateNumber(value){
+  if(!value)return 0;
+  try{
+    return typeof value.toMillis==="function"
+      ? value.toMillis()
+      : new Date(value).getTime()||0;
+  }catch{return 0;}
 }
 
-function getCategoryIcon(category) {
+function getCategoryIcon(category){
   return ({
     "Ta’lim":"📚",
     "Foto va video":"🎬",
     "Vositalar":"🧰",
     "O‘yinlar":"🎮",
+    "Muloqot":"💬",
+    "Ijtimoiy tarmoqlar":"🌐",
+    "Xaritalar":"📍",
+    "Ko‘ngilochar":"🎧",
     "Boshqa":"📱"
-  })[category] || "📱";
+  })[category]||"📱";
 }
 
-function scrollToApps() {
+function scrollToApps(){
   document.getElementById("appsSection").scrollIntoView({behavior:"smooth"});
   setMobileNav("apps");
 }
 
-function setMobileNav(name) {
-  document.getElementById("mobileHome").classList.toggle("active",name === "home");
-  document.getElementById("mobileApps").classList.toggle("active",name === "apps");
-  document.getElementById("mobileFavorites").classList.toggle("active",name === "favorites");
+function setMobileNav(name){
+  document.getElementById("mobileHome").classList.toggle("active",name==="home");
+  document.getElementById("mobileApps").classList.toggle("active",name==="apps");
+  document.getElementById("mobileFavorites").classList.toggle("active",name==="favorites");
 }
 
-/* CATEGORIES */
-function renderCategories() {
-  document.getElementById("categories").innerHTML = categoriesList.map(category => `
-    <button class="category ${activeCategory === category ? "active" : ""}"
+document.querySelectorAll(".modal").forEach(modal=>{
+  modal.addEventListener("click",event=>{
+    if(event.target===modal)modal.classList.remove("show");
+  });
+});
+
+document.addEventListener("keydown",event=>{
+  if(event.key==="Escape"){
+    document.querySelectorAll(".modal.show").forEach(modal=>modal.classList.remove("show"));
+  }
+});
+
+/* KATEGORIYALAR */
+function renderCategories(){
+  document.getElementById("categories").innerHTML=categoriesList.map(category=>`
+    <button class="category ${activeCategory===category?"active":""}"
       data-category="${escapeHTML(category)}">${escapeHTML(category)}</button>
   `).join("");
 }
 
-document.getElementById("categories").addEventListener("click",event => {
-  const button = event.target.closest("[data-category]");
-  if (!button) return;
-  activeCategory = button.dataset.category;
-  favoritesOnly = false;
-  document.getElementById("appsTitle").textContent =
-    activeCategory === "Barchasi" ? "Ilovalar katalogi" : activeCategory;
+document.getElementById("categories").addEventListener("click",event=>{
+  const button=event.target.closest("[data-category]");
+  if(!button)return;
+  activeCategory=button.dataset.category;
+  favoritesOnly=false;
+  document.getElementById("appsTitle").textContent=
+    activeCategory==="Barchasi"?"Mashhur ilovalar":activeCategory;
   renderCategories();
   filterApps();
 });
 
-/* APP CARDS */
-function renderApps() {
-  const grid = document.getElementById("appGrid");
-  document.getElementById("appCount").textContent = visibleApps.length + " ta ilova";
+/* ILOVA KARTALARI */
+function renderApps(){
+  const grid=document.getElementById("appGrid");
+  document.getElementById("appCount").textContent=visibleApps.length+" ta ilova";
 
-  if (!visibleApps.length) {
-    grid.innerHTML = `<div class="empty">📱<br><br>${favoritesOnly
-      ? "Hozircha sevimli ilovalaringiz yo‘q."
-      : "Bu bo‘limda hozircha tasdiqlangan ilovalar yo‘q."}</div>`;
+  if(!visibleApps.length){
+    grid.innerHTML=`<div class="empty">📱<br><br>${
+      favoritesOnly
+        ?"Hozircha sevimli ilovalaringiz yo‘q."
+        :"Bu bo‘limda hozircha ilovalar yo‘q."
+    }</div>`;
     return;
   }
 
-  grid.innerHTML = visibleApps.map(app => {
-    const id = String(app.id);
-    const favorite = favorites.includes(id);
-    const image = safeImageUrl(app.iconUrl);
-    const icon = image
-      ? `<img src="${escapeHTML(image)}" alt="">`
-      : escapeHTML(getCategoryIcon(app.category));
+  grid.innerHTML=visibleApps.map(app=>{
+    const id=String(app.id);
+    const favorite=favorites.includes(id);
+    const image=safeImageUrl(app.iconUrl);
+    const icon=image
+      ?`<img src="${escapeHTML(image)}" alt="">`
+      :escapeHTML(app.icon||getCategoryIcon(app.category));
+    const tag=app.source==="googleplay"?"Google Play":"AppZone";
 
     return `
       <article class="app-card">
         <div class="app-top">
           <div class="app-icon">${icon}</div>
-          <button class="favorite ${favorite ? "active" : ""}"
-            data-favorite="${escapeHTML(id)}">${favorite ? "♥" : "♡"}</button>
+          <button class="favorite ${favorite?"active":""}"
+            data-favorite="${escapeHTML(id)}"
+            aria-label="Sevimlilarga qo‘shish">${favorite?"♥":"♡"}</button>
         </div>
         <h3>${escapeHTML(app.name)}</h3>
         <p class="app-description">${escapeHTML(app.description)}</p>
         <div class="app-meta">
-          <span>${escapeHTML(app.category || "Ilova")}</span>
-          <span>v${escapeHTML(app.version || "1.0")}</span>
+          <span>${escapeHTML(app.category||"Ilova")}</span>
+          <span class="app-tag">${tag}</span>
         </div>
         <button class="details-btn" data-open-app="${escapeHTML(id)}">Batafsil ko‘rish →</button>
       </article>
@@ -535,17 +556,15 @@ function renderApps() {
   }).join("");
 }
 
-function filterApps() {
-  const search = document.getElementById("searchInput").value.trim().toLowerCase();
+function filterApps(){
+  const search=document.getElementById("searchInput").value.trim().toLowerCase();
 
-  visibleApps = apps.filter(app => {
-    const matchCategory = activeCategory === "Barchasi" || app.category === activeCategory;
-    const matchSearch =
-      String(app.name || "").toLowerCase().includes(search) ||
-      String(app.description || "").toLowerCase().includes(search) ||
-      String(app.category || "").toLowerCase().includes(search);
-    const matchFavorite = !favoritesOnly || favorites.includes(String(app.id));
-    return matchCategory && matchSearch && matchFavorite;
+  visibleApps=apps.filter(app=>{
+    const matchCategory=activeCategory==="Barchasi"||app.category===activeCategory;
+    const text=[app.name,app.description,app.category,app.developer].join(" ").toLowerCase();
+    const matchSearch=text.includes(search);
+    const matchFavorite=!favoritesOnly||favorites.includes(String(app.id));
+    return matchCategory&&matchSearch&&matchFavorite;
   });
 
   renderApps();
@@ -553,135 +572,179 @@ function filterApps() {
 
 document.getElementById("searchInput").addEventListener("input",filterApps);
 
-/* HOME AND FAVORITES */
-function showHome() {
-  favoritesOnly = false;
-  activeCategory = "Barchasi";
-  document.getElementById("appsTitle").textContent = "Ilovalar katalogi";
-  document.getElementById("appsSubtitle").textContent = "AppZone’da tasdiqlangan ilovalar";
+/* BOSH SAHIFA VA SEVIMLILAR */
+function showHome(){
+  favoritesOnly=false;
+  activeCategory="Barchasi";
+  document.getElementById("appsTitle").textContent="Mashhur ilovalar";
+  document.getElementById("appsSubtitle").textContent="Rasmiy Google Play havolalari va AppZone ilovalari";
   renderCategories();
   filterApps();
   setMobileNav("home");
   document.getElementById("homeSection").scrollIntoView({behavior:"smooth"});
 }
 
-function showFavorites() {
-  favoritesOnly = true;
-  activeCategory = "Barchasi";
-  document.getElementById("appsTitle").textContent = "Sevimli ilovalar";
-  document.getElementById("appsSubtitle").textContent = "Siz saqlagan ilovalar";
+function showFavorites(){
+  favoritesOnly=true;
+  activeCategory="Barchasi";
+  document.getElementById("appsTitle").textContent="Sevimli ilovalar";
+  document.getElementById("appsSubtitle").textContent="Siz saqlagan ilovalar";
   renderCategories();
   filterApps();
   setMobileNav("favorites");
   document.getElementById("appsSection").scrollIntoView({behavior:"smooth"});
 }
 
-/* LOAD APPROVED APPS */
-async function loadCloudApps() {
-  const grid = document.getElementById("appGrid");
-  grid.innerHTML = '<div class="empty">Ilovalar yuklanmoqda...</div>';
+/* FIRESTORE'DAN TASDIQLANGAN ILOVALAR */
+async function loadCloudApps(){
+  try{
+    const snapshot=await db.collection("apps").where("status","==","approved").get();
 
-  try {
-    const snapshot = await db.collection("apps").where("status","==","approved").get();
+    const cloudApps=snapshot.docs.map(doc=>{
+      const d=doc.data();
 
-    apps = snapshot.docs.map(doc => {
-      const d = doc.data();
       return {
         id:doc.id,
-        name:d.name || "Nomsiz ilova",
-        description:d.description || "",
-        category:d.category || "Boshqa",
-        version:d.version || "1.0",
-        iconUrl:d.iconUrl || "",
-        apkUrl:d.apkUrl || "",
-        apkName:d.apkName || "",
-        apkSize:Number(d.apkSize) || 0
+        name:d.name||"Nomsiz ilova",
+        description:d.description||"",
+        category:d.category||"Boshqa",
+        version:d.version||"1.0",
+        iconUrl:d.iconUrl||"",
+        apkUrl:d.apkUrl||"",
+        apkName:d.apkName||"",
+        apkSize:Number(d.apkSize)||0,
+        developer:d.developer||d.ownerEmail||"AppZone foydalanuvchisi",
+        source:"appzone",
+        playUrl:d.playUrl||""
       };
     });
 
+    const officialNames=new Set(
+      FEATURED_APPS.map(a=>a.name.trim().toLowerCase())
+    );
+
+    const uniqueCloudApps=cloudApps.filter(app=>
+      !officialNames.has(String(app.name).trim().toLowerCase())
+    );
+
+    apps=[...FEATURED_APPS,...uniqueCloudApps];
     filterApps();
-  } catch (error) {
+
+  }catch(error){
     console.error("Katalog xatosi:",error);
-    grid.innerHTML = `<div class="empty">Katalogni yuklashda xatolik.<br>${escapeHTML(error.message || "Firebase bilan aloqa yo‘q.")}</div>`;
+    apps=[...FEATURED_APPS];
+    filterApps();
+    showToast("Onlayn katalog vaqtincha yuklanmadi; mashhur ilovalar ko‘rsatildi.");
   }
 }
 
-/* APP DETAILS AND FAVORITES */
-document.getElementById("appGrid").addEventListener("click",event => {
-  const fav = event.target.closest("[data-favorite]");
+/* ILOVA TAFSILOTLARI VA SEVIMLILAR */
+document.getElementById("appGrid").addEventListener("click",event=>{
+  const fav=event.target.closest("[data-favorite]");
 
-  if (fav) {
-    const id = fav.dataset.favorite;
-    favorites = favorites.includes(id)
-      ? favorites.filter(x => x !== id)
-      : [...favorites,id];
+  if(fav){
+    const id=fav.dataset.favorite;
+    favorites=favorites.includes(id)
+      ?favorites.filter(x=>x!==id)
+      :[...favorites,id];
 
-    try {
+    try{
       localStorage.setItem("appzoneFavorites",JSON.stringify(favorites));
-    } catch {}
+    }catch{}
 
     filterApps();
-    showToast(favorites.includes(id) ? "Sevimlilarga qo‘shildi" : "Sevimlilardan olib tashlandi");
+    showToast(favorites.includes(id)?"Sevimlilarga qo‘shildi":"Sevimlilardan olib tashlandi");
     return;
   }
 
-  const detailButton = event.target.closest("[data-open-app]");
-  if (!detailButton) return;
+  const detailButton=event.target.closest("[data-open-app]");
+  if(!detailButton)return;
 
-  const app = visibleApps.find(x => String(x.id) === detailButton.dataset.openApp);
-  if (!app) return;
+  const app=visibleApps.find(item=>String(item.id)===detailButton.dataset.openApp);
+  if(app)openAppDetails(app);
+});
 
-  document.getElementById("detailTitle").textContent = app.name;
-  const image = safeImageUrl(app.iconUrl);
-  const icon = image
-    ? `<img src="${escapeHTML(image)}" style="width:76px;height:76px;object-fit:cover;border-radius:19px" alt="">`
-    : `<div class="app-icon" style="width:76px;height:76px;margin:auto">${escapeHTML(getCategoryIcon(app.category))}</div>`;
+function openAppDetails(app){
+  document.getElementById("detailTitle").textContent=app.name;
 
-  const download = isAllowedApkUrl(app.apkUrl)
-    ? `<a class="download-btn" href="${escapeHTML(app.apkUrl)}" target="_blank" rel="noopener noreferrer">⬇ APK yuklab olish</a>
-       <p class="muted" style="margin-top:9px;text-align:center">
-         ${escapeHTML(app.apkName || "Ilova.apk")}
-         ${Number(app.apkSize) > 0 ? " • " + escapeHTML(app.apkSize) + " MB" : ""}
-       </p>`
-    : `<p class="muted" style="margin-top:18px;text-align:center">⏳ Yuklab olish fayli hali joylanmagan.</p>`;
+  const image=safeImageUrl(app.iconUrl);
+  const icon=image
+    ?`<img src="${escapeHTML(image)}" style="width:78px;height:78px;object-fit:cover;border-radius:20px" alt="">`
+    :`<div class="app-icon" style="width:78px;height:78px;margin:auto">${escapeHTML(app.icon||getCategoryIcon(app.category))}</div>`;
 
-  document.getElementById("detailContent").innerHTML = `
+  let actions="";
+
+  if(app.source==="googleplay"){
+    const safeUrl="https://play.google.com/store/apps/details?id="+encodeURIComponent(app.packageId);
+    actions=`
+      <a class="download-btn play-btn" href="${escapeHTML(safeUrl)}"
+        target="_blank" rel="noopener noreferrer">
+        ▶ Google Play orqali o‘rnatish
+      </a>
+      <p class="muted" style="margin-top:9px;text-align:center">
+        Rasmiy Google Play sahifasi ochiladi. Ilova mavjudligi qurilma va hududga bog‘liq.
+      </p>
+    `;
+  }else if(isAllowedApkUrl(app.apkUrl)){
+    actions=`
+      <a class="download-btn" href="${escapeHTML(app.apkUrl)}"
+        target="_blank" rel="noopener noreferrer" download>
+        ⬇ AppZone’dan APK yuklab olish
+      </a>
+      <p class="muted" style="margin-top:9px;text-align:center">
+        ${escapeHTML(app.apkName||"Ilova.apk")}
+        ${Number(app.apkSize)>0?" • "+escapeHTML(app.apkSize)+" MB":""}
+      </p>
+      <p class="muted" style="margin-top:7px;text-align:center">
+        Yuklangandan so‘ng Android o‘rnatish ko‘rsatmalariga amal qiling.
+      </p>
+    `;
+  }else{
+    actions=`<p class="muted" style="margin-top:18px;text-align:center">⏳ Yuklab olish fayli hali joylanmagan.</p>`;
+  }
+
+  document.getElementById("detailContent").innerHTML=`
     <div style="text-align:center;padding:10px 0">
       ${icon}
       <h3 style="margin:13px 0">${escapeHTML(app.name)}</h3>
-      <p style="color:#9ba9c2;line-height:1.7;font-size:12px">${escapeHTML(app.description)}</p>
-      <p class="muted" style="margin-top:14px">
-        Kategoriya: ${escapeHTML(app.category || "Ilova")}<br>
-        Versiya: ${escapeHTML(app.version || "1.0")}
+      <p style="color:#9ba9c2;line-height:1.7;font-size:12px">
+        ${escapeHTML(app.description)}
       </p>
-      ${download}
+      <p class="muted" style="margin-top:14px">
+        Kategoriya: ${escapeHTML(app.category||"Ilova")}<br>
+        Dasturchi: ${escapeHTML(app.developer||"Noma’lum")}<br>
+        ${app.source==="googleplay"
+          ?"Manba: Google Play"
+          :"Versiya: "+escapeHTML(app.version||"1.0")}
+      </p>
+      ${actions}
     </div>
   `;
 
   document.getElementById("appModal").classList.add("show");
-});
+}
 
 /* AUTH */
-function openAuth() {
+function openAuth(){
   document.getElementById("authModal").classList.add("show");
   switchAuth("login");
 }
 
-function switchAuth(type) {
-  document.getElementById("loginForm").hidden = type !== "login";
-  document.getElementById("registerForm").hidden = type !== "register";
-  document.getElementById("loginTab").classList.toggle("active",type === "login");
-  document.getElementById("registerTab").classList.toggle("active",type === "register");
-  document.getElementById("authMessage").innerHTML = "";
+function switchAuth(type){
+  document.getElementById("loginForm").hidden=type!=="login";
+  document.getElementById("registerForm").hidden=type!=="register";
+  document.getElementById("loginTab").classList.toggle("active",type==="login");
+  document.getElementById("registerTab").classList.toggle("active",type==="register");
+  document.getElementById("authMessage").innerHTML="";
 }
 
-function showAuthMessage(message,type="error") {
-  document.getElementById("authMessage").innerHTML =
+function showAuthMessage(message,type="error"){
+  document.getElementById("authMessage").innerHTML=
     `<div class="${type}">${escapeHTML(message)}</div>`;
 }
 
-function translateFirebaseError(error) {
-  const messages = {
+function translateFirebaseError(error){
+  const messages={
     "auth/email-already-in-use":"Bu email orqali oldin akkaunt yaratilgan.",
     "auth/invalid-email":"Email manzili noto‘g‘ri.",
     "auth/weak-password":"Parol juda oddiy. Boshqa parol tanlang.",
@@ -692,163 +755,169 @@ function translateFirebaseError(error) {
     "auth/network-request-failed":"Internet aloqasini tekshiring.",
     "auth/unauthorized-domain":"Bu sayt Firebase’da ruxsat etilmagan."
   };
-  return messages[error.code] || "Xatolik: " + (error.message || "Noma’lum xato");
+
+  return messages[error.code]||"Xatolik: "+(error.message||"Noma’lum xato");
 }
 
-document.getElementById("loginForm").addEventListener("submit",async event => {
+document.getElementById("loginForm").addEventListener("submit",async event=>{
   event.preventDefault();
-  const email = document.getElementById("loginEmail").value.trim();
-  const password = document.getElementById("loginPassword").value;
 
-  try {
+  const email=document.getElementById("loginEmail").value.trim();
+  const password=document.getElementById("loginPassword").value;
+
+  try{
     showAuthMessage("Kirilmoqda...","success");
     await auth.signInWithEmailAndPassword(email,password);
     closeModal("authModal");
     showToast("AppZone'ga muvaffaqiyatli kirdingiz!");
-  } catch (error) {
+  }catch(error){
     showAuthMessage(translateFirebaseError(error));
   }
 });
 
-document.getElementById("registerForm").addEventListener("submit",async event => {
+document.getElementById("registerForm").addEventListener("submit",async event=>{
   event.preventDefault();
-  const email = document.getElementById("registerEmail").value.trim();
-  const password = document.getElementById("registerPassword").value;
-  const confirm = document.getElementById("confirmPassword").value;
 
-  if (password !== confirm) {
+  const email=document.getElementById("registerEmail").value.trim();
+  const password=document.getElementById("registerPassword").value;
+  const confirm=document.getElementById("confirmPassword").value;
+
+  if(password!==confirm){
     showAuthMessage("Parollar bir xil emas.");
     return;
   }
 
-  try {
+  try{
     showAuthMessage("Akkaunt yaratilmoqda...","success");
     await auth.createUserWithEmailAndPassword(email,password);
     closeModal("authModal");
     showToast("Akkaunt yaratildi!");
-  } catch (error) {
+  }catch(error){
     showAuthMessage(translateFirebaseError(error));
   }
 });
 
-async function resetPassword() {
-  const email = document.getElementById("loginEmail").value.trim();
-  if (!email) {
+async function resetPassword(){
+  const email=document.getElementById("loginEmail").value.trim();
+
+  if(!email){
     showAuthMessage("Avval emailingizni kiriting.");
     return;
   }
 
-  try {
+  try{
     await auth.sendPasswordResetEmail(email);
     showAuthMessage("Tiklash havolasi emailingizga yuborildi.","success");
-  } catch (error) {
+  }catch(error){
     showAuthMessage(translateFirebaseError(error));
   }
 }
 
-/* PROFILE AND LOGOUT */
-function openProfile() {
-  if (!auth.currentUser) return;
-  document.getElementById("profileEmail").textContent = auth.currentUser.email || "Email mavjud emas";
-  document.getElementById("profileRole").textContent = isAdmin ? "Administrator" : "Oddiy foydalanuvchi";
+function openProfile(){
+  if(!auth.currentUser)return;
+  document.getElementById("profileEmail").textContent=auth.currentUser.email||"Email mavjud emas";
+  document.getElementById("profileRole").textContent=isAdmin?"Administrator":"Oddiy foydalanuvchi";
   document.getElementById("profileModal").classList.add("show");
 }
 
-async function logout() {
-  try {
+async function logout(){
+  try{
     await auth.signOut();
     closeModal("profileModal");
     closeModal("adminModal");
     showToast("Akkauntdan chiqdingiz.");
-  } catch {
+  }catch{
     showToast("Chiqishda xatolik yuz berdi.");
   }
 }
 
-/* AUTH STATE AND ADMIN CHECK */
-auth.onAuthStateChanged(async user => {
-  const check = ++authCheckNumber;
-  currentUser = user || null;
-  isAdmin = false;
+/* LOGIN HOLATI VA ADMIN TEKSHIRUVI */
+auth.onAuthStateChanged(async user=>{
+  const check=++authCheckNumber;
+  currentUser=user||null;
+  isAdmin=false;
 
-  const authButton = document.getElementById("authButton");
-  const profileButton = document.getElementById("profileButton");
-  const adminButton = document.getElementById("adminButton");
-  const submitArea = document.getElementById("submitArea");
+  const authButton=document.getElementById("authButton");
+  const profileButton=document.getElementById("profileButton");
+  const adminButton=document.getElementById("adminButton");
+  const submitArea=document.getElementById("submitArea");
 
-  if (user) {
-    authButton.hidden = true;
-    profileButton.hidden = false;
-    profileButton.textContent = user.email || "Profil";
-    submitArea.hidden = false;
+  if(user){
+    authButton.hidden=true;
+    profileButton.hidden=false;
+    profileButton.textContent=user.email||"Profil";
+    submitArea.hidden=false;
 
-    try {
-      const adminDoc = await db.collection("admins").doc(user.uid).get();
-      if (check !== authCheckNumber) return;
-      isAdmin = adminDoc.exists && adminDoc.data().role === "admin";
-    } catch (error) {
+    try{
+      const adminDoc=await db.collection("admins").doc(user.uid).get();
+      if(check!==authCheckNumber)return;
+      isAdmin=adminDoc.exists&&adminDoc.data().role==="admin";
+    }catch(error){
       console.warn("Admin tekshiruvi:",error);
-      isAdmin = false;
+      isAdmin=false;
     }
-  } else {
-    authButton.hidden = false;
-    profileButton.hidden = true;
-    submitArea.hidden = true;
+  }else{
+    authButton.hidden=false;
+    profileButton.hidden=true;
+    submitArea.hidden=true;
   }
 
-  if (check !== authCheckNumber) return;
-  adminButton.hidden = !isAdmin;
-  if (!isAdmin) closeModal("adminModal");
-  loadCloudApps();
+  if(check!==authCheckNumber)return;
+
+  adminButton.hidden=!isAdmin;
+  if(!isAdmin)closeModal("adminModal");
+
+  await loadCloudApps();
 });
 
-/* SUBMIT APP */
-function openSubmitApp() {
-  if (!auth.currentUser) {
+/* ILOVA YUBORISH */
+function openSubmitApp(){
+  if(!auth.currentUser){
     showToast("Avval akkauntingizga kiring.");
     openAuth();
     return;
   }
-  document.getElementById("submitAppMessage").innerHTML = "";
+
+  document.getElementById("submitAppMessage").innerHTML="";
   document.getElementById("submitAppModal").classList.add("show");
 }
 
-document.getElementById("submitAppForm").addEventListener("submit",async event => {
+document.getElementById("submitAppForm").addEventListener("submit",async event=>{
   event.preventDefault();
-  const user = auth.currentUser;
 
-  if (!user) {
+  const user=auth.currentUser;
+  if(!user){
     showToast("Avval akkauntingizga kiring.");
     return;
   }
 
-  const name = document.getElementById("newAppName").value.trim();
-  const description = document.getElementById("newAppDescription").value.trim();
-  const category = document.getElementById("newAppCategory").value;
-  const version = document.getElementById("newAppVersion").value.trim();
-  const iconUrl = document.getElementById("newAppIcon").value.trim();
+  const name=document.getElementById("newAppName").value.trim();
+  const description=document.getElementById("newAppDescription").value.trim();
+  const category=document.getElementById("newAppCategory").value;
+  const version=document.getElementById("newAppVersion").value.trim();
+  const iconUrl=document.getElementById("newAppIcon").value.trim();
 
-  const message = document.getElementById("submitAppMessage");
-  const button = document.getElementById("submitAppSaveBtn");
+  const message=document.getElementById("submitAppMessage");
+  const button=document.getElementById("submitAppSaveBtn");
 
-  if (name.length < 2 || name.length > 60 || !description || !category || !version) {
-    message.innerHTML = '<div class="error">Barcha maydonlarni to‘g‘ri to‘ldiring.</div>';
+  if(name.length<2||name.length>60||!description||!category||!version){
+    message.innerHTML='<div class="error">Barcha maydonlarni to‘g‘ri to‘ldiring.</div>';
     return;
   }
 
-  if (iconUrl && !safeImageUrl(iconUrl)) {
-    message.innerHTML = '<div class="error">Rasm havolasi HTTPS bilan boshlanishi kerak.</div>';
+  if(iconUrl&&!safeImageUrl(iconUrl)){
+    message.innerHTML='<div class="error">Rasm havolasi HTTPS bilan boshlanishi kerak.</div>';
     return;
   }
 
-  try {
-    button.disabled = true;
-    button.textContent = "Yuborilmoqda...";
+  try{
+    button.disabled=true;
+    button.textContent="Yuborilmoqda...";
 
     await db.collection("apps").add({
       name,description,category,version,iconUrl,
       ownerUid:user.uid,
-      ownerEmail:user.email || "",
+      ownerEmail:user.email||"",
       status:"pending",
       createdAt:firebase.firestore.FieldValue.serverTimestamp(),
       apkUrl:"",
@@ -859,126 +928,145 @@ document.getElementById("submitAppForm").addEventListener("submit",async event =
     document.getElementById("submitAppForm").reset();
     closeModal("submitAppModal");
     showToast("Ilova tekshiruvga yuborildi!");
-  } catch (error) {
-    message.innerHTML = `<div class="error">${escapeHTML(error.message || "Ilova yuborilmadi.")}</div>`;
-  } finally {
-    button.disabled = false;
-    button.textContent = "Yuborish";
+  }catch(error){
+    message.innerHTML=`<div class="error">${escapeHTML(error.message||"Ilova yuborilmadi.")}</div>`;
+  }finally{
+    button.disabled=false;
+    button.textContent="Yuborish";
   }
 });
 
 /* ADMIN PANEL */
-async function openAdminPanel() {
-  if (!auth.currentUser || !isAdmin) {
+async function openAdminPanel(){
+  if(!auth.currentUser||!isAdmin){
     showToast("Admin huquqi mavjud emas.");
     return;
   }
-  adminFilter = "all";
+
+  adminFilter="all";
   renderAdminFilters();
   document.getElementById("adminModal").classList.add("show");
   await loadAdminApps();
 }
 
-async function loadAdminApps() {
-  const list = document.getElementById("adminList");
+async function loadAdminApps(){
+  const list=document.getElementById("adminList");
 
-  if (!auth.currentUser || !isAdmin) {
-    list.innerHTML = '<div class="admin-empty">Admin huquqi mavjud emas.</div>';
+  if(!auth.currentUser||!isAdmin){
+    list.innerHTML='<div class="admin-empty">Admin huquqi mavjud emas.</div>';
     return;
   }
 
-  list.innerHTML = '<div class="admin-empty">Ilovalar yuklanmoqda...</div>';
+  list.innerHTML='<div class="admin-empty">Ilovalar yuklanmoqda...</div>';
 
-  try {
-    const snapshot = await db.collection("apps").get();
-    adminApps = snapshot.docs.map(doc => ({id:doc.id,...doc.data()}));
-    adminApps.sort((a,b) => getDateNumber(b.createdAt) - getDateNumber(a.createdAt));
+  try{
+    const snapshot=await db.collection("apps").get();
+    adminApps=snapshot.docs.map(doc=>({id:doc.id,...doc.data()}));
+    adminApps.sort((a,b)=>getDateNumber(b.createdAt)-getDateNumber(a.createdAt));
     renderAdminApps();
-  } catch (error) {
-    list.innerHTML = `<div class="admin-empty">Xatolik: ${escapeHTML(error.message)}</div>`;
+  }catch(error){
+    list.innerHTML=`<div class="admin-empty">Xatolik: ${escapeHTML(error.message)}</div>`;
   }
 }
 
-function renderAdminFilters() {
-  document.querySelectorAll(".admin-filter").forEach(button => {
-    button.classList.toggle("active",button.dataset.filter === adminFilter);
+function renderAdminFilters(){
+  document.querySelectorAll(".admin-filter").forEach(button=>{
+    button.classList.toggle("active",button.dataset.filter===adminFilter);
   });
 }
 
-document.getElementById("adminFilters").addEventListener("click",event => {
-  const button = event.target.closest("[data-filter]");
-  if (!button) return;
-  adminFilter = button.dataset.filter;
+document.getElementById("adminFilters").addEventListener("click",event=>{
+  const button=event.target.closest("[data-filter]");
+  if(!button)return;
+  adminFilter=button.dataset.filter;
   renderAdminFilters();
   renderAdminApps();
 });
 
-function statusLabel(status) {
-  return ({pending:"Tekshiruvda",approved:"Tasdiqlangan",rejected:"Rad etilgan"})[status] || "Noma’lum";
+function statusLabel(status){
+  return ({
+    pending:"Tekshiruvda",
+    approved:"Tasdiqlangan",
+    rejected:"Rad etilgan"
+  })[status]||"Noma’lum";
 }
 
-function renderAdminApps() {
-  const list = document.getElementById("adminList");
-  const filtered = adminApps.filter(app => adminFilter === "all" || app.status === adminFilter);
+function renderAdminApps(){
+  const list=document.getElementById("adminList");
+  const filtered=adminApps.filter(app=>
+    adminFilter==="all"||app.status===adminFilter
+  );
 
-  if (!filtered.length) {
-    list.innerHTML = '<div class="admin-empty">Bu bo‘limda hozircha ilovalar yo‘q.</div>';
+  if(!filtered.length){
+    list.innerHTML='<div class="admin-empty">Bu bo‘limda hozircha ilovalar yo‘q.</div>';
     return;
   }
 
-  list.innerHTML = filtered.map(app => {
-    const status = app.status || "unknown";
-    let actions = "";
+  list.innerHTML=filtered.map(app=>{
+    const status=app.status||"unknown";
+    let actions="";
 
-    if (status !== "approved") {
-      actions += `<button class="admin-action approve-btn" data-admin-action="approve" data-id="${escapeHTML(app.id)}">✓ Tasdiqlash</button>`;
+    if(status!=="approved"){
+      actions+=`<button class="admin-action approve-btn" data-admin-action="approve" data-id="${escapeHTML(app.id)}">✓ Tasdiqlash</button>`;
     }
-    if (status !== "rejected") {
-      actions += `<button class="admin-action reject-btn" data-admin-action="reject" data-id="${escapeHTML(app.id)}">✕ Rad etish</button>`;
+
+    if(status!=="rejected"){
+      actions+=`<button class="admin-action reject-btn" data-admin-action="reject" data-id="${escapeHTML(app.id)}">✕ Rad etish</button>`;
     }
-    actions += `<button class="admin-action delete-btn" data-admin-action="delete" data-id="${escapeHTML(app.id)}">🗑 O‘chirish</button>`;
+
+    actions+=`<button class="admin-action delete-btn" data-admin-action="delete" data-id="${escapeHTML(app.id)}">🗑 O‘chirish</button>`;
 
     return `
-      <article class="admin-app" data-app-id="${escapeHTML(app.id)}">
+      <article class="admin-app">
         <div class="admin-app-top">
-          <h3>${escapeHTML(app.name || "Nomsiz ilova")}</h3>
+          <h3>${escapeHTML(app.name||"Nomsiz ilova")}</h3>
           <span class="status status-${escapeHTML(status)}">${escapeHTML(statusLabel(status))}</span>
         </div>
 
-        <p>${escapeHTML(app.description || "Tavsif yo‘q")}</p>
+        <p>${escapeHTML(app.description||"Tavsif yo‘q")}</p>
+
         <p>
-          Kategoriya: ${escapeHTML(app.category || "—")}<br>
-          Versiya: ${escapeHTML(app.version || "—")}<br>
-          Yuboruvchi: ${escapeHTML(app.ownerEmail || "—")}<br>
+          Kategoriya: ${escapeHTML(app.category||"—")}<br>
+          Versiya: ${escapeHTML(app.version||"—")}<br>
+          Yuboruvchi: ${escapeHTML(app.ownerEmail||"—")}<br>
           Sana: ${escapeHTML(formatDate(app.createdAt))}
         </p>
 
         <div class="admin-apk-form">
           <h4>📦 APK faylini telefondan yuklash</h4>
+
           <div class="form-group">
             <label>APK faylini tanlang</label>
             <input type="file" accept=".apk,application/vnd.android.package-archive" data-apk-file>
           </div>
+
           <button class="admin-action apk-upload-btn" data-admin-action="upload-apk" data-id="${escapeHTML(app.id)}">
             ⬆ APK yuklash va saqlash
           </button>
-          <p class="upload-status" data-upload-status>Maksimal hajm: 50 MB. Yuklangandan so‘ng manzil avtomatik saqlanadi.</p>
+
+          <p class="upload-status" data-upload-status>
+            Maksimal hajm: 50 MB. Yuklangandan so‘ng manzil avtomatik saqlanadi.
+          </p>
 
           <hr style="border:0;border-top:1px solid var(--border);margin:14px 0">
 
           <h4>Yoki mavjud APK havolasini kiritish</h4>
+
           <div class="form-group">
             <label>Supabase APK URL</label>
-            <input type="url" data-apk-url value="${escapeHTML(app.apkUrl || "")}" placeholder="https://.../appzone-apks/ilova.apk">
+            <input type="url" data-apk-url value="${escapeHTML(app.apkUrl||"")}" placeholder="https://.../appzone-apks/ilova.apk">
           </div>
+
           <div class="form-group">
             <label>APK nomi</label>
-            <input type="text" data-apk-name maxlength="120" value="${escapeHTML(app.apkName || "")}" placeholder="Ilova.apk">
+            <input type="text" data-apk-name maxlength="120" value="${escapeHTML(app.apkName||"")}" placeholder="Ilova.apk">
           </div>
+
           <div class="form-group">
             <label>Hajmi (MB)</label>
-            <input type="number" data-apk-size min="0" step="0.01" value="${Number(app.apkSize) || 0}">
+            <input type="number" data-apk-size min="0" step="0.01" value="${Number(app.apkSize)||0}">
           </div>
+
           <button class="admin-action apk-save-btn" data-admin-action="save-apk" data-id="${escapeHTML(app.id)}">
             💾 Havola ma’lumotlarini saqlash
           </button>
@@ -990,72 +1078,77 @@ function renderAdminApps() {
   }).join("");
 }
 
-/* MANUAL APK URL SAVE */
-async function saveApkMetadata(appId,button) {
-  if (!auth.currentUser || !isAdmin) throw new Error("Faqat admin APK ma’lumotlarini saqlay oladi.");
+/* MAVJUD APK HAVOLASINI SAQLASH */
+async function saveApkMetadata(appId,button){
+  if(!auth.currentUser||!isAdmin){
+    throw new Error("Faqat admin APK ma’lumotlarini saqlay oladi.");
+  }
 
-  const card = button.closest(".admin-app");
-  const url = card.querySelector("[data-apk-url]").value.trim();
-  const name = card.querySelector("[data-apk-name]").value.trim();
-  const size = Number(card.querySelector("[data-apk-size]").value) || 0;
+  const card=button.closest(".admin-app");
+  const url=card.querySelector("[data-apk-url]").value.trim();
+  const name=card.querySelector("[data-apk-name]").value.trim();
+  const size=Number(card.querySelector("[data-apk-size]").value)||0;
 
-  if (!isAllowedApkUrl(url)) {
+  if(!isAllowedApkUrl(url)){
     throw new Error("APK URL noto‘g‘ri. Faqat AppZone Supabase omboridagi .apk havolasi qabul qilinadi.");
   }
-  if (size < 0 || size > 50) {
+
+  if(size<0||size>50){
     throw new Error("Hajm 0 dan 50 MB gacha bo‘lishi kerak.");
   }
 
-  button.disabled = true;
-  button.textContent = "Saqlanmoqda...";
+  button.disabled=true;
+  button.textContent="Saqlanmoqda...";
 
-  try {
+  try{
     await db.collection("apps").doc(appId).update({
       apkUrl:url,
-      apkName:name || "Ilova.apk",
+      apkName:name||"Ilova.apk",
       apkSize:size
     });
+
     showToast("APK havolasi saqlandi!");
     await loadAdminApps();
     await loadCloudApps();
-  } finally {
-    button.disabled = false;
-    button.textContent = "💾 Havola ma’lumotlarini saqlash";
+  }finally{
+    button.disabled=false;
+    button.textContent="💾 Havola ma’lumotlarini saqlash";
   }
 }
 
-/* ACTUAL APK UPLOAD */
-async function uploadApkForApp(appId,button) {
-  if (!auth.currentUser || !isAdmin) {
+/* APK'NI SUPABASE'GA YUKLASH */
+async function uploadApkForApp(appId,button){
+  if(!auth.currentUser||!isAdmin){
     throw new Error("Faqat admin APK yuklay oladi.");
   }
 
-  const card = button.closest(".admin-app");
-  const fileInput = card.querySelector("[data-apk-file]");
-  const status = card.querySelector("[data-upload-status]");
-  const file = fileInput.files && fileInput.files[0];
+  const card=button.closest(".admin-app");
+  const fileInput=card.querySelector("[data-apk-file]");
+  const status=card.querySelector("[data-upload-status]");
+  const file=fileInput.files&&fileInput.files[0];
 
-  if (!file) throw new Error("Avval telefondan APK faylini tanlang.");
-  if (!file.name.toLowerCase().endsWith(".apk")) {
+  if(!file)throw new Error("Avval telefondan APK faylini tanlang.");
+  if(!file.name.toLowerCase().endsWith(".apk")){
     throw new Error("Faqat .apk fayl tanlash mumkin.");
   }
-  if (file.size <= 0 || file.size > MAX_APK_SIZE) {
+  if(file.size<=0||file.size>MAX_APK_SIZE){
     throw new Error("Fayl 50 MB dan kichik bo‘lishi kerak.");
   }
 
-  button.disabled = true;
-  button.textContent = "Yuklanmoqda...";
+  button.disabled=true;
+  button.textContent="Yuklanmoqda...";
 
-  try {
-    status.textContent = "1/3 — Admin ruxsati tekshirilmoqda...";
-    const firebaseToken = await auth.currentUser.getIdToken(true);
+  try{
+    status.textContent="1/3 — Admin ruxsati tekshirilmoqda...";
 
-    const response = await fetch(APK_FUNCTION_URL,{
+    const firebaseToken=await auth.currentUser.getIdToken(true);
+
+    const response=await fetch(APK_FUNCTION_URL,{
       method:"POST",
       headers:{
         "Content-Type":"application/json",
         "apikey":SUPABASE_PUBLISHABLE_KEY,
-        "Authorization":"Bearer " + firebaseToken
+        "Authorization":"Bearer "+firebaseToken
       },
       body:JSON.stringify({
         fileName:file.name,
@@ -1063,14 +1156,15 @@ async function uploadApkForApp(appId,button) {
       })
     });
 
-    const result = await response.json().catch(() => ({}));
+    const result=await response.json().catch(()=>({}));
 
-    if (!response.ok || !result.success || !result.path || !result.token) {
-      throw new Error(result.error || result.message || "Yuklash ruxsati olinmadi. Supabase funksiyasini tekshirish kerak.");
+    if(!response.ok||!result.success||!result.path||!result.token){
+      throw new Error(result.error||result.message||"Yuklash ruxsati olinmadi. Supabase funksiyasini tekshirish kerak.");
     }
 
-    status.textContent = "2/3 — APK Supabase omboriga yuklanmoqda...";
-    const uploadResult = await supabaseClient.storage
+    status.textContent="2/3 — APK Supabase omboriga yuklanmoqda...";
+
+    const uploadResult=await supabaseClient.storage
       .from(SUPABASE_BUCKET)
       .uploadToSignedUrl(
         result.path,
@@ -1079,87 +1173,91 @@ async function uploadApkForApp(appId,button) {
         {contentType:"application/vnd.android.package-archive"}
       );
 
-    if (uploadResult.error) {
-      throw new Error(uploadResult.error.message || "Supabase faylni qabul qilmadi.");
+    if(uploadResult.error){
+      throw new Error(uploadResult.error.message||"Supabase faylni qabul qilmadi.");
     }
 
-    status.textContent = "3/3 — Ilova ma’lumotlari saqlanmoqda...";
-    const publicUrl = supabaseClient.storage
+    status.textContent="3/3 — Ilova ma’lumotlari saqlanmoqda...";
+
+    const publicUrl=supabaseClient.storage
       .from(SUPABASE_BUCKET)
       .getPublicUrl(result.path).data.publicUrl;
 
-    if (!isAllowedApkUrl(publicUrl)) {
+    if(!isAllowedApkUrl(publicUrl)){
       throw new Error("Yuklangan fayl manzili tekshiruvdan o‘tmadi.");
     }
 
     await db.collection("apps").doc(appId).update({
       apkUrl:publicUrl,
       apkName:file.name,
-      apkSize:Number((file.size / (1024 * 1024)).toFixed(2))
+      apkSize:Number((file.size/(1024*1024)).toFixed(2))
     });
 
-    status.textContent = "✓ APK yuklandi va ilovaga biriktirildi.";
-    showToast("APK muvaffaqiyatli yuklandi!");
+    status.textContent="✓ APK yuklandi va ilovaga biriktirildi.";
+    showToast("APK yuklandi va havolasi saqlandi!");
+
     await loadAdminApps();
     await loadCloudApps();
-  } finally {
-    button.disabled = false;
-    button.textContent = "⬆ APK yuklash va saqlash";
+
+  }finally{
+    button.disabled=false;
+    button.textContent="⬆ APK yuklash va saqlash";
   }
 }
 
-/* ADMIN BUTTON ACTIONS */
-document.getElementById("adminList").addEventListener("click",async event => {
-  const button = event.target.closest("[data-admin-action]");
-  if (!button) return;
+/* ADMIN TUGMALARI */
+document.getElementById("adminList").addEventListener("click",async event=>{
+  const button=event.target.closest("[data-admin-action]");
+  if(!button)return;
 
-  const action = button.dataset.adminAction;
-  const appId = button.dataset.id;
+  const action=button.dataset.adminAction;
+  const appId=button.dataset.id;
 
-  try {
-    if (action === "upload-apk") {
+  try{
+    if(action==="upload-apk"){
       await uploadApkForApp(appId,button);
       return;
     }
 
-    if (action === "save-apk") {
+    if(action==="save-apk"){
       await saveApkMetadata(appId,button);
       return;
     }
 
-    if (!auth.currentUser || !isAdmin) {
+    if(!auth.currentUser||!isAdmin){
       throw new Error("Admin huquqi mavjud emas.");
     }
 
-    if (action === "approve") {
-      if (!confirm("Ushbu ilovani tasdiqlaysizmi?")) return;
-      button.disabled = true;
+    if(action==="approve"){
+      if(!confirm("Ushbu ilovani tasdiqlaysizmi?"))return;
+      button.disabled=true;
       await db.collection("apps").doc(appId).update({status:"approved"});
       showToast("Ilova tasdiqlandi!");
-    } else if (action === "reject") {
-      if (!confirm("Ushbu ilovani rad etasizmi?")) return;
-      button.disabled = true;
+    }else if(action==="reject"){
+      if(!confirm("Ushbu ilovani rad etasizmi?"))return;
+      button.disabled=true;
       await db.collection("apps").doc(appId).update({status:"rejected"});
       showToast("Ilova rad etildi.");
-    } else if (action === "delete") {
-      if (!confirm("Ilovani butunlay o‘chirishni tasdiqlaysizmi?")) return;
-      button.disabled = true;
+    }else if(action==="delete"){
+      if(!confirm("Ilovani butunlay o‘chirishni tasdiqlaysizmi?"))return;
+      button.disabled=true;
       await db.collection("apps").doc(appId).delete();
       showToast("Ilova o‘chirildi.");
     }
 
     await loadAdminApps();
     await loadCloudApps();
-  } catch (error) {
+
+  }catch(error){
     console.error("Admin amali xatosi:",error);
-    showToast(error.message || "Amalni bajarib bo‘lmadi.");
-    button.disabled = false;
+    showToast(error.message||"Amalni bajarib bo‘lmadi.");
+    button.disabled=false;
   }
 });
 
-/* INITIAL LOAD */
+/* ISHGA TUSHIRISH */
 renderCategories();
-renderApps();
+filterApps();
 </script>
 </body>
 </html>
