@@ -2,1324 +2,307 @@
 <html lang="uz">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#090e1b">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#080d19">
 <meta name="description" content="AppZone — yangi avlod ilovalar do‘koni">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="AppZone">
-
 <title>AppZone — Ilovalar do‘koni</title>
 
 <link rel="manifest" href="./manifest.json">
 <link rel="icon" href="./icon.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <script src="https://www.gstatic.com/firebasejs/13.1.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/13.1.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/13.1.0/firebase-firestore-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 :root {
   --bg:#080d19;
-  --surface:#10192b;
-  --surface2:#17243a;
-  --surface3:#1c2c46;
+  --surface:#111b2e;
+  --surface2:#1a2942;
   --text:#f5f7ff;
   --muted:#9ba9c2;
   --accent:#8069ff;
   --accent2:#4c91ff;
-  --green:#23c98b;
-  --border:rgba(255,255,255,.085);
-  --shadow:0 18px 50px rgba(0,0,0,.22);
+  --border:rgba(255,255,255,.09);
+  --green:#20b87d;
 }
-
-* {
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-}
-
-html {
-  scroll-behavior:smooth;
-}
-
-body {
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
   min-height:100vh;
   color:var(--text);
   background:
-    radial-gradient(ellipse at 12% 0%,rgba(97,76,210,.13),transparent 35%),
-    radial-gradient(ellipse at 90% 25%,rgba(40,111,205,.09),transparent 32%),
+    radial-gradient(ellipse at 10% 0%,rgba(112,87,255,.13),transparent 35%),
     var(--bg);
-  font-family:"Manrope",Arial,sans-serif;
+  font-family:Arial,sans-serif;
 }
-
-button,input,textarea,select {
-  font:inherit;
-}
-
-button {
-  border:0;
-  cursor:pointer;
-}
-
-a {
-  color:inherit;
-}
-
-[hidden] {
-  display:none!important;
-}
-
-button:focus-visible,
-input:focus-visible,
-textarea:focus-visible,
-select:focus-visible {
-  outline:2px solid var(--accent);
-  outline-offset:3px;
-}
-
-/* HEADER */
-
-.header {
-  position:sticky;
-  top:0;
-  z-index:30;
-  background:rgba(8,13,25,.88);
-  backdrop-filter:blur(20px);
+button,input,textarea,select{font:inherit}
+button{border:0;cursor:pointer}
+[hidden]{display:none!important}
+.header{
+  position:sticky;top:0;z-index:30;
+  background:rgba(8,13,25,.93);
+  backdrop-filter:blur(18px);
   border-bottom:1px solid var(--border);
 }
-
-.header-inner {
-  max-width:1280px;
-  min-height:76px;
-  margin:auto;
-  padding:12px 22px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:20px;
+.header-inner{
+  max-width:1250px;margin:auto;padding:12px 20px;
+  min-height:70px;display:flex;
+  justify-content:space-between;align-items:center;gap:12px;
 }
-
-.logo {
-  display:flex;
-  align-items:center;
-  gap:11px;
-  font-size:23px;
-  font-weight:800;
-  letter-spacing:-1px;
-  white-space:nowrap;
+.logo{display:flex;align-items:center;gap:10px;font-size:23px;font-weight:900}
+.logo-icon{
+  width:42px;height:42px;display:grid;place-items:center;
+  border-radius:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));
+  box-shadow:0 8px 20px #6254ca55;font-size:23px;
 }
-
-.logo-word span {
-  color:#a99aff;
-}
-
-.logo-icon {
-  width:43px;
-  height:43px;
-  display:grid;
-  place-items:center;
-  color:white;
-  font-size:24px;
-  font-weight:800;
-  border-radius:15px;
-  background:linear-gradient(135deg,#896aff,#397ff4);
-  box-shadow:0 7px 22px rgba(108,91,255,.32);
-}
-
-.nav {
-  display:flex;
-  align-items:center;
-  gap:7px;
-}
-
-.nav button {
-  padding:10px 14px;
-  color:var(--muted);
-  background:transparent;
-  border-radius:11px;
-  font-size:13px;
-  font-weight:700;
-  transition:.2s;
-}
-
-.nav button:hover,
-.nav button.active {
-  color:white;
-  background:var(--surface2);
-}
-
-.header-actions {
-  display:flex;
-  gap:9px;
-  align-items:center;
-}
-
-.btn {
-  display:inline-flex;
-  justify-content:center;
-  align-items:center;
-  gap:8px;
-  padding:12px 17px;
-  border-radius:12px;
-  color:white;
-  font-weight:800;
-  font-size:13px;
+.logo span{color:#a99aff}
+.header-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.btn{
+  padding:11px 16px;border-radius:11px;color:white;
+  font-weight:800;font-size:12px;
   background:linear-gradient(135deg,var(--accent),var(--accent2));
-  box-shadow:0 8px 22px rgba(103,96,255,.18);
-  transition:transform .2s,opacity .2s;
 }
-
-.btn:hover {
-  transform:translateY(-2px);
-  opacity:.94;
-}
-
-.btn-outline {
-  background:var(--surface);
-  border:1px solid var(--border);
-  box-shadow:none;
-}
-
-.btn-admin {
-  background:linear-gradient(135deg,#a65b16,#e9a33a);
-  box-shadow:none;
-}
-
-.profile-btn {
-  max-width:180px;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-}
-
-/* MAIN */
-
-.container {
-  max-width:1280px;
-  margin:auto;
-  padding:28px 22px 110px;
-}
-
-/* HERO */
-
-.hero {
-  position:relative;
-  min-height:330px;
-  padding:47px;
-  border-radius:28px;
-  overflow:hidden;
-  border:1px solid rgba(160,150,255,.19);
+.btn-outline{background:var(--surface);border:1px solid var(--border)}
+.btn-admin{background:linear-gradient(135deg,#a65b16,#e9a33a)}
+.profile-btn{max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.container{max-width:1250px;margin:auto;padding:24px 20px 100px}
+.hero{
+  position:relative;overflow:hidden;padding:45px;
+  border-radius:26px;border:1px solid #9588ff33;
   background:
-    radial-gradient(circle at 80% 25%,rgba(146,116,255,.35),transparent 29%),
-    radial-gradient(circle at 100% 100%,rgba(34,136,255,.25),transparent 36%),
-    linear-gradient(120deg,#1b2250 0%,#202c5c 48%,#142d51 100%);
-  box-shadow:var(--shadow);
-}
-
-.hero-content {
-  position:relative;
-  z-index:2;
-  max-width:660px;
-}
-
-.eyebrow {
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  padding:8px 12px;
-  margin-bottom:20px;
-  color:#d7d1ff;
-  border:1px solid rgba(255,255,255,.15);
-  background:rgba(255,255,255,.08);
-  border-radius:30px;
-  font-size:11px;
-  font-weight:800;
-  letter-spacing:.8px;
-  text-transform:uppercase;
-}
-
-.eyebrow-dot {
-  width:7px;
-  height:7px;
-  border-radius:50%;
-  background:#64e4b1;
-  box-shadow:0 0 12px #64e4b1;
-}
-
-.hero h1 {
-  font-size:clamp(32px,5.4vw,55px);
-  line-height:1.1;
-  letter-spacing:-2px;
-  margin-bottom:17px;
-}
-
-.hero h1 span {
-  color:#b8adff;
-}
-
-.hero p {
-  max-width:560px;
-  color:#d0d8ef;
-  font-size:14px;
-  line-height:1.85;
-  margin-bottom:26px;
-}
-
-.hero-buttons {
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-}
-
-.hero-art {
-  position:absolute;
-  right:7%;
-  top:50%;
-  transform:translateY(-50%);
-  width:290px;
-  height:240px;
-  display:grid;
-  place-items:center;
-}
-
-.art-circle {
-  position:absolute;
-  width:220px;
-  height:220px;
-  border-radius:50%;
-  border:1px solid rgba(255,255,255,.16);
-  box-shadow:0 0 65px rgba(153,125,255,.18);
-}
-
-.art-circle:before,
-.art-circle:after {
-  content:"";
-  position:absolute;
-  inset:20px;
-  border:1px solid rgba(255,255,255,.11);
-  border-radius:50%;
-}
-
-.art-circle:after {
-  inset:43px;
-}
-
-.art-phone {
-  position:relative;
-  z-index:1;
-  width:142px;
-  height:190px;
-  padding:13px;
-  border:2px solid rgba(255,255,255,.4);
-  border-radius:27px;
-  background:linear-gradient(145deg,#273c7b,#17284d);
-  box-shadow:0 25px 65px rgba(0,0,0,.35);
-  transform:rotate(8deg);
-}
-
-.art-phone-top {
-  width:40px;
-  height:5px;
-  background:rgba(255,255,255,.45);
-  margin:0 auto 13px;
-  border-radius:20px;
-}
-
-.art-icons {
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:9px;
-}
-
-.art-icons div {
-  height:43px;
-  display:grid;
-  place-items:center;
-  font-size:21px;
-  border-radius:12px;
-  background:rgba(255,255,255,.13);
-}
-
-/* INFO STRIP */
-
-.info-strip {
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:12px;
-  margin:18px 0 25px;
-}
-
-.info-item {
-  display:flex;
-  align-items:center;
-  gap:13px;
-  padding:17px;
-  background:rgba(16,25,43,.82);
-  border:1px solid var(--border);
-  border-radius:16px;
-}
-
-.info-icon {
-  flex-shrink:0;
-  width:42px;
-  height:42px;
-  display:grid;
-  place-items:center;
-  border-radius:13px;
-  background:var(--surface2);
-  font-size:20px;
-}
-
-.info-item strong {
-  display:block;
-  font-size:13px;
-  margin-bottom:3px;
-}
-
-.info-item small {
-  color:var(--muted);
-  font-size:11px;
-}
-
-/* SEARCH */
-
-.search-row {
-  display:flex;
-  align-items:center;
-  gap:12px;
-  margin:26px 0 12px;
-}
-
-.search-box {
-  flex:1;
-  min-width:0;
-  display:flex;
-  align-items:center;
-  gap:12px;
-  padding:5px 17px;
-  border:1px solid var(--border);
-  background:var(--surface);
-  border-radius:15px;
-  transition:.2s;
-}
-
-.search-box:focus-within {
-  border-color:rgba(128,105,255,.75);
-  box-shadow:0 0 0 3px rgba(128,105,255,.09);
-}
-
-.search-icon {
-  color:var(--muted);
-  font-size:19px;
-}
-
-.search-box input {
-  flex:1;
-  min-width:0;
-  padding:13px 0;
-  color:white;
-  background:transparent;
-  border:0;
-  outline:none;
-  font-size:14px;
-}
-
-.search-box input::placeholder {
-  color:#71809b;
-}
-
-/* SECTIONS */
-
-.section {
-  margin-top:34px;
-}
-
-.section-head {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:12px;
-  margin-bottom:17px;
-}
-
-.section-head h2 {
-  font-size:21px;
-  letter-spacing:-.6px;
-}
-
-.section-subtitle {
-  color:var(--muted);
-  font-size:12px;
-  margin-top:5px;
-}
-
-.muted {
-  color:var(--muted);
-  font-size:12px;
-}
-
-/* CATEGORIES */
-
-.categories {
-  display:flex;
-  gap:9px;
-  overflow-x:auto;
-  padding:2px 1px 10px;
-  scrollbar-width:thin;
-}
-
-.category {
-  flex-shrink:0;
-  padding:11px 16px;
-  color:#aab6cc;
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:12px;
-  font-size:12px;
-  font-weight:800;
-  transition:.2s;
-}
-
-.category:hover {
-  border-color:rgba(128,105,255,.5);
-}
-
-.category.active {
-  color:white;
-  background:linear-gradient(135deg,#8069ff,#4c80e9);
-  border-color:transparent;
-  box-shadow:0 7px 18px rgba(103,96,255,.2);
-}
-
-/* APP GRID */
-
-.app-grid {
-  display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:16px;
-}
-
-.app-card {
-  position:relative;
-  min-width:0;
-  padding:18px;
-  overflow:hidden;
-  border:1px solid var(--border);
-  border-radius:20px;
-  background:linear-gradient(145deg,#121d31,#0f192a);
-  transition:transform .22s,border-color .22s,box-shadow .22s;
-}
-
-.app-card:hover {
-  transform:translateY(-4px);
-  border-color:rgba(128,105,255,.48);
-  box-shadow:0 15px 35px rgba(0,0,0,.23);
-}
-
-.app-card-top {
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-start;
-  gap:12px;
-}
-
-.app-icon {
-  width:67px;
-  height:67px;
-  display:grid;
-  place-items:center;
-  flex-shrink:0;
-  overflow:hidden;
-  border-radius:19px;
-  font-size:32px;
-  box-shadow:0 9px 22px rgba(0,0,0,.19);
-}
-
-.app-icon img {
-  width:100%;
-  height:100%;
-  object-fit:cover;
-}
-
-.icon-1 {background:linear-gradient(135deg,#7459ff,#bc69ff)}
-.icon-2 {background:linear-gradient(135deg,#00a8a8,#54d7c3)}
-.icon-3 {background:linear-gradient(135deg,#ef8d46,#ffbc63)}
-.icon-4 {background:linear-gradient(135deg,#e34a80,#ff8da9)}
-.icon-5 {background:linear-gradient(135deg,#2876dc,#55b5fa)}
-.icon-6 {background:linear-gradient(135deg,#b647e8,#7356ff)}
-
-.favorite {
-  width:35px;
-  height:35px;
-  display:grid;
-  place-items:center;
-  color:#aab5ca;
-  background:var(--surface2);
-  border:1px solid var(--border);
-  border-radius:11px;
-  font-size:19px;
-  transition:.2s;
-}
-
-.favorite.active {
-  color:#ff7695;
-  background:rgba(255,92,135,.1);
-  border-color:rgba(255,92,135,.19);
-}
-
-.app-card h3 {
-  margin-top:16px;
-  margin-bottom:6px;
-  font-size:16px;
-  letter-spacing:-.3px;
-}
-
-.app-description {
-  color:var(--muted);
-  font-size:12px;
-  line-height:1.7;
-  min-height:41px;
-  display:-webkit-box;
-  -webkit-line-clamp:2;
-  -webkit-box-orient:vertical;
-  overflow:hidden;
-}
-
-.app-meta {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:7px;
-  margin-top:14px;
-  color:#9ca9c1;
-  font-size:10px;
-}
-
-.app-tag {
-  padding:5px 8px;
-  color:#c4baff;
-  border:1px solid rgba(128,105,255,.2);
-  background:rgba(128,105,255,.1);
-  border-radius:7px;
-  font-weight:800;
-  font-size:9px;
-  text-transform:uppercase;
-}
-
-.details-btn {
-  width:100%;
-  margin-top:15px;
-  padding:11px;
-  color:white;
-  background:var(--surface2);
-  border:1px solid var(--border);
-  border-radius:11px;
-  font-size:12px;
-  font-weight:800;
-  transition:.2s;
-}
-
-.details-btn:hover {
-  background:#263b5d;
-  border-color:rgba(128,105,255,.4);
-}
-
-.empty {
-  grid-column:1/-1;
-  padding:48px 15px;
-  text-align:center;
-  color:var(--muted);
-  border:1px dashed var(--border);
-  border-radius:18px;
-  background:rgba(16,25,43,.5);
-}
-
-.empty-icon {
-  font-size:35px;
-  margin-bottom:12px;
-}
-
-/* SUBMIT AREA */
-
-.submit-area {
-  margin-top:24px;
-}
-
-.submit-box {
-  position:relative;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:20px;
-  padding:23px;
-  overflow:hidden;
-  background:
-    radial-gradient(circle at 95% 10%,rgba(119,98,255,.24),transparent 35%),
-    linear-gradient(115deg,#172344,#172d4a);
-  border:1px solid rgba(128,105,255,.22);
-  border-radius:19px;
-}
-
-.submit-box h3 {
-  font-size:16px;
-  margin-bottom:7px;
-}
-
-.submit-box p {
-  max-width:570px;
-  color:#aebbd3;
-  font-size:12px;
-  line-height:1.7;
-}
-
-/* FEATURES */
-
-.feature-grid {
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:14px;
-}
-
-.feature {
-  padding:21px;
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:17px;
-}
-
-.feature-icon {
-  width:44px;
-  height:44px;
-  display:grid;
-  place-items:center;
-  margin-bottom:14px;
-  border-radius:13px;
-  background:var(--surface2);
-  font-size:21px;
-}
-
-.feature h3 {
-  font-size:14px;
-  margin-bottom:8px;
-}
-
-.feature p {
-  color:var(--muted);
-  font-size:12px;
-  line-height:1.7;
-}
-
-/* FOOTER */
-
-.footer {
-  margin-top:45px;
-  padding:28px 18px;
-  text-align:center;
-  color:var(--muted);
-  border-top:1px solid var(--border);
-  font-size:11px;
-}
-
-.footer .logo {
-  justify-content:center;
-  margin-bottom:13px;
-  font-size:20px;
-}
-
-.footer .logo-icon {
-  width:35px;
-  height:35px;
-  border-radius:12px;
-  font-size:19px;
-}
-
-/* MODALS */
-
-.modal {
-  display:none;
-  position:fixed;
-  inset:0;
-  z-index:100;
-  padding:16px;
-  align-items:center;
-  justify-content:center;
-  background:rgba(2,6,15,.79);
-  backdrop-filter:blur(9px);
-}
-
-.modal.show {
-  display:flex;
-}
-
-.modal-box {
-  width:100%;
-  max-width:460px;
-  max-height:91vh;
-  overflow:auto;
-  padding:24px;
-  color:var(--text);
-  background:#111b2e;
-  border:1px solid rgba(255,255,255,.12);
-  border-radius:22px;
-  box-shadow:0 25px 80px rgba(0,0,0,.5);
-  animation:modalIn .22s ease;
-}
-
-@keyframes modalIn {
-  from {opacity:0;transform:translateY(12px) scale(.98)}
-  to {opacity:1;transform:translateY(0) scale(1)}
-}
-
-.admin-modal {
-  max-width:850px;
-}
-
-.modal-head {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:12px;
-  margin-bottom:20px;
-}
-
-.modal-head h2 {
-  font-size:19px;
-}
-
-.close-btn {
-  width:36px;
-  height:36px;
-  flex-shrink:0;
-  color:white;
-  background:var(--surface2);
-  border:1px solid var(--border);
-  border-radius:10px;
-  font-size:21px;
-}
-
-/* FORMS */
-
-.auth-tabs {
-  display:flex;
-  gap:5px;
-  padding:5px;
-  margin-bottom:18px;
-  background:#0a1221;
-  border-radius:12px;
-}
-
-.auth-tab {
-  flex:1;
-  padding:11px 6px;
-  color:var(--muted);
-  background:transparent;
-  border-radius:9px;
-  font-size:12px;
-  font-weight:800;
-}
-
-.auth-tab.active {
-  color:white;
+    radial-gradient(circle at 85% 20%,#9274ff55,transparent 30%),
+    linear-gradient(120deg,#1c2550,#192c4d);
+}
+.hero-content{position:relative;z-index:2;max-width:650px}
+.eyebrow{
+  display:inline-block;padding:8px 12px;margin-bottom:19px;
+  border-radius:30px;background:#ffffff12;color:#d4ccff;
+  font-size:11px;font-weight:800;letter-spacing:1px;
+}
+.hero h1{font-size:clamp(34px,5.5vw,55px);line-height:1.12;letter-spacing:-1.8px}
+.hero h1 span{color:#b8adff}
+.hero p{max-width:550px;color:#d0d8ef;font-size:14px;line-height:1.8;margin:17px 0 24px}
+.hero-art{
+  position:absolute;right:7%;top:50%;transform:translateY(-50%);
+  font-size:150px;opacity:.45;
+}
+.hero-buttons{display:flex;gap:10px;flex-wrap:wrap}
+.info-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:17px 0 25px}
+.info-item{
+  display:flex;align-items:center;gap:12px;padding:16px;
+  background:var(--surface);border:1px solid var(--border);border-radius:15px;
+}
+.info-icon{
+  width:42px;height:42px;display:grid;place-items:center;
+  background:var(--surface2);border-radius:12px;font-size:20px;flex-shrink:0;
+}
+.info-item strong{display:block;font-size:13px;margin-bottom:4px}
+.info-item small{color:var(--muted);font-size:11px}
+.search-box{
+  display:flex;gap:12px;align-items:center;padding:5px 16px;
+  background:var(--surface);border:1px solid var(--border);border-radius:14px;
+}
+.search-box input{
+  width:100%;min-width:0;padding:14px 0;background:transparent;
+  color:white;border:0;outline:0;font-size:13px;
+}
+.search-box input::placeholder{color:#8290a8}
+.section{margin-top:32px}
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}
+.section-head h2{font-size:21px}
+.subtitle{color:var(--muted);font-size:12px;margin-top:5px}
+.muted{color:var(--muted);font-size:12px}
+.categories{display:flex;gap:9px;overflow-x:auto;padding-bottom:9px}
+.category{
+  flex-shrink:0;padding:11px 15px;border-radius:11px;
+  color:var(--muted);background:var(--surface);
+  border:1px solid var(--border);font-size:12px;font-weight:800;
+}
+.category.active{color:white;background:linear-gradient(135deg,var(--accent),var(--accent2))}
+.app-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.app-card{
+  min-width:0;padding:17px;border-radius:18px;
+  background:linear-gradient(145deg,#142039,#10192b);
+  border:1px solid var(--border);transition:.2s;
+}
+.app-card:hover{transform:translateY(-3px);border-color:#8069ff77}
+.app-top{display:flex;justify-content:space-between;align-items:flex-start}
+.app-icon{
+  width:62px;height:62px;display:grid;place-items:center;
+  border-radius:17px;font-size:29px;overflow:hidden;flex-shrink:0;
+}
+.app-icon img{width:100%;height:100%;object-fit:cover}
+.icon-1{background:linear-gradient(135deg,#7459ff,#bc69ff)}
+.icon-2{background:linear-gradient(135deg,#00a8a8,#54d7c3)}
+.icon-3{background:linear-gradient(135deg,#ef8d46,#ffbc63)}
+.icon-4{background:linear-gradient(135deg,#e34a80,#ff8da9)}
+.icon-5{background:linear-gradient(135deg,#2876dc,#55b5fa)}
+.icon-6{background:linear-gradient(135deg,#b647e8,#7356ff)}
+.favorite{
+  width:34px;height:34px;border-radius:10px;
+  color:#aab5ca;background:var(--surface2);font-size:19px;
+}
+.favorite.active{color:#ff7695}
+.app-card h3{margin:14px 0 6px;font-size:16px}
+.app-description{
+  min-height:39px;color:var(--muted);font-size:12px;line-height:1.6;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+.app-meta{display:flex;justify-content:space-between;gap:8px;margin-top:13px;color:var(--muted);font-size:10px}
+.app-tag{padding:5px 8px;background:#8069ff18;color:#c9bdff;border-radius:7px;font-size:9px;font-weight:800}
+.details-btn{
+  width:100%;margin-top:14px;padding:11px;border-radius:10px;
+  color:white;background:var(--surface2);font-size:12px;font-weight:800;
+}
+.empty{
+  grid-column:1/-1;text-align:center;padding:40px 15px;
+  border:1px dashed var(--border);border-radius:16px;color:var(--muted);
+}
+.submit-area{margin-top:20px}
+.submit-box{
+  display:flex;justify-content:space-between;align-items:center;gap:15px;
+  padding:21px;border-radius:17px;
+  background:linear-gradient(120deg,#1d2a51,#183553);
+  border:1px solid #8069ff44;
+}
+.submit-box h3{font-size:16px;margin-bottom:7px}
+.submit-box p{max-width:550px;color:#b8c4da;font-size:12px;line-height:1.6}
+.feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}
+.feature{padding:20px;background:var(--surface);border:1px solid var(--border);border-radius:16px}
+.feature-icon{font-size:25px;margin-bottom:12px}
+.feature h3{font-size:14px;margin-bottom:7px}
+.feature p{color:var(--muted);font-size:12px;line-height:1.6}
+.footer{
+  padding:28px 15px;text-align:center;color:var(--muted);
+  border-top:1px solid var(--border);font-size:11px;
+}
+.footer .logo{justify-content:center;margin-bottom:12px}
+.modal{
+  display:none;position:fixed;inset:0;z-index:100;padding:15px;
+  align-items:center;justify-content:center;
+  background:#000b;backdrop-filter:blur(8px);
+}
+.modal.show{display:flex}
+.modal-box{
+  width:100%;max-width:460px;max-height:92vh;overflow:auto;
+  padding:22px;background:#111b2e;border:1px solid var(--border);
+  border-radius:20px;box-shadow:0 20px 70px #0008;
+}
+.admin-modal{max-width:850px}
+.modal-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}
+.modal-head h2{font-size:19px}
+.close-btn{
+  width:35px;height:35px;border-radius:9px;background:var(--surface2);
+  color:white;font-size:21px;
+}
+.auth-tabs{display:flex;gap:5px;padding:5px;background:#091323;border-radius:11px;margin-bottom:17px}
+.auth-tab{flex:1;padding:11px;color:var(--muted);background:transparent;border-radius:8px;font-size:12px;font-weight:800}
+.auth-tab.active{background:var(--accent);color:white}
+.form-group{margin-bottom:12px}
+.form-group label{display:block;margin-bottom:7px;color:#c7d0e3;font-size:12px;font-weight:700}
+.form-group input,.form-group textarea,.form-group select{
+  width:100%;padding:12px;color:white;background:#0a1425;
+  border:1px solid var(--border);border-radius:10px;outline:0;font-size:12px;
+}
+.form-group textarea{min-height:95px;resize:vertical}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:var(--accent)}
+.form-group input[type=file]{padding:10px}
+.form-group select option{background:#111b2e}
+.submit-btn{
+  width:100%;padding:13px;margin-top:5px;border-radius:11px;
   background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:white;font-weight:800;font-size:13px;
 }
-
-.form-group {
-  margin-bottom:13px;
+.submit-btn:disabled{opacity:.6}
+.form-note{text-align:center;margin-top:12px;color:var(--muted);font-size:11px;line-height:1.6}
+.error,.success{padding:10px;margin-bottom:12px;border-radius:9px;font-size:12px}
+.error{color:#ff9ba8;background:#ff506e18}
+.success{color:#75e5b5;background:#23c98b18}
+.link-btn{display:block;margin:13px auto 0;color:#b4a7ff;background:none;font-size:12px}
+.profile-info{padding:17px;background:var(--surface2);border-radius:13px;margin-bottom:14px;overflow-wrap:anywhere}
+.profile-info small{color:var(--muted)}
+.admin-filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:15px}
+.admin-filter{padding:9px 12px;color:var(--muted);background:var(--surface2);border-radius:9px;font-size:11px;font-weight:800}
+.admin-filter.active{background:var(--accent);color:white}
+.admin-list{display:grid;gap:12px}
+.admin-app{padding:15px;background:#0b1424;border:1px solid var(--border);border-radius:14px}
+.admin-app-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap}
+.admin-app h3{font-size:14px;overflow-wrap:anywhere}
+.admin-app p{margin-top:7px;color:var(--muted);font-size:11px;line-height:1.7;overflow-wrap:anywhere}
+.status{display:inline-block;padding:6px 9px;border-radius:7px;font-size:10px;font-weight:800}
+.status-pending{color:#ffcf65;background:#f59e0b20}
+.status-approved{color:#69e5a4;background:#22c55e20}
+.status-rejected{color:#ff8595;background:#ef444420}
+.admin-apk-form{padding:13px;margin-top:13px;background:var(--surface);border:1px solid var(--border);border-radius:11px}
+.admin-apk-form h4{margin-bottom:12px;font-size:13px}
+.admin-apk-form .form-group{margin-bottom:9px}
+.admin-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.admin-action{padding:9px 12px;border-radius:8px;color:white;font-size:11px;font-weight:800}
+.approve-btn{background:#167a4a}
+.reject-btn{background:#a65b16}
+.delete-btn{background:#a52b3f}
+.apk-save-btn{background:#315da8}
+.apk-upload-btn{background:linear-gradient(135deg,#158451,#20b87d)}
+.upload-status{margin-top:9px;color:#9ba9c2;font-size:11px;line-height:1.5}
+.admin-empty{text-align:center;padding:28px;color:var(--muted);background:#0b1424;border-radius:12px;font-size:12px}
+.download-btn{
+  display:block;margin-top:18px;padding:14px;text-align:center;
+  color:white;text-decoration:none;border-radius:11px;
+  background:linear-gradient(135deg,#13834d,#20b87d);font-weight:800;font-size:13px;
 }
-
-.form-group label {
-  display:block;
-  margin-bottom:7px;
-  color:#c4cde0;
-  font-size:12px;
-  font-weight:700;
+.toast{
+  position:fixed;z-index:200;left:50%;bottom:25px;
+  max-width:90%;padding:13px 17px;border-radius:12px;
+  color:white;background:#263858;border:1px solid var(--border);
+  text-align:center;font-size:12px;opacity:0;pointer-events:none;
+  transform:translate(-50%,25px);transition:.25s;
 }
-
-.form-group input,
-.form-group textarea,
-.form-group select {
-  width:100%;
-  padding:13px 14px;
-  color:white;
-  background:#0b1424;
-  border:1px solid var(--border);
-  border-radius:11px;
-  outline:none;
-  font-size:13px;
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.mobile-nav{display:none}
+@media(max-width:850px){
+  .app-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .hero-art{right:0;opacity:.25}
 }
-
-.form-group input:focus,
-.form-group textarea:focus,
-.form-group select:focus {
-  border-color:var(--accent);
-}
-
-.form-group textarea {
-  min-height:100px;
-  resize:vertical;
-}
-
-.form-group select option {
-  color:white;
-  background:#111b2e;
-}
-
-.submit-btn {
-  width:100%;
-  padding:14px;
-  margin-top:5px;
-  color:white;
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
-  border-radius:12px;
-  font-size:13px;
-  font-weight:800;
-}
-
-.submit-btn:disabled {
-  opacity:.6;
-  cursor:wait;
-}
-
-.form-note {
-  margin-top:13px;
-  color:var(--muted);
-  text-align:center;
-  font-size:11px;
-  line-height:1.7;
-}
-
-.error {
-  margin-bottom:12px;
-  padding:10px 12px;
-  color:#ff9ba8;
-  background:rgba(255,80,110,.09);
-  border:1px solid rgba(255,80,110,.17);
-  border-radius:10px;
-  font-size:12px;
-  line-height:1.5;
-}
-
-.success {
-  margin-bottom:12px;
-  padding:10px 12px;
-  color:#75e5b5;
-  background:rgba(35,201,139,.09);
-  border:1px solid rgba(35,201,139,.17);
-  border-radius:10px;
-  font-size:12px;
-  line-height:1.5;
-}
-
-.link-btn {
-  display:block;
-  margin:13px auto 0;
-  color:#b4a7ff;
-  background:transparent;
-  font-size:12px;
-}
-
-.profile-info {
-  padding:17px;
-  margin-bottom:15px;
-  background:var(--surface2);
-  border:1px solid var(--border);
-  border-radius:14px;
-  overflow-wrap:anywhere;
-}
-
-.profile-info small {
-  color:var(--muted);
-  font-size:11px;
-}
-
-/* ADMIN */
-
-.admin-filters {
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
-  margin-bottom:16px;
-}
-
-.admin-filter {
-  padding:9px 13px;
-  color:var(--muted);
-  background:var(--surface2);
-  border:1px solid var(--border);
-  border-radius:9px;
-  font-size:11px;
-  font-weight:800;
-}
-
-.admin-filter.active {
-  color:white;
-  background:var(--accent);
-}
-
-.admin-list {
-  display:grid;
-  gap:12px;
-}
-
-.admin-app {
-  padding:16px;
-  background:#0b1424;
-  border:1px solid var(--border);
-  border-radius:15px;
-}
-
-.admin-app-top {
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-start;
-  flex-wrap:wrap;
-  gap:10px;
-}
-
-.admin-app h3 {
-  font-size:15px;
-  overflow-wrap:anywhere;
-}
-
-.admin-app p {
-  margin-top:7px;
-  color:var(--muted);
-  font-size:11px;
-  line-height:1.7;
-  overflow-wrap:anywhere;
-}
-
-.status {
-  display:inline-block;
-  padding:6px 9px;
-  border-radius:7px;
-  font-size:10px;
-  font-weight:800;
-}
-
-.status-pending {
-  color:#ffcf65;
-  background:rgba(245,158,11,.13);
-}
-
-.status-approved {
-  color:#69e5a4;
-  background:rgba(34,197,94,.13);
-}
-
-.status-rejected {
-  color:#ff8595;
-  background:rgba(239,68,68,.13);
-}
-
-.admin-apk-form {
-  padding:14px;
-  margin-top:14px;
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:12px;
-}
-
-.admin-apk-form h4 {
-  margin-bottom:12px;
-  font-size:12px;
-}
-
-.admin-apk-form .form-group {
-  margin-bottom:9px;
-}
-
-.admin-apk-form .form-group label {
-  font-size:11px;
-}
-
-.admin-apk-form .form-group input {
-  padding:11px;
-  font-size:11px;
-}
-
-.admin-actions {
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
-  margin-top:13px;
-}
-
-.admin-action {
-  padding:9px 12px;
-  color:white;
-  border-radius:9px;
-  font-size:11px;
-  font-weight:800;
-}
-
-.approve-btn {background:#167a4a}
-.reject-btn {background:#a65b16}
-.delete-btn {background:#a52b3f}
-.apk-save-btn {background:#315da8}
-
-.admin-empty {
-  padding:30px 12px;
-  color:var(--muted);
-  text-align:center;
-  background:#0b1424;
-  border:1px dashed var(--border);
-  border-radius:13px;
-  font-size:12px;
-  line-height:1.7;
-}
-
-/* DOWNLOAD */
-
-.download-btn {
-  display:block;
-  width:100%;
-  margin-top:20px;
-  padding:14px;
-  color:white;
-  text-align:center;
-  text-decoration:none;
-  background:linear-gradient(135deg,#13834d,#20b87d);
-  border-radius:12px;
-  font-size:13px;
-  font-weight:800;
-}
-
-.download-btn:hover {
-  opacity:.9;
-}
-
-/* TOAST */
-
-.toast {
-  position:fixed;
-  z-index:200;
-  left:50%;
-  bottom:25px;
-  max-width:90%;
-  padding:13px 18px;
-  color:white;
-  background:#223552;
-  border:1px solid var(--border);
-  border-radius:12px;
-  box-shadow:var(--shadow);
-  text-align:center;
-  font-size:12px;
-  opacity:0;
-  pointer-events:none;
-  transform:translate(-50%,25px);
-  transition:.25s;
-}
-
-.toast.show {
-  opacity:1;
-  transform:translate(-50%,0);
-}
-
-/* MOBILE NAVIGATION */
-
-.mobile-nav {
-  display:none;
-}
-
-/* RESPONSIVE */
-
-@media(max-width:900px) {
-  .nav {display:none}
-  .app-grid {grid-template-columns:repeat(2,minmax(0,1fr))}
-  .hero-art {right:2%;opacity:.72}
-}
-
-@media(max-width:650px) {
-  .header-inner {
-    min-height:66px;
-    padding:10px 13px;
-    gap:8px;
+@media(max-width:620px){
+  .header-inner{padding:10px 12px;min-height:62px}
+  .logo{font-size:19px;gap:8px}
+  .logo-icon{width:36px;height:36px}
+  .header-actions{gap:5px}
+  .header-actions .btn{font-size:10px;padding:9px}
+  .profile-btn{max-width:85px}
+  .container{padding:15px 12px 100px}
+  .hero{padding:29px 20px;border-radius:20px;min-height:300px}
+  .hero h1{font-size:35px}
+  .hero p{font-size:12px}
+  .hero-art{right:-60px;top:70%;font-size:110px}
+  .info-strip{grid-template-columns:1fr;gap:8px}
+  .info-item{padding:12px}
+  .section{margin-top:26px}
+  .section-head h2{font-size:18px}
+  .app-grid{gap:9px}
+  .app-card{padding:12px;border-radius:15px}
+  .app-icon{width:52px;height:52px;font-size:25px}
+  .app-card h3{font-size:14px}
+  .app-description{font-size:11px}
+  .details-btn{font-size:10px}
+  .feature-grid{grid-template-columns:1fr}
+  .submit-box{align-items:flex-start;flex-direction:column}
+  .submit-box .btn{width:100%}
+  .mobile-nav{
+    position:fixed;z-index:40;display:grid;grid-template-columns:repeat(3,1fr);
+    left:10px;right:10px;bottom:9px;padding:7px;
+    background:#111b2eef;border:1px solid var(--border);
+    border-radius:15px;backdrop-filter:blur(15px);
   }
-
-  .logo {
-    font-size:20px;
-    gap:8px;
-  }
-
-  .logo-icon {
-    width:37px;
-    height:37px;
-    border-radius:12px;
-    font-size:20px;
-  }
-
-  .header-actions {gap:6px}
-  .header-actions .btn {
-    padding:10px 11px;
-    font-size:11px;
-  }
-
-  .profile-btn {max-width:100px}
-
-  .container {
-    padding:17px 13px 105px;
-  }
-
-  .hero {
-    min-height:315px;
-    padding:29px 22px;
-    border-radius:21px;
-  }
-
-  .hero h1 {
-    max-width:470px;
-    font-size:36px;
-    letter-spacing:-1.5px;
-  }
-
-  .hero p {
-    max-width:390px;
-    font-size:12px;
-  }
-
-  .hero-art {
-    right:-65px;
-    top:65%;
-    transform:translateY(-50%) scale(.78);
-    opacity:.3;
-  }
-
-  .info-strip {
-    grid-template-columns:1fr;
-    gap:8px;
-    margin:12px 0 20px;
-  }
-
-  .info-item {
-    padding:12px;
-  }
-
-  .info-icon {
-    width:37px;
-    height:37px;
-  }
-
-  .section {
-    margin-top:27px;
-  }
-
-  .section-head h2 {
-    font-size:18px;
-  }
-
-  .app-grid {
-    gap:10px;
-  }
-
-  .app-card {
-    padding:13px;
-    border-radius:16px;
-  }
-
-  .app-icon {
-    width:54px;
-    height:54px;
-    border-radius:15px;
-    font-size:26px;
-  }
-
-  .app-card h3 {
-    font-size:14px;
-    margin-top:13px;
-  }
-
-  .app-description {
-    font-size:11px;
-    min-height:38px;
-  }
-
-  .app-meta {
-    flex-wrap:wrap;
-    font-size:9px;
-  }
-
-  .details-btn {
-    padding:10px 6px;
-    font-size:10px;
-  }
-
-  .feature-grid {
-    grid-template-columns:1fr;
-    gap:9px;
-  }
-
-  .feature {
-    padding:16px;
-  }
-
-  .submit-box {
-    align-items:flex-start;
-    flex-direction:column;
-    padding:18px;
-  }
-
-  .submit-box .btn {
-    width:100%;
-  }
-
-  .mobile-nav {
-    position:fixed;
-    z-index:40;
-    left:10px;
-    right:10px;
-    bottom:9px;
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:5px;
-    padding:8px;
-    background:rgba(16,25,43,.95);
-    border:1px solid var(--border);
-    border-radius:17px;
-    box-shadow:0 10px 40px rgba(0,0,0,.4);
-    backdrop-filter:blur(18px);
-  }
-
-  .mobile-nav button {
-    padding:9px 4px;
-    color:var(--muted);
-    background:transparent;
-    border-radius:10px;
-    font-size:10px;
-    font-weight:800;
-  }
-
-  .mobile-nav button.active {
-    color:white;
-    background:var(--surface3);
-  }
-
-  .mobile-nav span {
-    display:block;
-    margin-bottom:4px;
-    font-size:17px;
-  }
-
-  .footer {
-    margin-top:30px;
-  }
-
-  .modal-box {
-    padding:19px;
-    border-radius:18px;
-  }
+  .mobile-nav button{padding:8px 4px;color:var(--muted);background:transparent;font-size:10px;font-weight:800}
+  .mobile-nav button.active{color:white;background:var(--surface2);border-radius:9px}
+  .mobile-nav span{display:block;font-size:17px;margin-bottom:3px}
 }
-
-@media(max-width:370px) {
-  .hero h1 {font-size:30px}
-  .app-grid {grid-template-columns:1fr}
-  .app-card {padding:16px}
-  .header-actions .btn {padding:9px}
-}
+@media(max-width:370px){.app-grid{grid-template-columns:1fr}.hero h1{font-size:30px}}
 </style>
 </head>
 
@@ -1327,656 +310,289 @@ select:focus-visible {
 
 <header class="header">
   <div class="header-inner">
-
     <div class="logo">
       <div class="logo-icon">A</div>
-      <div class="logo-word">App<span>Zone</span></div>
+      <div>App<span>Zone</span></div>
     </div>
-
-    <nav class="nav">
-      <button class="active" onclick="showHome()">Bosh sahifa</button>
-      <button onclick="scrollToApps()">Ilovalar</button>
-      <button onclick="showFavorites()">Sevimlilar</button>
-    </nav>
 
     <div class="header-actions">
-      <button class="btn btn-outline" id="installBtn" hidden>
-        ⬇ O‘rnatish
-      </button>
-
-      <button class="btn btn-admin" id="adminButton"
-        onclick="openAdminPanel()" hidden>
-        ⚙ Admin
-      </button>
-
-      <button class="btn" id="authButton" onclick="openAuth()">
-        Kirish
-      </button>
-
-      <button class="btn profile-btn" id="profileButton"
-        onclick="openProfile()" hidden>
-        Profil
-      </button>
+      <button class="btn btn-outline" id="installBtn" hidden>⬇ O‘rnatish</button>
+      <button class="btn btn-admin" id="adminButton" onclick="openAdminPanel()" hidden>⚙ Admin</button>
+      <button class="btn" id="authButton" onclick="openAuth()">Kirish</button>
+      <button class="btn profile-btn" id="profileButton" onclick="openProfile()" hidden>Profil</button>
     </div>
-
   </div>
 </header>
 
 <main class="container">
 
   <section class="hero" id="homeSection">
-
+    <div class="hero-art">📱</div>
     <div class="hero-content">
-
-      <div class="eyebrow">
-        <span class="eyebrow-dot"></span>
-        YANGI AVLOD ILOVALAR PLATFORMASI
-      </div>
-
-      <h1>
-        Raqamli dunyoni
-        <span>AppZone</span> bilan kashf eting.
-      </h1>
-
+      <div class="eyebrow">✦ YANGI AVLOD ILOVALAR PLATFORMASI</div>
+      <h1>Raqamli dunyoni <span>AppZone</span> bilan kashf eting.</h1>
       <p>
         Sevimli ilovalaringizni toping, yangi imkoniyatlarni kashf qiling
         va o‘z ilovangizni AppZone hamjamiyatiga taqdim eting.
       </p>
-
       <div class="hero-buttons">
-        <button class="btn" onclick="scrollToApps()">
-          Ilovalarni ko‘rish →
-        </button>
-
-        <button class="btn btn-outline" onclick="openSubmitApp()">
-          + Ilova joylash
-        </button>
-      </div>
-
-    </div>
-
-    <div class="hero-art">
-      <div class="art-circle"></div>
-
-      <div class="art-phone">
-        <div class="art-phone-top"></div>
-
-        <div class="art-icons">
-          <div>📸</div>
-          <div>🎮</div>
-          <div>📚</div>
-          <div>🎵</div>
-          <div>🧮</div>
-          <div>🚀</div>
-        </div>
+        <button class="btn" onclick="scrollToApps()">Ilovalarni ko‘rish →</button>
+        <button class="btn btn-outline" onclick="openSubmitApp()">+ Ilova joylash</button>
       </div>
     </div>
-
   </section>
 
   <section class="info-strip">
-
     <div class="info-item">
       <div class="info-icon">🔎</div>
-      <div>
-        <strong>Oson qidiruv</strong>
-        <small>Kerakli ilovani tez toping</small>
-      </div>
+      <div><strong>Oson qidiruv</strong><small>Kerakli ilovani tez toping</small></div>
     </div>
-
     <div class="info-item">
       <div class="info-icon">🛡️</div>
-      <div>
-        <strong>Admin tekshiruvi</strong>
-        <small>Yuborilgan ilovalar nazorat qilinadi</small>
-      </div>
+      <div><strong>Admin tekshiruvi</strong><small>Ilovalar nazoratdan o‘tadi</small></div>
     </div>
-
     <div class="info-item">
       <div class="info-icon">🚀</div>
-      <div>
-        <strong>Dasturchilar uchun</strong>
-        <small>O‘z ilovangizni taqdim eting</small>
-      </div>
+      <div><strong>Dasturchilar uchun</strong><small>O‘z ilovangizni taqdim eting</small></div>
     </div>
-
   </section>
 
-  <div class="search-row">
-    <div class="search-box">
-      <span class="search-icon">⌕</span>
-      <input id="searchInput" type="search"
-        placeholder="Ilovalar, o‘yinlar va vositalarni qidiring...">
-      <span class="muted">⌕</span>
-    </div>
+  <div class="search-box">
+    <span>⌕</span>
+    <input id="searchInput" type="search" placeholder="Ilovalar va o‘yinlarni qidiring...">
   </div>
 
   <section class="submit-area" id="submitArea" hidden>
     <div class="submit-box">
-
       <div>
         <h3>📤 Ilovangizni AppZone'ga joylang</h3>
-        <p>
-          Ilova ma’lumotlarini yuboring. Admin tekshiruvidan
-          so‘ng tasdiqlangan ilova katalogda ko‘rinadi.
-        </p>
+        <p>Ilova ma’lumotlarini yuboring. Admin tekshirganidan keyin katalogda ko‘rinadi.</p>
       </div>
-
-      <button class="btn" onclick="openSubmitApp()">
-        + Ilova yuborish
-      </button>
-
+      <button class="btn" onclick="openSubmitApp()">+ Ilova yuborish</button>
     </div>
-  </section>
-
-  <section class="section" id="categoriesSection">
-
-    <div class="section-head">
-      <div>
-        <h2>Kategoriyalar</h2>
-        <p class="section-subtitle">
-          O‘zingizga kerakli yo‘nalishni tanlang
-        </p>
-      </div>
-    </div>
-
-    <div class="categories" id="categories"></div>
-
-  </section>
-
-  <section class="section" id="appsSection">
-
-    <div class="section-head">
-      <div>
-        <h2 id="appsTitle">Ommabop ilovalar</h2>
-        <p class="section-subtitle" id="appsSubtitle">
-          AppZone katalogidagi ilovalar
-        </p>
-      </div>
-
-      <span class="muted" id="appCount">0 ta ilova</span>
-    </div>
-
-    <div class="app-grid" id="appGrid"></div>
-
   </section>
 
   <section class="section">
-
     <div class="section-head">
-      <div>
-        <h2>Nega AppZone?</h2>
-        <p class="section-subtitle">
-          Foydalanuvchilar va dasturchilar uchun yagona platforma
-        </p>
-      </div>
+      <div><h2>Kategoriyalar</h2><p class="subtitle">Kerakli yo‘nalishni tanlang</p></div>
     </div>
+    <div class="categories" id="categories"></div>
+  </section>
 
+  <section class="section" id="appsSection">
+    <div class="section-head">
+      <div><h2 id="appsTitle">Ommabop ilovalar</h2><p class="subtitle" id="appsSubtitle">AppZone katalogidagi ilovalar</p></div>
+      <span class="muted" id="appCount">0 ta ilova</span>
+    </div>
+    <div class="app-grid" id="appGrid"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><div><h2>Nega AppZone?</h2><p class="subtitle">Foydalanuvchi va dasturchilar uchun platforma</p></div></div>
     <div class="feature-grid">
-
-      <div class="feature">
-        <div class="feature-icon">🔍</div>
-        <h3>Oson qidiruv</h3>
-        <p>
-          Ilovalarni nomi, tavsifi va kategoriyasi orqali topish mumkin.
-        </p>
-      </div>
-
-      <div class="feature">
-        <div class="feature-icon">⭐</div>
-        <h3>Sevimlilar</h3>
-        <p>
-          O‘zingiz yoqtirgan ilovalarni sevimlilar ro‘yxatiga saqlang.
-        </p>
-      </div>
-
-      <div class="feature">
-        <div class="feature-icon">🔐</div>
-        <h3>Shaxsiy profil</h3>
-        <p>
-          Akkauntingiz orqali tizimga kiring va ilovalaringizni boshqaring.
-        </p>
-      </div>
-
+      <div class="feature"><div class="feature-icon">🔍</div><h3>Oson qidiruv</h3><p>Ilovalarni nomi, tavsifi va kategoriyasi orqali toping.</p></div>
+      <div class="feature"><div class="feature-icon">⭐</div><h3>Sevimlilar</h3><p>Yoqtirgan ilovalaringizni sevimlilar ro‘yxatiga saqlang.</p></div>
+      <div class="feature"><div class="feature-icon">🔐</div><h3>Shaxsiy profil</h3><p>Akkauntingiz orqali platformaga kiring va profilingizni boshqaring.</p></div>
     </div>
-
   </section>
 
 </main>
 
 <footer class="footer">
-
-  <div class="logo">
-    <div class="logo-icon">A</div>
-    <div class="logo-word">App<span>Zone</span></div>
+  <div class="logo" style="justify-content:center;margin-bottom:12px">
+    <div class="logo-icon">A</div><div>App<span>Zone</span></div>
   </div>
-
   <p>© 2026 AppZone. Barcha huquqlar himoyalangan.</p>
-  <p style="margin-top:7px">
-    Ilovalar dunyosi — bir joyda.
-  </p>
-
+  <p style="margin-top:7px">Ilovalar dunyosi — bir joyda.</p>
 </footer>
 
 <nav class="mobile-nav">
-  <button class="active" id="mobileHome" onclick="showHome()">
-    <span>⌂</span>
-    Bosh sahifa
-  </button>
-
-  <button id="mobileApps" onclick="scrollToApps()">
-    <span>▦</span>
-    Ilovalar
-  </button>
-
-  <button id="mobileFavorites" onclick="showFavorites()">
-    <span>♡</span>
-    Sevimlilar
-  </button>
+  <button class="active" id="mobileHome" onclick="showHome()"><span>⌂</span>Bosh sahifa</button>
+  <button id="mobileApps" onclick="scrollToApps()"><span>▦</span>Ilovalar</button>
+  <button id="mobileFavorites" onclick="showFavorites()"><span>♡</span>Sevimlilar</button>
 </nav>
 
-<!-- AUTH MODAL -->
-
+<!-- AUTH -->
 <div class="modal" id="authModal">
   <div class="modal-box">
-
-    <div class="modal-head">
-      <h2>AppZone akkaunti</h2>
-      <button class="close-btn" onclick="closeModal('authModal')">×</button>
-    </div>
-
+    <div class="modal-head"><h2>AppZone akkaunti</h2><button class="close-btn" onclick="closeModal('authModal')">×</button></div>
     <div class="auth-tabs">
-      <button class="auth-tab active" id="loginTab"
-        onclick="switchAuth('login')">
-        Kirish
-      </button>
-
-      <button class="auth-tab" id="registerTab"
-        onclick="switchAuth('register')">
-        Ro‘yxatdan o‘tish
-      </button>
+      <button class="auth-tab active" id="loginTab" onclick="switchAuth('login')">Kirish</button>
+      <button class="auth-tab" id="registerTab" onclick="switchAuth('register')">Ro‘yxatdan o‘tish</button>
     </div>
-
     <div id="authMessage"></div>
-
     <form id="loginForm">
-
-      <div class="form-group">
-        <label>Email manzilingiz</label>
-        <input type="email" id="loginEmail" required
-          placeholder="example@gmail.com">
-      </div>
-
-      <div class="form-group">
-        <label>Parol</label>
-        <input type="password" id="loginPassword"
-          required minlength="6" placeholder="Parolingiz">
-      </div>
-
-      <button class="submit-btn" type="submit">
-        Akkauntga kirish
-      </button>
-
-      <button class="link-btn" type="button" onclick="resetPassword()">
-        Parolni unutdingizmi?
-      </button>
-
+      <div class="form-group"><label>Email</label><input type="email" id="loginEmail" required placeholder="example@gmail.com"></div>
+      <div class="form-group"><label>Parol</label><input type="password" id="loginPassword" required minlength="6" placeholder="Parolingiz"></div>
+      <button class="submit-btn" type="submit">Akkauntga kirish</button>
+      <button class="link-btn" type="button" onclick="resetPassword()">Parolni unutdingizmi?</button>
     </form>
-
     <form id="registerForm" hidden>
-
-      <div class="form-group">
-        <label>Email manzilingiz</label>
-        <input type="email" id="registerEmail"
-          required placeholder="example@gmail.com">
-      </div>
-
-      <div class="form-group">
-        <label>Parol</label>
-        <input type="password" id="registerPassword"
-          required minlength="6" placeholder="Kamida 6 ta belgi">
-      </div>
-
-      <div class="form-group">
-        <label>Parolni tasdiqlang</label>
-        <input type="password" id="confirmPassword"
-          required minlength="6" placeholder="Parolni qayta kiriting">
-      </div>
-
-      <button class="submit-btn" type="submit">
-        Akkaunt yaratish
-      </button>
-
+      <div class="form-group"><label>Email</label><input type="email" id="registerEmail" required placeholder="example@gmail.com"></div>
+      <div class="form-group"><label>Parol</label><input type="password" id="registerPassword" required minlength="6" placeholder="Kamida 6 ta belgi"></div>
+      <div class="form-group"><label>Parolni tasdiqlang</label><input type="password" id="confirmPassword" required minlength="6" placeholder="Parolni qayta kiriting"></div>
+      <button class="submit-btn" type="submit">Akkaunt yaratish</button>
     </form>
-
-    <p class="form-note">
-      AppZone akkauntingiz orqali platforma xizmatlaridan foydalaning.
-    </p>
-
+    <p class="form-note">Akkauntingiz orqali AppZone xizmatlaridan foydalaning.</p>
   </div>
 </div>
 
-<!-- PROFILE MODAL -->
-
+<!-- PROFILE -->
 <div class="modal" id="profileModal">
   <div class="modal-box">
-
-    <div class="modal-head">
-      <h2>Shaxsiy profil</h2>
-      <button class="close-btn" onclick="closeModal('profileModal')">×</button>
-    </div>
-
-    <div class="profile-info">
-      <small>Akkaunt emaili</small>
-      <h3 id="profileEmail" style="margin-top:7px"></h3>
-      <p id="profileRole" class="muted" style="margin-top:8px"></p>
-    </div>
-
-    <button class="submit-btn" onclick="logout()">
-      Akkauntdan chiqish
-    </button>
-
+    <div class="modal-head"><h2>Shaxsiy profil</h2><button class="close-btn" onclick="closeModal('profileModal')">×</button></div>
+    <div class="profile-info"><small>Akkaunt emaili</small><h3 id="profileEmail" style="margin-top:7px"></h3><p id="profileRole" class="muted" style="margin-top:8px"></p></div>
+    <button class="submit-btn" onclick="logout()">Akkauntdan chiqish</button>
   </div>
 </div>
 
-<!-- SUBMIT APP MODAL -->
-
+<!-- SUBMIT APP -->
 <div class="modal" id="submitAppModal">
   <div class="modal-box">
-
-    <div class="modal-head">
-      <h2>Ilova yuborish</h2>
-      <button class="close-btn"
-        onclick="closeModal('submitAppModal')">×</button>
-    </div>
-
+    <div class="modal-head"><h2>Ilova yuborish</h2><button class="close-btn" onclick="closeModal('submitAppModal')">×</button></div>
     <div id="submitAppMessage"></div>
-
     <form id="submitAppForm">
-
-      <div class="form-group">
-        <label>Ilova nomi</label>
-        <input id="newAppName" type="text" required
-          minlength="2" maxlength="60"
-          placeholder="Masalan: My Calculator">
-      </div>
-
-      <div class="form-group">
-        <label>Ilova haqida</label>
-        <textarea id="newAppDescription" required
-          maxlength="600"
-          placeholder="Ilovangiz haqida qisqacha yozing..."></textarea>
-      </div>
-
+      <div class="form-group"><label>Ilova nomi</label><input id="newAppName" required minlength="2" maxlength="60" placeholder="Masalan: My Calculator"></div>
+      <div class="form-group"><label>Ilova haqida</label><textarea id="newAppDescription" required maxlength="600" placeholder="Ilovangiz haqida yozing..."></textarea></div>
       <div class="form-group">
         <label>Kategoriya</label>
         <select id="newAppCategory" required>
           <option value="">Kategoriyani tanlang</option>
-          <option value="Ta’lim">Ta’lim</option>
-          <option value="Foto va video">Foto va video</option>
-          <option value="Vositalar">Vositalar</option>
-          <option value="O‘yinlar">O‘yinlar</option>
-          <option value="Boshqa">Boshqa</option>
+          <option>Ta’lim</option><option>Foto va video</option>
+          <option>Vositalar</option><option>O‘yinlar</option><option>Boshqa</option>
         </select>
       </div>
-
-      <div class="form-group">
-        <label>Versiya</label>
-        <input id="newAppVersion" type="text" required
-          maxlength="20" placeholder="Masalan: 1.0">
-      </div>
-
-      <button class="submit-btn" id="submitAppSaveBtn" type="submit">
-        Yuborish
-      </button>
-
+      <div class="form-group"><label>Versiya</label><input id="newAppVersion" required maxlength="20" placeholder="1.0"></div>
+      <button class="submit-btn" id="submitAppSaveBtn" type="submit">Yuborish</button>
     </form>
-
-    <p class="form-note">
-      Yuborilgan ilova avval admin tekshiruvidan o‘tadi.
-      APK faylini admin biriktiradi.
-    </p>
-
+    <p class="form-note">Yuborilgan ilova avval admin tekshiruvidan o‘tadi.</p>
   </div>
 </div>
 
-<!-- ADMIN MODAL -->
-
+<!-- ADMIN -->
 <div class="modal" id="adminModal">
   <div class="modal-box admin-modal">
-
     <div class="modal-head">
-      <div>
-        <h2>⚙ AppZone Admin Panel</h2>
-        <p class="muted" style="margin-top:6px">
-          Ilovalarni boshqarish va tekshirish
-        </p>
-      </div>
-
-      <button class="close-btn"
-        onclick="closeModal('adminModal')">×</button>
+      <div><h2>⚙ AppZone Admin Panel</h2><p class="muted" style="margin-top:6px">Ilovalarni boshqarish</p></div>
+      <button class="close-btn" onclick="closeModal('adminModal')">×</button>
     </div>
-
     <div class="admin-filters" id="adminFilters">
-      <button class="admin-filter active" data-filter="pending">
-        Tekshiruvda
-      </button>
-
-      <button class="admin-filter" data-filter="approved">
-        Tasdiqlangan
-      </button>
-
-      <button class="admin-filter" data-filter="rejected">
-        Rad etilgan
-      </button>
-
-      <button class="admin-filter" data-filter="all">
-        Barchasi
-      </button>
+      <button class="admin-filter active" data-filter="pending">Tekshiruvda</button>
+      <button class="admin-filter" data-filter="approved">Tasdiqlangan</button>
+      <button class="admin-filter" data-filter="rejected">Rad etilgan</button>
+      <button class="admin-filter" data-filter="all">Barchasi</button>
     </div>
-
-    <div class="admin-list" id="adminList">
-      <div class="admin-empty">Ma’lumotlar yuklanmoqda...</div>
-    </div>
-
+    <div class="admin-list" id="adminList"><div class="admin-empty">Ma’lumotlar yuklanmoqda...</div></div>
   </div>
 </div>
 
-<!-- APP DETAILS MODAL -->
-
+<!-- APP DETAILS -->
 <div class="modal" id="appModal">
   <div class="modal-box">
-
-    <div class="modal-head">
-      <h2 id="detailTitle">Ilova</h2>
-      <button class="close-btn" onclick="closeModal('appModal')">×</button>
-    </div>
-
+    <div class="modal-head"><h2 id="detailTitle">Ilova</h2><button class="close-btn" onclick="closeModal('appModal')">×</button></div>
     <div id="detailContent"></div>
-
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-/* FIREBASE */
-
+/* FIREBASE CONFIG */
 const firebaseConfig = {
-  apiKey: "AIzaSyCI_7KqqOy2qPE7Qu5pMm1Jc7mZONtIy70",
-  authDomain: "appzone-19115.firebaseapp.com",
-  projectId: "appzone-19115",
-  storageBucket: "appzone-19115.firebasestorage.app",
-  messagingSenderId: "685330977059",
-  appId: "1:685330977059:web:bf686fa47088a70cb33c96"
+  apiKey:"AIzaSyCI_7KqqOy2qPE7Qu5pMm1Jc7mZONtIy70",
+  authDomain:"appzone-19115.firebaseapp.com",
+  projectId:"appzone-19115",
+  storageBucket:"appzone-19115.firebasestorage.app",
+  messagingSenderId:"685330977059",
+  appId:"1:685330977059:web:bf686fa47088a70cb33c96"
 };
 
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
-}
+if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-/* APK URL TEKSHIRUVI */
+/* SUPABASE CONFIG */
+const SUPABASE_URL = "https://lfbnvltgemyqjsbhrqlo.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_ZcE0Jugxq59Uyziw-WkOHQ_D3kMhExO";
+const SUPABASE_BUCKET = "appzone-apks";
+const MAX_APK_SIZE = 50 * 1024 * 1024;
+const APK_FUNCTION_URL = SUPABASE_URL + "/functions/v1/create-apk-upload-url";
 
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_PUBLISHABLE_KEY
+);
+
+/* APK URL VALIDATION */
 function isAllowedApkUrl(value) {
   try {
     const url = new URL(String(value || "").trim());
-
-    return (
-      url.protocol === "https:" &&
+    return url.protocol === "https:" &&
       url.hostname === "lfbnvltgemyqjsbhrqlo.supabase.co" &&
-      url.pathname.startsWith(
-        "/storage/v1/object/public/appzone-apks/"
-      ) &&
+      url.pathname.startsWith("/storage/v1/object/public/appzone-apks/") &&
       /\.apk$/i.test(url.pathname) &&
-      !url.search &&
-      !url.hash
-    );
-
+      !url.search && !url.hash &&
+      !url.pathname.includes("..");
   } catch (error) {
     return false;
   }
 }
 
-/* DEMO ILOVALAR */
-
+/* DEMO APPS */
 const demoApps = [
-  {
-    id:"demo-1",
-    name:"Photo Editor",
-    description:"Suratlarni tahrirlash va chiroyli effektlar.",
-    category:"Foto va video",
-    icon:"📸",
-    css:"icon-1",
-    version:"1.0",
-    demo:true
-  },
-  {
-    id:"demo-2",
-    name:"Brain Test",
-    description:"Mantiqiy fikrlashni rivojlantiruvchi o‘yin.",
-    category:"O‘yinlar",
-    icon:"🧠",
-    css:"icon-2",
-    version:"1.0",
-    demo:true
-  },
-  {
-    id:"demo-3",
-    name:"English Master",
-    description:"Ingliz tilini o‘rganish uchun yordamchi.",
-    category:"Ta’lim",
-    icon:"📚",
-    css:"icon-3",
-    version:"1.0",
-    demo:true
-  },
-  {
-    id:"demo-4",
-    name:"Video Maker",
-    description:"Videolar tayyorlash uchun qulay vosita.",
-    category:"Foto va video",
-    icon:"🎬",
-    css:"icon-4",
-    version:"1.0",
-    demo:true
-  },
-  {
-    id:"demo-5",
-    name:"Calculator Pro",
-    description:"Kundalik hisob-kitoblar uchun kalkulyator.",
-    category:"Vositalar",
-    icon:"🧮",
-    css:"icon-5",
-    version:"1.0",
-    demo:true
-  },
-  {
-    id:"demo-6",
-    name:"Speed Racing",
-    description:"Tezlik va poyga mavzusidagi o‘yin.",
-    category:"O‘yinlar",
-    icon:"🏎️",
-    css:"icon-6",
-    version:"1.0",
-    demo:true
-  }
+  {id:"demo-1",name:"Photo Editor",description:"Suratlarni tahrirlash va chiroyli effektlar.",category:"Foto va video",icon:"📸",css:"icon-1",version:"1.0",demo:true},
+  {id:"demo-2",name:"Brain Test",description:"Mantiqiy fikrlashni rivojlantiruvchi o‘yin.",category:"O‘yinlar",icon:"🧠",css:"icon-2",version:"1.0",demo:true},
+  {id:"demo-3",name:"English Master",description:"Ingliz tilini o‘rganish uchun yordamchi.",category:"Ta’lim",icon:"📚",css:"icon-3",version:"1.0",demo:true},
+  {id:"demo-4",name:"Video Maker",description:"Videolar tayyorlash uchun qulay vosita.",category:"Foto va video",icon:"🎬",css:"icon-4",version:"1.0",demo:true},
+  {id:"demo-5",name:"Calculator Pro",description:"Kundalik hisob-kitoblar uchun kalkulyator.",category:"Vositalar",icon:"🧮",css:"icon-5",version:"1.0",demo:true},
+  {id:"demo-6",name:"Speed Racing",description:"Tezlik va poyga mavzusidagi o‘yin.",category:"O‘yinlar",icon:"🏎️",css:"icon-6",version:"1.0",demo:true}
 ];
 
-/* HOLATLAR */
-
+/* STATE */
 let apps = [...demoApps];
 let visibleApps = [...apps];
-
-let activeCategory = "Barchasi";
 let favorites = [];
+let activeCategory = "Barchasi";
 let favoritesOnly = false;
-
 let currentUser = null;
 let isAdmin = false;
-
 let adminApps = [];
 let adminFilter = "pending";
 let authCheckNumber = 0;
 
-const categoriesList = [
-  "Barchasi",
-  "Ta’lim",
-  "Foto va video",
-  "Vositalar",
-  "O‘yinlar",
-  "Boshqa"
-];
+const categoriesList = ["Barchasi","Ta’lim","Foto va video","Vositalar","O‘yinlar","Boshqa"];
 
 try {
-  favorites = JSON.parse(
-    localStorage.getItem("appzoneFavorites") || "[]"
-  );
-
-  if (!Array.isArray(favorites)) {
-    favorites = [];
-  }
-
-} catch (error) {
+  favorites = JSON.parse(localStorage.getItem("appzoneFavorites") || "[]");
+  if (!Array.isArray(favorites)) favorites = [];
+} catch {
   favorites = [];
 }
 
-/* YORDAMCHI FUNKSIYALAR */
-
+/* HELPERS */
 function escapeHTML(value) {
-  return String(value ?? "").replace(/[&<>"']/g, char => ({
-    "&":"&amp;",
-    "<":"&lt;",
-    ">":"&gt;",
-    '"':"&quot;",
-    "'":"&#039;"
-  })[char]);
+  return String(value ?? "").replace(/[&<>"']/g, c => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+  })[c]);
 }
 
 function safeImageUrl(value) {
   try {
     const url = new URL(String(value || ""));
     return url.protocol === "https:" ? url.href : "";
-  } catch (error) {
+  } catch {
     return "";
   }
 }
 
 let toastTimer;
-
 function showToast(message) {
   const toast = document.getElementById("toast");
-
   toast.textContent = message;
   toast.classList.add("show");
-
   clearTimeout(toastTimer);
-
-  toastTimer = setTimeout(() => {
-    toast.classList.remove("show");
-  }, 2800);
+  toastTimer = setTimeout(() => toast.classList.remove("show"),3000);
 }
 
 function closeModal(id) {
@@ -1984,578 +600,333 @@ function closeModal(id) {
 }
 
 document.querySelectorAll(".modal").forEach(modal => {
-  modal.addEventListener("click", event => {
-    if (event.target === modal) {
-      modal.classList.remove("show");
-    }
+  modal.addEventListener("click",event => {
+    if (event.target === modal) modal.classList.remove("show");
   });
 });
 
 function scrollToApps() {
-  document.getElementById("appsSection").scrollIntoView({
-    behavior:"smooth"
-  });
-
+  document.getElementById("appsSection").scrollIntoView({behavior:"smooth"});
   setMobileNav("apps");
+}
+
+function setMobileNav(name) {
+  document.getElementById("mobileHome").classList.toggle("active",name === "home");
+  document.getElementById("mobileApps").classList.toggle("active",name === "apps");
+  document.getElementById("mobileFavorites").classList.toggle("active",name === "favorites");
+}
+
+function showHome() {
+  favoritesOnly = false;
+  activeCategory = "Barchasi";
+  document.getElementById("appsTitle").textContent = "Ommabop ilovalar";
+  document.getElementById("appsSubtitle").textContent = "AppZone katalogidagi ilovalar";
+  renderCategories();
+  filterApps();
+  setMobileNav("home");
+  document.getElementById("homeSection").scrollIntoView({behavior:"smooth"});
+}
+
+function showFavorites() {
+  favoritesOnly = true;
+  activeCategory = "Barchasi";
+  document.getElementById("appsTitle").textContent = "Sevimli ilovalar";
+  document.getElementById("appsSubtitle").textContent = "Siz saqlagan ilovalar";
+  renderCategories();
+  filterApps();
+  setMobileNav("favorites");
+  document.getElementById("appsSection").scrollIntoView({behavior:"smooth"});
 }
 
 function formatDate(value) {
   if (!value) return "Sana mavjud emas";
-
   try {
-    const date = typeof value.toDate === "function"
-      ? value.toDate()
-      : new Date(value);
-
-    if (isNaN(date.getTime())) {
-      return "Sana mavjud emas";
-    }
-
-    return date.toLocaleString("uz-UZ");
-
-  } catch (error) {
+    const date = typeof value.toDate === "function" ? value.toDate() : new Date(value);
+    return isNaN(date.getTime()) ? "Sana mavjud emas" : date.toLocaleString("uz-UZ");
+  } catch {
     return "Sana mavjud emas";
   }
 }
 
 function getDateNumber(value) {
   if (!value) return 0;
-
   try {
-    if (typeof value.toMillis === "function") {
-      return value.toMillis();
-    }
-
-    return new Date(value).getTime() || 0;
-
-  } catch (error) {
+    return typeof value.toMillis === "function" ? value.toMillis() : new Date(value).getTime() || 0;
+  } catch {
     return 0;
   }
 }
 
-/* MOBIL NAVIGATION */
-
-function setMobileNav(name) {
-  document.getElementById("mobileHome")
-    .classList.toggle("active", name === "home");
-
-  document.getElementById("mobileApps")
-    .classList.toggle("active", name === "apps");
-
-  document.getElementById("mobileFavorites")
-    .classList.toggle("active", name === "favorites");
-}
-
-function showHome() {
-  favoritesOnly = false;
-  activeCategory = "Barchasi";
-
-  document.getElementById("appsTitle").textContent =
-    "Ommabop ilovalar";
-
-  document.getElementById("appsSubtitle").textContent =
-    "AppZone katalogidagi ilovalar";
-
-  renderCategories();
-  filterApps();
-
-  setMobileNav("home");
-
-  document.getElementById("homeSection").scrollIntoView({
-    behavior:"smooth"
-  });
-}
-
-function showFavorites() {
-  favoritesOnly = true;
-  activeCategory = "Barchasi";
-
-  document.getElementById("appsTitle").textContent =
-    "Sevimli ilovalar";
-
-  document.getElementById("appsSubtitle").textContent =
-    "Siz saqlagan ilovalar ro‘yxati";
-
-  renderCategories();
-  filterApps();
-
-  setMobileNav("favorites");
-
-  document.getElementById("appsSection").scrollIntoView({
-    behavior:"smooth"
-  });
-}
-
-/* KATEGORIYALAR */
-
+/* CATEGORIES */
 function renderCategories() {
-  const box = document.getElementById("categories");
-
-  box.innerHTML = categoriesList.map(category => `
-    <button
-      class="category ${activeCategory === category ? "active" : ""}"
-      data-category="${escapeHTML(category)}">
-      ${escapeHTML(category)}
-    </button>
+  document.getElementById("categories").innerHTML = categoriesList.map(category => `
+    <button class="category ${activeCategory === category ? "active" : ""}"
+      data-category="${escapeHTML(category)}">${escapeHTML(category)}</button>
   `).join("");
 }
 
-document.getElementById("categories")
-  .addEventListener("click", event => {
+document.getElementById("categories").addEventListener("click",event => {
+  const button = event.target.closest("[data-category]");
+  if (!button) return;
+  activeCategory = button.dataset.category;
+  favoritesOnly = false;
+  document.getElementById("appsTitle").textContent =
+    activeCategory === "Barchasi" ? "Ommabop ilovalar" : activeCategory;
+  renderCategories();
+  filterApps();
+});
 
-    const button = event.target.closest("[data-category]");
-    if (!button) return;
-
-    activeCategory = button.dataset.category;
-    favoritesOnly = false;
-
-    document.getElementById("appsTitle").textContent =
-      activeCategory === "Barchasi"
-        ? "Ommabop ilovalar"
-        : activeCategory;
-
-    renderCategories();
-    filterApps();
-  });
-
-/* ILOVALARNI CHIQARISH */
-
+/* APP CARDS */
 function renderApps() {
   const grid = document.getElementById("appGrid");
+  document.getElementById("appCount").textContent = visibleApps.length + " ta ilova";
 
-  document.getElementById("appCount").textContent =
-    visibleApps.length + " ta ilova";
-
-  if (visibleApps.length === 0) {
-    grid.innerHTML = `
-      <div class="empty">
-        <div class="empty-icon">🔎</div>
-        <h3>Ilova topilmadi</h3>
-        <p style="margin-top:8px;font-size:12px">
-          Qidiruv yoki kategoriyani o‘zgartirib ko‘ring.
-        </p>
-      </div>
-    `;
+  if (!visibleApps.length) {
+    grid.innerHTML = `<div class="empty">🔎<br><br>Bu bo‘limda ilovalar topilmadi.</div>`;
     return;
   }
 
   grid.innerHTML = visibleApps.map(app => {
-
     const id = String(app.id);
-    const isFavorite = favorites.includes(id);
+    const favorite = favorites.includes(id);
     const image = safeImageUrl(app.iconUrl);
-
-    const iconHTML = image
+    const icon = image
       ? `<img src="${escapeHTML(image)}" alt="">`
       : escapeHTML(app.icon || "📱");
 
     return `
       <article class="app-card">
-
-        <div class="app-card-top">
-
-          <div class="app-icon ${escapeHTML(app.css || "icon-1")}">
-            ${iconHTML}
-          </div>
-
-          <button
-            class="favorite ${isFavorite ? "active" : ""}"
-            data-favorite="${escapeHTML(id)}"
-            aria-label="Sevimlilarga qo‘shish">
-            ${isFavorite ? "♥" : "♡"}
-          </button>
-
+        <div class="app-top">
+          <div class="app-icon ${escapeHTML(app.css || "icon-1")}">${icon}</div>
+          <button class="favorite ${favorite ? "active" : ""}"
+            data-favorite="${escapeHTML(id)}">${favorite ? "♥" : "♡"}</button>
         </div>
-
         <h3>${escapeHTML(app.name)}</h3>
-
-        <p class="app-description">
-          ${escapeHTML(app.description)}
-        </p>
-
+        <p class="app-description">${escapeHTML(app.description)}</p>
         <div class="app-meta">
           <span>${escapeHTML(app.category || "Ilova")}</span>
-
-          ${
-            app.demo
-              ? '<span class="app-tag">Namuna</span>'
-              : `<span>v${escapeHTML(app.version || "1.0")}</span>`
-          }
+          ${app.demo ? '<span class="app-tag">NAMUNA</span>' : `<span>v${escapeHTML(app.version || "1.0")}</span>`}
         </div>
-
-        <button
-          class="details-btn"
-          data-open-app="${escapeHTML(id)}">
-          Batafsil ko‘rish →
-        </button>
-
+        <button class="details-btn" data-open-app="${escapeHTML(id)}">Batafsil ko‘rish →</button>
       </article>
     `;
   }).join("");
 }
 
 function filterApps() {
-  const search = document.getElementById("searchInput")
-    .value.trim().toLowerCase();
+  const search = document.getElementById("searchInput").value.trim().toLowerCase();
 
   visibleApps = apps.filter(app => {
-
-    const matchCategory =
-      activeCategory === "Barchasi" ||
-      app.category === activeCategory;
-
+    const matchCategory = activeCategory === "Barchasi" || app.category === activeCategory;
     const matchSearch =
       String(app.name || "").toLowerCase().includes(search) ||
       String(app.description || "").toLowerCase().includes(search);
-
-    const matchFavorite =
-      !favoritesOnly || favorites.includes(String(app.id));
-
+    const matchFavorite = !favoritesOnly || favorites.includes(String(app.id));
     return matchCategory && matchSearch && matchFavorite;
   });
 
   renderApps();
 }
 
-document.getElementById("searchInput")
-  .addEventListener("input", filterApps);
+document.getElementById("searchInput").addEventListener("input",filterApps);
 
-/* SEVIMLILAR VA BATAFSIL */
+/* APP ACTIONS */
+document.getElementById("appGrid").addEventListener("click",event => {
+  const fav = event.target.closest("[data-favorite]");
 
-document.getElementById("appGrid")
-  .addEventListener("click", event => {
+  if (fav) {
+    const id = fav.dataset.favorite;
+    favorites = favorites.includes(id)
+      ? favorites.filter(x => x !== id)
+      : [...favorites,id];
 
-    const favoriteButton = event.target.closest("[data-favorite]");
+    try {
+      localStorage.setItem("appzoneFavorites",JSON.stringify(favorites));
+    } catch {}
+    filterApps();
+    showToast(favorites.includes(id) ? "Sevimlilarga qo‘shildi" : "Sevimlilardan olib tashlandi");
+    return;
+  }
 
-    if (favoriteButton) {
-      const id = favoriteButton.dataset.favorite;
+  const detailButton = event.target.closest("[data-open-app]");
+  if (!detailButton) return;
 
-      if (favorites.includes(id)) {
-        favorites = favorites.filter(item => item !== id);
-        showToast("Sevimlilardan olib tashlandi");
-      } else {
-        favorites.push(id);
-        showToast("Sevimlilarga qo‘shildi");
-      }
+  const app = visibleApps.find(x => String(x.id) === detailButton.dataset.openApp);
+  if (!app) return;
 
-      try {
-        localStorage.setItem(
-          "appzoneFavorites",
-          JSON.stringify(favorites)
-        );
-      } catch (error) {
-        console.warn("Sevimlilar saqlanmadi.");
-      }
+  document.getElementById("detailTitle").textContent = app.name;
 
-      filterApps();
-      return;
-    }
+  const image = safeImageUrl(app.iconUrl);
+  const icon = image
+    ? `<img src="${escapeHTML(image)}" style="width:76px;height:76px;object-fit:cover;border-radius:19px" alt="">`
+    : `<div class="app-icon ${escapeHTML(app.css || "icon-1")}" style="width:76px;height:76px;margin:auto">${escapeHTML(app.icon || "📱")}</div>`;
 
-    const detailsButton = event.target.closest("[data-open-app]");
-    if (!detailsButton) return;
+  const download = isAllowedApkUrl(app.apkUrl)
+    ? `<a class="download-btn" href="${escapeHTML(app.apkUrl)}" target="_blank" rel="noopener noreferrer">⬇ APK yuklab olish</a>
+       <p class="muted" style="margin-top:9px;text-align:center">
+         ${escapeHTML(app.apkName || "Ilova.apk")}
+         ${Number(app.apkSize) > 0 ? " • " + escapeHTML(app.apkSize) + " MB" : ""}
+       </p>`
+    : `<p class="muted" style="margin-top:18px;text-align:center">⏳ Yuklab olish fayli hali joylanmagan.</p>`;
 
-    const id = detailsButton.dataset.openApp;
+  document.getElementById("detailContent").innerHTML = `
+    <div style="text-align:center;padding:10px 0">
+      ${icon}
+      <h3 style="margin:13px 0">${escapeHTML(app.name)}</h3>
+      <p style="color:#9ba9c2;line-height:1.7;font-size:12px">${escapeHTML(app.description)}</p>
+      <p class="muted" style="margin-top:14px">
+        Kategoriya: ${escapeHTML(app.category || "Ilova")}<br>
+        Versiya: ${escapeHTML(app.version || "1.0")}
+      </p>
+      ${download}
+    </div>
+  `;
 
-    const app = visibleApps.find(item => String(item.id) === id);
-    if (!app) return;
+  document.getElementById("appModal").classList.add("show");
+});
 
-    document.getElementById("detailTitle").textContent = app.name;
-
-    let downloadSection = "";
-
-    if (isAllowedApkUrl(app.apkUrl)) {
-      downloadSection = `
-        <a
-          class="download-btn"
-          href="${escapeHTML(app.apkUrl)}"
-          target="_blank"
-          rel="noopener noreferrer">
-          ⬇ APK yuklab olish
-        </a>
-
-        <p style="margin-top:9px;color:#9ba9c2;font-size:11px;text-align:center">
-          Fayl: ${escapeHTML(app.apkName || "Ilova.apk")}
-          ${
-            Number(app.apkSize) > 0
-              ? " • " + escapeHTML(app.apkSize) + " MB"
-              : ""
-          }
-        </p>
-      `;
-    } else {
-      downloadSection = `
-        <p style="margin-top:20px;padding:13px;background:#17243a;border-radius:10px;color:#9ba9c2;font-size:12px;text-align:center">
-          ⏳ Bu ilova uchun yuklab olish fayli hali joylanmagan.
-        </p>
-      `;
-    }
-
-    const image = safeImageUrl(app.iconUrl);
-
-    const detailIcon = image
-      ? `<img src="${escapeHTML(image)}" alt=""
-          style="width:75px;height:75px;object-fit:cover;border-radius:20px">`
-      : `<div class="app-icon ${escapeHTML(app.css || "icon-1")}"
-          style="width:75px;height:75px;margin:auto;font-size:36px">
-          ${escapeHTML(app.icon || "📱")}
-        </div>`;
-
-    document.getElementById("detailContent").innerHTML = `
-      <div style="text-align:center;padding:10px 2px">
-
-        ${detailIcon}
-
-        <h3 style="margin:14px 0 8px">
-          ${escapeHTML(app.name)}
-        </h3>
-
-        <p style="color:#9ba9c2;line-height:1.7;font-size:12px">
-          ${escapeHTML(app.description)}
-        </p>
-
-        <div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:15px">
-
-          <span class="app-tag">
-            ${escapeHTML(app.category || "Ilova")}
-          </span>
-
-          <span class="app-tag">
-            Versiya ${escapeHTML(app.version || "1.0")}
-          </span>
-
-        </div>
-
-        ${downloadSection}
-
-      </div>
-    `;
-
-    document.getElementById("appModal").classList.add("show");
-  });
-
-/* FIRESTORE'DAN TASDIQLANGAN ILOVALAR */
-
+/* LOAD APPROVED APPS */
 async function loadCloudApps() {
   try {
-    const snapshot = await db.collection("apps")
-      .where("status", "==", "approved")
-      .get();
+    const snapshot = await db.collection("apps").where("status","==","approved").get();
 
     const cloudApps = snapshot.docs.map(doc => {
-      const data = doc.data();
-
+      const d = doc.data();
       return {
         id:doc.id,
-        name:data.name || "Nomsiz ilova",
-        description:data.description || "",
-        category:data.category || "Boshqa",
-        version:data.version || "1.0",
+        name:d.name || "Nomsiz ilova",
+        description:d.description || "",
+        category:d.category || "Boshqa",
+        version:d.version || "1.0",
         icon:"📱",
         css:"icon-1",
-        iconUrl:data.iconUrl || "",
-        apkUrl:data.apkUrl || "",
-        apkName:data.apkName || "",
-        apkSize:Number(data.apkSize) || 0,
+        iconUrl:d.iconUrl || "",
+        apkUrl:d.apkUrl || "",
+        apkName:d.apkName || "",
+        apkSize:Number(d.apkSize) || 0,
         demo:false
       };
     });
 
     apps = [
       ...demoApps,
-      ...cloudApps.filter(cloud =>
-        !demoApps.some(demo =>
-          demo.name.toLowerCase() === cloud.name.toLowerCase()
-        )
-      )
+      ...cloudApps.filter(c => !demoApps.some(d => d.name.toLowerCase() === c.name.toLowerCase()))
     ];
 
     filterApps();
-
   } catch (error) {
-    console.warn("Firestore ma’lumotlarini olishda xato:", error);
+    console.warn("Katalog xatosi:",error);
     filterApps();
   }
 }
 
 /* AUTH */
-
 function openAuth() {
   document.getElementById("authModal").classList.add("show");
   switchAuth("login");
 }
 
 function switchAuth(type) {
-  document.getElementById("loginForm").hidden =
-    type !== "login";
-
-  document.getElementById("registerForm").hidden =
-    type !== "register";
-
-  document.getElementById("loginTab").classList.toggle(
-    "active",type === "login"
-  );
-
-  document.getElementById("registerTab").classList.toggle(
-    "active",type === "register"
-  );
-
+  document.getElementById("loginForm").hidden = type !== "login";
+  document.getElementById("registerForm").hidden = type !== "register";
+  document.getElementById("loginTab").classList.toggle("active",type === "login");
+  document.getElementById("registerTab").classList.toggle("active",type === "register");
   document.getElementById("authMessage").innerHTML = "";
 }
 
 function showAuthMessage(message,type="error") {
-  document.getElementById("authMessage").innerHTML = `
-    <div class="${type}">
-      ${escapeHTML(message)}
-    </div>
-  `;
+  document.getElementById("authMessage").innerHTML =
+    `<div class="${type}">${escapeHTML(message)}</div>`;
 }
 
 function translateFirebaseError(error) {
   const messages = {
-    "auth/email-already-in-use":
-      "Bu email orqali oldin akkaunt yaratilgan.",
-
-    "auth/invalid-email":
-      "Email manzili noto‘g‘ri.",
-
-    "auth/weak-password":
-      "Parol juda oddiy. Boshqa parol tanlang.",
-
-    "auth/user-not-found":
-      "Bu email bilan akkaunt topilmadi.",
-
-    "auth/wrong-password":
-      "Parol noto‘g‘ri.",
-
-    "auth/invalid-credential":
-      "Email yoki parol noto‘g‘ri.",
-
-    "auth/too-many-requests":
-      "Juda ko‘p urinish bo‘ldi. Keyinroq qayta urinib ko‘ring.",
-
-    "auth/network-request-failed":
-      "Internet aloqasini tekshiring.",
-
-    "auth/unauthorized-domain":
-      "Bu sayt manzili Firebase'da ruxsat etilmagan."
+    "auth/email-already-in-use":"Bu email orqali oldin akkaunt yaratilgan.",
+    "auth/invalid-email":"Email manzili noto‘g‘ri.",
+    "auth/weak-password":"Parol juda oddiy. Boshqa parol tanlang.",
+    "auth/user-not-found":"Bu email bilan akkaunt topilmadi.",
+    "auth/wrong-password":"Parol noto‘g‘ri.",
+    "auth/invalid-credential":"Email yoki parol noto‘g‘ri.",
+    "auth/too-many-requests":"Juda ko‘p urinish bo‘ldi. Keyinroq urinib ko‘ring.",
+    "auth/network-request-failed":"Internet aloqasini tekshiring.",
+    "auth/unauthorized-domain":"Bu sayt Firebase'da ruxsat etilmagan."
   };
-
-  return messages[error.code] ||
-    "Xatolik yuz berdi: " + (error.message || "Noma’lum xato");
+  return messages[error.code] || "Xatolik: " + (error.message || "Noma’lum xato");
 }
 
-document.getElementById("loginForm")
-  .addEventListener("submit",async event => {
+document.getElementById("loginForm").addEventListener("submit",async event => {
+  event.preventDefault();
+  const email = document.getElementById("loginEmail").value.trim();
+  const password = document.getElementById("loginPassword").value;
 
-    event.preventDefault();
+  try {
+    showAuthMessage("Kirilmoqda...","success");
+    await auth.signInWithEmailAndPassword(email,password);
+    closeModal("authModal");
+    showToast("AppZone'ga muvaffaqiyatli kirdingiz!");
+  } catch (error) {
+    showAuthMessage(translateFirebaseError(error));
+  }
+});
 
-    const email = document.getElementById("loginEmail")
-      .value.trim();
+document.getElementById("registerForm").addEventListener("submit",async event => {
+  event.preventDefault();
+  const email = document.getElementById("registerEmail").value.trim();
+  const password = document.getElementById("registerPassword").value;
+  const confirm = document.getElementById("confirmPassword").value;
 
-    const password = document.getElementById("loginPassword")
-      .value;
+  if (password !== confirm) {
+    showAuthMessage("Parollar bir xil emas.");
+    return;
+  }
 
-    try {
-      showAuthMessage("Kirilmoqda...","success");
-
-      await auth.signInWithEmailAndPassword(email,password);
-
-      closeModal("authModal");
-      showToast("AppZone'ga muvaffaqiyatli kirdingiz!");
-
-    } catch (error) {
-      showAuthMessage(translateFirebaseError(error));
-    }
-  });
-
-document.getElementById("registerForm")
-  .addEventListener("submit",async event => {
-
-    event.preventDefault();
-
-    const email = document.getElementById("registerEmail")
-      .value.trim();
-
-    const password = document.getElementById("registerPassword")
-      .value;
-
-    const confirm = document.getElementById("confirmPassword")
-      .value;
-
-    if (password !== confirm) {
-      showAuthMessage("Parollar bir xil emas.");
-      return;
-    }
-
-    try {
-      showAuthMessage("Akkaunt yaratilmoqda...","success");
-
-      await auth.createUserWithEmailAndPassword(email,password);
-
-      closeModal("authModal");
-      showToast("Akkaunt muvaffaqiyatli yaratildi!");
-
-    } catch (error) {
-      showAuthMessage(translateFirebaseError(error));
-    }
-  });
+  try {
+    showAuthMessage("Akkaunt yaratilmoqda...","success");
+    await auth.createUserWithEmailAndPassword(email,password);
+    closeModal("authModal");
+    showToast("Akkaunt yaratildi!");
+  } catch (error) {
+    showAuthMessage(translateFirebaseError(error));
+  }
+});
 
 async function resetPassword() {
-  const email = document.getElementById("loginEmail")
-    .value.trim();
-
+  const email = document.getElementById("loginEmail").value.trim();
   if (!email) {
-    showAuthMessage("Avval email manzilingizni kiriting.");
+    showAuthMessage("Avval emailingizni kiriting.");
     return;
   }
 
   try {
     await auth.sendPasswordResetEmail(email);
-
-    showAuthMessage(
-      "Parolni tiklash havolasi emailingizga yuborildi.",
-      "success"
-    );
-
+    showAuthMessage("Tiklash havolasi emailingizga yuborildi.","success");
   } catch (error) {
     showAuthMessage(translateFirebaseError(error));
   }
 }
 
-/* PROFIL VA CHIQISH */
-
+/* PROFILE */
 function openProfile() {
   if (!auth.currentUser) return;
-
-  document.getElementById("profileEmail").textContent =
-    auth.currentUser.email || "Email mavjud emas";
-
-  document.getElementById("profileRole").textContent =
-    isAdmin ? "Administrator" : "Oddiy foydalanuvchi";
-
+  document.getElementById("profileEmail").textContent = auth.currentUser.email || "Email mavjud emas";
+  document.getElementById("profileRole").textContent = isAdmin ? "Administrator" : "Oddiy foydalanuvchi";
   document.getElementById("profileModal").classList.add("show");
 }
 
 async function logout() {
   try {
     await auth.signOut();
-
     closeModal("profileModal");
     closeModal("adminModal");
-
     showToast("Akkauntdan chiqdingiz.");
-
-  } catch (error) {
+  } catch {
     showToast("Chiqishda xatolik yuz berdi.");
   }
 }
 
-/* FOYDALANUVCHI HOLATI */
-
+/* AUTH STATE AND ADMIN CHECK */
 auth.onAuthStateChanged(async user => {
-
-  const checkNumber = ++authCheckNumber;
-
+  const check = ++authCheckNumber;
   currentUser = user || null;
   isAdmin = false;
 
@@ -2565,164 +936,100 @@ auth.onAuthStateChanged(async user => {
   const submitArea = document.getElementById("submitArea");
 
   if (user) {
-
     authButton.hidden = true;
     profileButton.hidden = false;
     profileButton.textContent = user.email || "Profil";
     submitArea.hidden = false;
 
     try {
-      const adminDoc = await db.collection("admins")
-        .doc(user.uid)
-        .get();
-
-      if (checkNumber !== authCheckNumber) return;
-
-      isAdmin = adminDoc.exists &&
-        adminDoc.data().role === "admin";
-
+      const adminDoc = await db.collection("admins").doc(user.uid).get();
+      if (check !== authCheckNumber) return;
+      isAdmin = adminDoc.exists && adminDoc.data().role === "admin";
     } catch (error) {
-      console.warn("Admin huquqini tekshirishda xato:",error);
+      console.warn("Admin tekshiruvi:",error);
       isAdmin = false;
     }
-
   } else {
-
     authButton.hidden = false;
     profileButton.hidden = true;
     submitArea.hidden = true;
-
   }
 
-  if (checkNumber !== authCheckNumber) return;
-
+  if (check !== authCheckNumber) return;
   adminButton.hidden = !isAdmin;
-
-  if (!isAdmin) {
-    closeModal("adminModal");
-  }
-
+  if (!isAdmin) closeModal("adminModal");
   loadCloudApps();
 });
 
-/* ILOVA YUBORISH */
-
+/* SUBMIT APP */
 function openSubmitApp() {
   if (!auth.currentUser) {
     showToast("Avval akkauntingizga kiring.");
     openAuth();
     return;
   }
-
   document.getElementById("submitAppMessage").innerHTML = "";
   document.getElementById("submitAppModal").classList.add("show");
 }
 
-document.getElementById("submitAppForm")
-  .addEventListener("submit",async event => {
+document.getElementById("submitAppForm").addEventListener("submit",async event => {
+  event.preventDefault();
+  const user = auth.currentUser;
 
-    event.preventDefault();
-
-    const user = auth.currentUser;
-
-    if (!user) {
-      showToast("Ilova yuborish uchun akkauntga kiring.");
-      closeModal("submitAppModal");
-      openAuth();
-      return;
-    }
-
-    const name = document.getElementById("newAppName")
-      .value.trim();
-
-    const description = document.getElementById("newAppDescription")
-      .value.trim();
-
-    const category = document.getElementById("newAppCategory")
-      .value;
-
-    const version = document.getElementById("newAppVersion")
-      .value.trim();
-
-    const messageBox = document.getElementById("submitAppMessage");
-    const saveButton = document.getElementById("submitAppSaveBtn");
-
-    if (name.length < 2 || name.length > 60) {
-      messageBox.innerHTML =
-        '<div class="error">Ilova nomi 2–60 belgi bo‘lishi kerak.</div>';
-      return;
-    }
-
-    if (description.length > 600) {
-      messageBox.innerHTML =
-        '<div class="error">Tavsif 600 belgidan oshmasligi kerak.</div>';
-      return;
-    }
-
-    if (!category || !version) {
-      messageBox.innerHTML =
-        '<div class="error">Barcha maydonlarni to‘ldiring.</div>';
-      return;
-    }
-
-    try {
-      saveButton.disabled = true;
-      saveButton.textContent = "Yuborilmoqda...";
-
-      await db.collection("apps").add({
-        name,
-        description,
-        category,
-        version,
-
-        ownerUid:user.uid,
-        ownerEmail:user.email || "",
-
-        status:"pending",
-        createdAt:firebase.firestore.FieldValue.serverTimestamp(),
-
-        iconUrl:"",
-        apkUrl:"",
-        apkName:"",
-        apkSize:0
-      });
-
-      document.getElementById("submitAppForm").reset();
-
-      closeModal("submitAppModal");
-
-      showToast("Ilova tekshiruvga yuborildi!");
-
-    } catch (error) {
-      console.error("Ilova yuborish xatosi:",error);
-
-      messageBox.innerHTML = `
-        <div class="error">
-          Ilova yuborilmadi.
-          ${escapeHTML(error.message || "Noma’lum xato")}
-        </div>
-      `;
-
-    } finally {
-      saveButton.disabled = false;
-      saveButton.textContent = "Yuborish";
-    }
-  });
-
-/* ADMIN PANEL */
-
-async function openAdminPanel() {
-  if (!auth.currentUser || !isAdmin) {
-    showToast("Admin panelga kirish huquqi yo‘q.");
+  if (!user) {
+    showToast("Avval akkauntingizga kiring.");
     return;
   }
 
+  const name = document.getElementById("newAppName").value.trim();
+  const description = document.getElementById("newAppDescription").value.trim();
+  const category = document.getElementById("newAppCategory").value;
+  const version = document.getElementById("newAppVersion").value.trim();
+
+  const message = document.getElementById("submitAppMessage");
+  const button = document.getElementById("submitAppSaveBtn");
+
+  if (name.length < 2 || name.length > 60 || !description || !category || !version) {
+    message.innerHTML = '<div class="error">Barcha maydonlarni to‘g‘ri to‘ldiring.</div>';
+    return;
+  }
+
+  try {
+    button.disabled = true;
+    button.textContent = "Yuborilmoqda...";
+
+    await db.collection("apps").add({
+      name,description,category,version,
+      ownerUid:user.uid,
+      ownerEmail:user.email || "",
+      status:"pending",
+      createdAt:firebase.firestore.FieldValue.serverTimestamp(),
+      iconUrl:"",
+      apkUrl:"",
+      apkName:"",
+      apkSize:0
+    });
+
+    document.getElementById("submitAppForm").reset();
+    closeModal("submitAppModal");
+    showToast("Ilova tekshiruvga yuborildi!");
+  } catch (error) {
+    message.innerHTML = `<div class="error">${escapeHTML(error.message || "Ilova yuborilmadi.")}</div>`;
+  } finally {
+    button.disabled = false;
+    button.textContent = "Yuborish";
+  }
+});
+
+/* ADMIN PANEL */
+async function openAdminPanel() {
+  if (!auth.currentUser || !isAdmin) {
+    showToast("Admin huquqi mavjud emas.");
+    return;
+  }
   adminFilter = "pending";
-
   renderAdminFilters();
-
   document.getElementById("adminModal").classList.add("show");
-
   await loadAdminApps();
 }
 
@@ -2730,381 +1037,321 @@ async function loadAdminApps() {
   const list = document.getElementById("adminList");
 
   if (!auth.currentUser || !isAdmin) {
-    list.innerHTML = `
-      <div class="admin-empty">
-        Admin huquqi mavjud emas.
-      </div>
-    `;
+    list.innerHTML = '<div class="admin-empty">Admin huquqi mavjud emas.</div>';
     return;
   }
 
-  list.innerHTML = `
-    <div class="admin-empty">
-      Ilovalar yuklanmoqda...
-    </div>
-  `;
+  list.innerHTML = '<div class="admin-empty">Ilovalar yuklanmoqda...</div>';
 
   try {
     const snapshot = await db.collection("apps").get();
-
-    adminApps = snapshot.docs.map(doc => ({
-      id:doc.id,
-      ...doc.data()
-    }));
-
-    adminApps.sort((a,b) =>
-      getDateNumber(b.createdAt) - getDateNumber(a.createdAt)
-    );
-
+    adminApps = snapshot.docs.map(doc => ({id:doc.id,...doc.data()}));
+    adminApps.sort((a,b) => getDateNumber(b.createdAt) - getDateNumber(a.createdAt));
     renderAdminApps();
-
   } catch (error) {
-    console.error("Admin ilovalarini yuklash xatosi:",error);
-
-    list.innerHTML = `
-      <div class="admin-empty">
-        Ilovalarni yuklashda xatolik yuz berdi.<br>
-        ${escapeHTML(error.message || "Ruxsatni tekshiring.")}
-      </div>
-    `;
+    list.innerHTML = `<div class="admin-empty">Xatolik: ${escapeHTML(error.message)}</div>`;
   }
 }
 
-/* ADMIN FILTRLARI */
-
 function renderAdminFilters() {
   document.querySelectorAll(".admin-filter").forEach(button => {
-    button.classList.toggle(
-      "active",
-      button.dataset.filter === adminFilter
-    );
+    button.classList.toggle("active",button.dataset.filter === adminFilter);
   });
 }
 
-document.getElementById("adminFilters")
-  .addEventListener("click",event => {
-
-    const button = event.target.closest("[data-filter]");
-    if (!button) return;
-
-    adminFilter = button.dataset.filter;
-
-    renderAdminFilters();
-    renderAdminApps();
-  });
-
-/* ADMIN ILOVALARI */
+document.getElementById("adminFilters").addEventListener("click",event => {
+  const button = event.target.closest("[data-filter]");
+  if (!button) return;
+  adminFilter = button.dataset.filter;
+  renderAdminFilters();
+  renderAdminApps();
+});
 
 function statusLabel(status) {
-  const labels = {
-    pending:"Tekshiruvda",
-    approved:"Tasdiqlangan",
-    rejected:"Rad etilgan"
-  };
-
-  return labels[status] || "Noma’lum";
+  return ({pending:"Tekshiruvda",approved:"Tasdiqlangan",rejected:"Rad etilgan"})[status] || "Noma’lum";
 }
 
 function renderAdminApps() {
   const list = document.getElementById("adminList");
+  const filtered = adminApps.filter(app => adminFilter === "all" || app.status === adminFilter);
 
-  const filteredApps = adminApps.filter(app => {
-    if (adminFilter === "all") return true;
-    return app.status === adminFilter;
-  });
-
-  if (filteredApps.length === 0) {
-    list.innerHTML = `
-      <div class="admin-empty">
-        Bu bo‘limda hozircha ilovalar yo‘q.
-      </div>
-    `;
+  if (!filtered.length) {
+    list.innerHTML = '<div class="admin-empty">Bu bo‘limda hozircha ilovalar yo‘q.</div>';
     return;
   }
 
-  list.innerHTML = filteredApps.map(app => {
-
+  list.innerHTML = filtered.map(app => {
     const status = app.status || "unknown";
-
     let actions = "";
 
     if (status !== "approved") {
-      actions += `
-        <button class="admin-action approve-btn"
-          data-admin-action="approve"
-          data-id="${escapeHTML(app.id)}">
-          ✓ Tasdiqlash
-        </button>
-      `;
+      actions += `<button class="admin-action approve-btn" data-admin-action="approve" data-id="${escapeHTML(app.id)}">✓ Tasdiqlash</button>`;
     }
-
     if (status !== "rejected") {
-      actions += `
-        <button class="admin-action reject-btn"
-          data-admin-action="reject"
-          data-id="${escapeHTML(app.id)}">
-          ✕ Rad etish
-        </button>
-      `;
+      actions += `<button class="admin-action reject-btn" data-admin-action="reject" data-id="${escapeHTML(app.id)}">✕ Rad etish</button>`;
     }
-
-    actions += `
-      <button class="admin-action delete-btn"
-        data-admin-action="delete"
-        data-id="${escapeHTML(app.id)}">
-        🗑 O‘chirish
-      </button>
-    `;
+    actions += `<button class="admin-action delete-btn" data-admin-action="delete" data-id="${escapeHTML(app.id)}">🗑 O‘chirish</button>`;
 
     return `
       <article class="admin-app">
-
         <div class="admin-app-top">
           <h3>${escapeHTML(app.name || "Nomsiz ilova")}</h3>
-
-          <span class="status status-${escapeHTML(status)}">
-            ${escapeHTML(statusLabel(status))}
-          </span>
+          <span class="status status-${escapeHTML(status)}">${escapeHTML(statusLabel(status))}</span>
         </div>
 
         <p>${escapeHTML(app.description || "Tavsif yo‘q")}</p>
-
         <p>
-          <b>Kategoriya:</b>
-          ${escapeHTML(app.category || "Ko‘rsatilmagan")}
-          <br>
-
-          <b>Versiya:</b>
-          ${escapeHTML(app.version || "Ko‘rsatilmagan")}
-          <br>
-
-          <b>Yuboruvchi:</b>
-          ${escapeHTML(app.ownerEmail || "Email yo‘q")}
-          <br>
-
-          <b>Yuborilgan vaqt:</b>
-          ${escapeHTML(formatDate(app.createdAt))}
+          Kategoriya: ${escapeHTML(app.category || "—")}<br>
+          Versiya: ${escapeHTML(app.version || "—")}<br>
+          Yuboruvchi: ${escapeHTML(app.ownerEmail || "—")}<br>
+          Sana: ${escapeHTML(formatDate(app.createdAt))}
         </p>
 
         <div class="admin-apk-form">
-
-          <h4>📦 APK fayl ma’lumotlari</h4>
-
-          <div class="form-group">
-            <label>Supabase APK URL manzili</label>
-
-            <input type="url"
-              data-apk-url
-              value="${escapeHTML(app.apkUrl || "")}"
-              placeholder="https://.../appzone-apks/Ilova.apk">
-          </div>
+          <h4>📦 APK faylini telefondan yuklash</h4>
 
           <div class="form-group">
-            <label>APK fayl nomi</label>
-
-            <input type="text"
-              data-apk-name
-              maxlength="120"
-              value="${escapeHTML(app.apkName || "")}"
-              placeholder="Masalan: Calculator.apk">
+            <label>APK faylini tanlang</label>
+            <input type="file" accept=".apk,application/vnd.android.package-archive"
+              data-apk-file>
           </div>
 
-          <div class="form-group">
-            <label>Fayl hajmi (MB)</label>
-
-            <input type="number"
-              data-apk-size
-              min="0"
-              step="1"
-              value="${Number(app.apkSize) || 0}"
-              placeholder="Masalan: 25">
-          </div>
-
-          <button
-            class="admin-action apk-save-btn"
-            data-admin-action="save-apk"
-            data-id="${escapeHTML(app.id)}">
-            💾 APK ma’lumotlarini saqlash
+          <button class="admin-action apk-upload-btn"
+            data-admin-action="upload-apk" data-id="${escapeHTML(app.id)}">
+            ⬆ APK yuklash va saqlash
           </button>
 
+          <p class="upload-status" data-upload-status>
+            Maksimal hajm: 50 MB. Yuklangandan so‘ng manzil avtomatik saqlanadi.
+          </p>
+
+          <hr style="border:0;border-top:1px solid var(--border);margin:14px 0">
+
+          <h4>Yoki mavjud APK havolasini kiritish</h4>
+
+          <div class="form-group">
+            <label>Supabase APK URL</label>
+            <input type="url" data-apk-url value="${escapeHTML(app.apkUrl || "")}"
+              placeholder="https://.../appzone-apks/ilova.apk">
+          </div>
+
+          <div class="form-group">
+            <label>APK nomi</label>
+            <input type="text" data-apk-name maxlength="120"
+              value="${escapeHTML(app.apkName || "")}" placeholder="Ilova.apk">
+          </div>
+
+          <div class="form-group">
+            <label>Hajmi (MB)</label>
+            <input type="number" data-apk-size min="0" step="0.01"
+              value="${Number(app.apkSize) || 0}">
+          </div>
+
+          <button class="admin-action apk-save-btn"
+            data-admin-action="save-apk" data-id="${escapeHTML(app.id)}">
+            💾 Havola ma’lumotlarini saqlash
+          </button>
         </div>
 
-        <div class="admin-actions">
-          ${actions}
-        </div>
-
+        <div class="admin-actions">${actions}</div>
       </article>
     `;
   }).join("");
 }
 
-/* ADMIN AMALLARI */
+/* ACTUAL APK UPLOAD */
+async function uploadApkForApp(appId,button) {
+  if (!auth.currentUser || !isAdmin) {
+    throw new Error("Faqat admin APK yuklay oladi.");
+  }
 
-document.getElementById("adminList")
-  .addEventListener("click",async event => {
+  const card = button.closest(".admin-app");
+  const fileInput = card.querySelector("[data-apk-file]");
+  const status = card.querySelector("[data-upload-status]");
+  const file = fileInput.files && fileInput.files[0];
 
-    const button = event.target.closest("[data-admin-action]");
-    if (!button) return;
+  if (!file) throw new Error("Avval telefondan APK faylini tanlang.");
+  if (!file.name.toLowerCase().endsWith(".apk")) {
+    throw new Error("Faqat .apk fayl tanlash mumkin.");
+  }
+  if (file.size <= 0 || file.size > MAX_APK_SIZE) {
+    throw new Error("Fayl 50 MB dan kichik bo‘lishi kerak.");
+  }
 
-    if (!auth.currentUser || !isAdmin) {
-      showToast("Admin huquqi mavjud emas.");
-      return;
+  button.disabled = true;
+  button.textContent = "Yuklanmoqda...";
+  status.textContent = "1/3 — Admin ruxsati tekshirilmoqda...";
+
+  try {
+    const firebaseToken = await auth.currentUser.getIdToken(true);
+
+    const response = await fetch(APK_FUNCTION_URL,{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json",
+        "apikey":SUPABASE_PUBLISHABLE_KEY,
+        "Authorization":"Bearer " + firebaseToken
+      },
+      body:JSON.stringify({
+        fileName:file.name,
+        fileSize:file.size
+      })
+    });
+
+    const result = await response.json().catch(() => ({}));
+
+    if (!response.ok || !result.success || !result.path || !result.token) {
+      throw new Error(result.error || result.message || "Yuklash ruxsati olinmadi. Funksiya sozlamasini tekshiring.");
     }
 
-    const action = button.dataset.adminAction;
-    const id = button.dataset.id;
+    status.textContent = "2/3 — APK Supabase omboriga yuklanmoqda...";
 
-    if (!id) return;
-
-    if (action === "delete") {
-      const confirmed = confirm(
-        "Bu ilovani butunlay o‘chirmoqchimisiz?"
+    const uploadResult = await supabaseClient
+      .storage
+      .from(SUPABASE_BUCKET)
+      .uploadToSignedUrl(
+        result.path,
+        result.token,
+        file,
+        {contentType:"application/vnd.android.package-archive"}
       );
 
-      if (!confirmed) return;
+    if (uploadResult.error) {
+      throw new Error(uploadResult.error.message || "Supabase faylni qabul qilmadi.");
     }
 
-    const oldText = button.textContent;
+    status.textContent = "3/3 — Ilova ma’lumotlari saqlanmoqda...";
 
-    button.disabled = true;
-    button.textContent = "Bajarilmoqda...";
+    const publicUrl = supabaseClient
+      .storage
+      .from(SUPABASE_BUCKET)
+      .getPublicUrl(result.path).data.publicUrl;
 
+    if (!isAllowedApkUrl(publicUrl)) {
+      throw new Error("Yuklangan fayl manzili tekshiruvdan o‘tmadi.");
+    }
+
+    await db.collection("apps").doc(appId).update({
+      apkUrl:publicUrl,
+      apkName:result.fileName || file.name,
+      apkSize:Number((file.size / 1048576).toFixed(2))
+    });
+
+    status.textContent = "✅ APK yuklandi va Firestore’da saqlandi.";
+    showToast("APK muvaffaqiyatli yuklandi!");
+
+    await loadAdminApps();
+    await loadCloudApps();
+
+  } catch (error) {
+    status.textContent = "Xatolik: " + (error.message || "Yuklash amalga oshmadi.");
+    throw error;
+  } finally {
+    button.disabled = false;
+    button.textContent = "⬆ APK yuklash va saqlash";
+  }
+}
+
+/* ADMIN ACTIONS */
+document.getElementById("adminList").addEventListener("click",async event => {
+  const button = event.target.closest("[data-admin-action]");
+  if (!button) return;
+
+  if (!auth.currentUser || !isAdmin) {
+    showToast("Admin huquqi mavjud emas.");
+    return;
+  }
+
+  const action = button.dataset.adminAction;
+  const id = button.dataset.id;
+  if (!id) return;
+
+  if (action === "upload-apk") {
     try {
-      const appRef = db.collection("apps").doc(id);
-
-      if (action === "save-apk") {
-
-        const card = button.closest(".admin-app");
-
-        const url = card.querySelector("[data-apk-url]")
-          .value.trim();
-
-        let name = card.querySelector("[data-apk-name]")
-          .value.trim();
-
-        const sizeText = card.querySelector("[data-apk-size]")
-          .value.trim();
-
-        const size = sizeText === "" ? 0 : Number(sizeText);
-
-        if (url && !isAllowedApkUrl(url)) {
-          showToast("Noto‘g‘ri Supabase APK URL manzili.");
-
-          button.disabled = false;
-          button.textContent = oldText;
-          return;
-        }
-
-        if (url && !name) {
-          name = url.split("/").pop();
-        }
-
-        if (name.length > 120) {
-          showToast("Fayl nomi 120 belgidan oshmasligi kerak.");
-
-          button.disabled = false;
-          button.textContent = oldText;
-          return;
-        }
-
-        if (!Number.isInteger(size) || size < 0) {
-          showToast("Fayl hajmini butun son bilan kiriting.");
-
-          button.disabled = false;
-          button.textContent = oldText;
-          return;
-        }
-
-        if (!url) {
-          name = "";
-        }
-
-        await appRef.update({
-          apkUrl:url,
-          apkName:name,
-          apkSize:size
-        });
-
-        showToast(
-          url
-            ? "APK ma’lumotlari saqlandi!"
-            : "APK havolasi olib tashlandi."
-        );
-
-      } else if (action === "approve") {
-
-        await appRef.update({
-          status:"approved"
-        });
-
-        showToast("Ilova tasdiqlandi!");
-
-      } else if (action === "reject") {
-
-        await appRef.update({
-          status:"rejected"
-        });
-
-        showToast("Ilova rad etildi.");
-
-      } else if (action === "delete") {
-
-        await appRef.delete();
-
-        showToast("Ilova o‘chirildi.");
-      }
-
-      await loadAdminApps();
-      await loadCloudApps();
-
+      await uploadApkForApp(id,button);
     } catch (error) {
-      console.error("Admin amalida xatolik:",error);
-
-      showToast(
-        "Xatolik: " + (error.message || "Amal bajarilmadi.")
-      );
-
-      button.disabled = false;
-      button.textContent = oldText;
+      showToast(error.message || "APK yuklashda xatolik.");
     }
-  });
+    return;
+  }
 
-/* PWA O‘RNATISH */
+  if (action === "delete" && !confirm("Bu ilovani butunlay o‘chirmoqchimisiz?")) {
+    return;
+  }
 
+  const oldText = button.textContent;
+  button.disabled = true;
+  button.textContent = "Bajarilmoqda...";
+
+  try {
+    const ref = db.collection("apps").doc(id);
+
+    if (action === "save-apk") {
+      const card = button.closest(".admin-app");
+      const url = card.querySelector("[data-apk-url]").value.trim();
+      let name = card.querySelector("[data-apk-name]").value.trim();
+      const sizeText = card.querySelector("[data-apk-size]").value.trim();
+      const size = sizeText === "" ? 0 : Number(sizeText);
+
+      if (url && !isAllowedApkUrl(url)) {
+        throw new Error("Noto‘g‘ri Supabase APK havolasi.");
+      }
+      if (url && !name) name = url.split("/").pop();
+      if (name.length > 120 || !Number.isFinite(size) || size < 0) {
+        throw new Error("Fayl nomi yoki hajmi noto‘g‘ri.");
+      }
+      if (!url) name = "";
+
+      await ref.update({apkUrl:url,apkName:name,apkSize:size});
+      showToast("APK ma’lumotlari saqlandi!");
+
+    } else if (action === "approve") {
+      await ref.update({status:"approved"});
+      showToast("Ilova tasdiqlandi!");
+
+    } else if (action === "reject") {
+      await ref.update({status:"rejected"});
+      showToast("Ilova rad etildi.");
+
+    } else if (action === "delete") {
+      await ref.delete();
+      showToast("Ilova o‘chirildi.");
+    }
+
+    await loadAdminApps();
+    await loadCloudApps();
+
+  } catch (error) {
+    showToast("Xatolik: " + (error.message || "Amal bajarilmadi."));
+    button.disabled = false;
+    button.textContent = oldText;
+  }
+});
+
+/* PWA INSTALL */
 let installPrompt = null;
-
 const installButton = document.getElementById("installBtn");
 
 window.addEventListener("beforeinstallprompt",event => {
   event.preventDefault();
-
   installPrompt = event;
   installButton.hidden = false;
 });
 
 installButton.addEventListener("click",async () => {
-
   if (installPrompt) {
-
     installPrompt.prompt();
-
     const result = await installPrompt.userChoice;
-
-    if (result.outcome === "accepted") {
-      showToast("AppZone o‘rnatish boshlandi!");
-    }
-
+    if (result.outcome === "accepted") showToast("AppZone o‘rnatish boshlandi!");
     installPrompt = null;
     installButton.hidden = true;
     return;
   }
 
-  const isApple = /iphone|ipad|ipod/i.test(navigator.userAgent);
-
-  if (isApple) {
+  if (/iphone|ipad|ipod/i.test(navigator.userAgent)) {
     showToast("Safari → Share → Add to Home Screen orqali qo‘shing.");
   } else {
-    showToast("O‘rnatish uchun sayt HTTPS orqali ochilishi kerak.");
+    showToast("Sayt HTTPS orqali ochilishi kerak.");
   }
 });
 
@@ -3114,34 +1361,22 @@ window.addEventListener("appinstalled",() => {
 });
 
 /* SERVICE WORKER */
-
 if ("serviceWorker" in navigator) {
-
   window.addEventListener("load",async () => {
-
-    const isSecure =
-      location.protocol === "https:" ||
-      location.hostname === "localhost" ||
-      location.hostname === "127.0.0.1";
-
-    if (!isSecure) return;
-
+    if (!location.protocol.startsWith("http")) return;
     try {
       await navigator.serviceWorker.register("./sw.js");
       console.log("AppZone Service Worker ishga tushdi.");
-
     } catch (error) {
-      console.warn("Service Worker xatosi:",error);
+      console.warn("Service Worker:",error);
     }
   });
 }
 
-/* BOSHLANG‘ICH ISHGA TUSHIRISH */
-
+/* START */
 renderCategories();
 renderApps();
 loadCloudApps();
-
 </script>
 
 </body>
