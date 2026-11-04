@@ -8,12 +8,18 @@
 <title>AppZone — Ilovalar do‘koni</title>
 <link rel="manifest" href="./manifest.json">
 <link rel="icon" href="./icon.svg" type="image/svg+xml">
+
 <script src="https://www.gstatic.com/firebasejs/13.1.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/13.1.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/13.1.0/firebase-firestore-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
-:root{--bg:#080d19;--panel:#111b2e;--panel2:#192741;--text:#f5f7ff;--muted:#9ba9c2;--purple:#8069ff;--blue:#438fff;--green:#20b87d;--border:rgba(255,255,255,.09)}
+:root{
+  --bg:#080d19;--panel:#111b2e;--panel2:#192741;
+  --text:#f5f7ff;--muted:#9ba9c2;--purple:#8069ff;
+  --blue:#438fff;--green:#20b87d;--border:rgba(255,255,255,.09)
+}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{min-height:100vh;background:radial-gradient(ellipse at 10% 0%,#7157ff20,transparent 35%),var(--bg);color:var(--text);font-family:Arial,sans-serif}
@@ -69,6 +75,35 @@ button{cursor:pointer;border:0}
 .app-tag{padding:5px 8px;background:#8069ff18;color:#c9bdff;border-radius:7px;font-size:9px;font-weight:800;white-space:nowrap}
 .details-btn{width:100%;margin-top:14px;padding:11px;border-radius:10px;color:white;background:var(--panel2);font-size:12px;font-weight:800}
 .empty{grid-column:1/-1;text-align:center;padding:42px 15px;border:1px dashed var(--border);border-radius:16px;color:var(--muted);line-height:1.8}
+
+/* TAVSIYA TIZIMI */
+.recommend-box{padding:22px;border:1px solid #8069ff55;border-radius:20px;background:radial-gradient(circle at 100% 0%,#8069ff20,transparent 35%),linear-gradient(145deg,#142039,#10192b)}
+.recommend-intro{display:flex;gap:13px;align-items:center;margin-bottom:18px}
+.recommend-symbol{width:48px;height:48px;display:grid;place-items:center;flex-shrink:0;border-radius:15px;background:linear-gradient(135deg,var(--purple),var(--blue));font-size:24px}
+.recommend-intro h2{font-size:19px}
+.recommend-intro p{margin-top:5px;color:var(--muted);font-size:12px;line-height:1.6}
+.recommend-form{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.recommend-field label{display:block;margin-bottom:7px;color:#d6def0;font-size:12px;font-weight:800}
+.recommend-field select{width:100%;min-height:46px;padding:11px;color:#fff;background:#0a1425;border:1px solid var(--border);border-radius:10px;outline:0;font-size:12px}
+.recommend-field select:focus{border-color:var(--purple)}
+.recommend-field option{background:#111b2e}
+.recommend-submit{display:flex;gap:10px;align-items:center;margin-top:14px;flex-wrap:wrap}
+.recommend-submit .btn{min-height:44px}
+.recommend-hint{color:var(--muted);font-size:11px}
+.recommend-results{margin-top:20px}
+.recommend-results-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
+.recommend-results-head h3{font-size:15px}
+.recommend-results-head span{font-size:11px;color:var(--muted)}
+.recommend-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}
+.recommend-card{padding:14px;border:1px solid var(--border);border-radius:14px;background:#0b1424}
+.recommend-card-top{display:flex;align-items:center;gap:10px}
+.recommend-card .app-icon{width:47px;height:47px;border-radius:13px;font-size:22px}
+.recommend-card h4{font-size:13px}
+.recommend-card small{display:block;margin-top:4px;color:#b9aaff;font-size:10px}
+.recommend-card p{min-height:34px;margin-top:10px;color:var(--muted);font-size:11px;line-height:1.55}
+.recommend-card button{width:100%;padding:10px;margin-top:11px;border-radius:9px;background:var(--panel2);color:white;font-size:11px;font-weight:800}
+.recommend-empty{padding:20px;border:1px dashed var(--border);border-radius:12px;color:var(--muted);font-size:12px;line-height:1.7;text-align:center}
+
 .submit-box{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:21px;border-radius:17px;background:linear-gradient(120deg,#1d2a51,#183553);border:1px solid #8069ff44}
 .submit-box h3{font-size:16px;margin-bottom:7px}
 .submit-box p{max-width:550px;color:#b8c4da;font-size:12px;line-height:1.6}
@@ -133,8 +168,10 @@ button{cursor:pointer;border:0}
 .toast{position:fixed;z-index:200;left:50%;bottom:25px;max-width:90%;padding:13px 17px;border-radius:12px;color:white;background:#263858;border:1px solid var(--border);text-align:center;font-size:12px;opacity:0;pointer-events:none;transform:translate(-50%,25px);transition:.25s}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 .mobile-nav{display:none}
+
 @media(max-width:1000px){.app-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media(max-width:760px){.app-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hero-art{right:0;opacity:.23}}
+@media(max-width:850px){.recommend-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){.app-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hero-art{right:0;opacity:.23}.recommend-form{grid-template-columns:1fr 1fr}.recommend-field:last-child{grid-column:1/-1}}
 @media(max-width:620px){
 .header-inner{padding:10px 12px;min-height:62px}
 .logo{font-size:19px;gap:8px}.logo-icon{width:36px;height:36px}
@@ -153,16 +190,22 @@ button{cursor:pointer;border:0}
 .feature-grid{grid-template-columns:1fr}
 .submit-box{align-items:flex-start;flex-direction:column}
 .submit-box .btn{width:100%}
+.recommend-box{padding:15px}
+.recommend-form{grid-template-columns:1fr}
+.recommend-field:last-child{grid-column:auto}
+.recommend-grid{grid-template-columns:1fr 1fr}
+.recommend-card{padding:11px}
+.recommend-card .app-icon{width:42px;height:42px}
 .mobile-nav{position:fixed;z-index:40;display:grid;grid-template-columns:repeat(3,1fr);left:10px;right:10px;bottom:9px;padding:7px;background:#111b2eef;border:1px solid var(--border);border-radius:15px;backdrop-filter:blur(15px)}
 .mobile-nav button{padding:8px 4px;color:var(--muted);background:transparent;font-size:10px;font-weight:800}
 .mobile-nav button.active{color:white;background:var(--panel2);border-radius:9px}
 .mobile-nav span{display:block;font-size:17px;margin-bottom:3px}
 }
-@media(max-width:370px){.app-grid{grid-template-columns:1fr}.hero h1{font-size:30px}}
+@media(max-width:370px){.app-grid{grid-template-columns:1fr}.recommend-grid{grid-template-columns:1fr}.hero h1{font-size:30px}}
 </style>
 </head>
-<body>
 
+<body>
 <header class="header">
 <div class="header-inner">
   <div class="logo"><div class="logo-icon">A</div><div>App<b>Zone</b></div></div>
@@ -194,30 +237,135 @@ button{cursor:pointer;border:0}
 <div class="info-item"><div class="info-icon">📲</div><div><strong>Rasmiy o‘rnatish</strong><small>Mashhur ilovalar Google Play orqali</small></div></div>
 </section>
 
-<div class="search-box"><span>⌕</span><input id="searchInput" type="search" placeholder="Ilovalar va o‘yinlarni qidiring..."></div>
+<div class="search-box">
+  <span>⌕</span>
+  <input id="searchInput" type="search" placeholder="Ilovalar va o‘yinlarni qidiring...">
+</div>
+
+<!-- SIZGA MOS ILOVALAR -->
+<section class="section" id="recommendSection">
+<div class="recommend-box">
+  <div class="recommend-intro">
+    <div class="recommend-symbol">✨</div>
+    <div>
+      <h2>Sizga mos ilovalarni topamiz</h2>
+      <p>Kasbingiz, kerakli ilova turi va maqsadingizni belgilang. AppZone mos ilovalarni tavsiya qiladi.</p>
+    </div>
+  </div>
+
+  <form id="recommendForm">
+    <div class="recommend-form">
+      <div class="recommend-field">
+        <label for="recommendRole">1. Kasbingiz yoki sohangiz</label>
+        <select id="recommendRole" required>
+          <option value="">Kasb/sohani tanlang</option>
+          <option value="student">O‘quvchi yoki talaba</option>
+          <option value="teacher">O‘qituvchi</option>
+          <option value="entrepreneur">Tadbirkor</option>
+          <option value="seller">Sotuvchi</option>
+          <option value="blogger">Bloger yoki kontent yaratuvchi</option>
+          <option value="designer">Dizayner</option>
+          <option value="developer">Dasturchi</option>
+          <option value="driver">Haydovchi yoki logist</option>
+          <option value="farmer">Fermer</option>
+          <option value="engineer">Muhandis yoki texnik</option>
+          <option value="translator">Tarjimon</option>
+          <option value="office">Ofis xodimi</option>
+          <option value="other">Boshqa soha</option>
+        </select>
+      </div>
+
+      <div class="recommend-field">
+        <label for="recommendType">2. Qanday turdagi ilova kerak?</label>
+        <select id="recommendType" required>
+          <option value="">Ilova turini tanlang</option>
+          <option value="education">Ta’lim va o‘rganish</option>
+          <option value="communication">Muloqot va aloqa</option>
+          <option value="social">Ijtimoiy tarmoqlar</option>
+          <option value="video">Foto va video</option>
+          <option value="design">Dizayn va ijod</option>
+          <option value="documents">Hujjatlar va fayllar</option>
+          <option value="maps">Xarita va navigatsiya</option>
+          <option value="ai">Sun’iy intellekt</option>
+          <option value="gaming">O‘yinlar</option>
+          <option value="entertainment">Musiqa va ko‘ngilochar</option>
+          <option value="internet">Internet va qidiruv</option>
+          <option value="productivity">Rejalashtirish va ish unumdorligi</option>
+        </select>
+      </div>
+
+      <div class="recommend-field">
+        <label for="recommendPurpose">3. Ilovadan nima uchun foydalanasiz?</label>
+        <select id="recommendPurpose" required>
+          <option value="">Maqsadni tanlang</option>
+          <option value="study">Dars qilish va bilim olish</option>
+          <option value="language">Chet tilini o‘rganish</option>
+          <option value="teach">Dars tayyorlash yoki o‘qitish</option>
+          <option value="clients">Mijozlar bilan aloqa qilish</option>
+          <option value="marketing">Reklama va savdo</option>
+          <option value="content">Kontent va video yaratish</option>
+          <option value="designwork">Dizayn yoki taqdimot qilish</option>
+          <option value="documents">Hujjat tayyorlash va ulashish</option>
+          <option value="navigation">Manzil va yo‘l topish</option>
+          <option value="research">Ma’lumot izlash</option>
+          <option value="coding">Dasturlash va texnik ishlar</option>
+          <option value="ideas">G‘oya, matn va reja tayyorlash</option>
+          <option value="storage">Fayllarni saqlash</option>
+          <option value="team">Jamoa bilan ishlash</option>
+          <option value="leisure">Dam olish va hordiq</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="recommend-submit">
+      <button class="btn" type="submit">✨ Menga mos ilovalarni topish</button>
+      <button class="btn btn-outline" type="button" id="resetRecommend">Tozalash</button>
+      <span class="recommend-hint">Tavsiyalar AppZone katalogi asosida tuziladi.</span>
+    </div>
+  </form>
+
+  <div class="recommend-results" id="recommendationResults" hidden>
+    <div class="recommend-results-head">
+      <h3>Siz uchun tavsiyalar</h3>
+      <span id="recommendationCount"></span>
+    </div>
+    <div class="recommend-grid" id="recommendationGrid"></div>
+  </div>
+</div>
+</section>
 
 <section class="section" id="submitArea" hidden>
 <div class="submit-box">
-  <div><h3>📤 Ilovangizni AppZone'ga joylang</h3><p>Ilova ma’lumotlarini yuboring. Admin tekshirganidan keyin katalogda ko‘rinadi.</p></div>
+  <div>
+    <h3>📤 Ilovangizni AppZone'ga joylang</h3>
+    <p>Ilova ma’lumotlarini yuboring. Admin tekshirganidan keyin katalogda ko‘rinadi.</p>
+  </div>
   <button class="btn" onclick="openSubmitApp()">+ Ilova yuborish</button>
 </div>
 </section>
 
 <section class="section">
-<div class="section-head"><div><h2>Kategoriyalar</h2><p class="subtitle">Kerakli yo‘nalishni tanlang</p></div></div>
+<div class="section-head">
+  <div><h2>Kategoriyalar</h2><p class="subtitle">Kerakli yo‘nalishni tanlang</p></div>
+</div>
 <div class="categories" id="categories"></div>
 </section>
 
 <section class="section" id="appsSection">
 <div class="section-head">
-  <div><h2 id="appsTitle">Mashhur ilovalar</h2><p class="subtitle" id="appsSubtitle">Rasmiy Google Play havolalari va AppZone ilovalari</p></div>
+  <div>
+    <h2 id="appsTitle">Mashhur ilovalar</h2>
+    <p class="subtitle" id="appsSubtitle">Google Play qidiruvi va AppZone ilovalari</p>
+  </div>
   <span class="muted" id="appCount">0 ta ilova</span>
 </div>
 <div class="app-grid" id="appGrid"><div class="empty">Ilovalar yuklanmoqda...</div></div>
 </section>
 
 <section class="section">
-<div class="section-head"><div><h2>Nega AppZone?</h2><p class="subtitle">Foydalanuvchi va dasturchilar uchun platforma</p></div></div>
+<div class="section-head">
+  <div><h2>Nega AppZone?</h2><p class="subtitle">Foydalanuvchi va dasturchilar uchun platforma</p></div>
+</div>
 <div class="feature-grid">
   <div class="feature"><div class="feature-icon">🔍</div><h3>Oson qidiruv</h3><p>Ilovalarni nomi, tavsifi va kategoriyasi orqali toping.</p></div>
   <div class="feature"><div class="feature-icon">⭐</div><h3>Sevimlilar</h3><p>Yoqtirgan ilovalaringizni sevimlilar ro‘yxatiga saqlang.</p></div>
@@ -241,91 +389,95 @@ button{cursor:pointer;border:0}
 <!-- AUTH -->
 <div class="modal" id="authModal">
 <div class="modal-box">
-<div class="modal-head"><h2>AppZone akkaunti</h2><button class="close-btn" onclick="closeModal('authModal')">×</button></div>
-<div class="auth-tabs">
-<button class="auth-tab active" id="loginTab" onclick="switchAuth('login')">Kirish</button>
-<button class="auth-tab" id="registerTab" onclick="switchAuth('register')">Ro‘yxatdan o‘tish</button>
-</div>
-<div id="authMessage"></div>
-<form id="loginForm">
-<div class="form-group"><label>Email</label><input type="email" id="loginEmail" required placeholder="example@gmail.com"></div>
-<div class="form-group"><label>Parol</label><input type="password" id="loginPassword" required minlength="6" placeholder="Parolingiz"></div>
-<button class="submit-btn" type="submit">Akkauntga kirish</button>
-<button class="link-btn" type="button" onclick="resetPassword()">Parolni unutdingizmi?</button>
-</form>
-<form id="registerForm" hidden>
-<div class="form-group"><label>Email</label><input type="email" id="registerEmail" required placeholder="example@gmail.com"></div>
-<div class="form-group"><label>Parol</label><input type="password" id="registerPassword" required minlength="6" placeholder="Kamida 6 ta belgi"></div>
-<div class="form-group"><label>Parolni tasdiqlang</label><input type="password" id="confirmPassword" required minlength="6" placeholder="Parolni qayta kiriting"></div>
-<button class="submit-btn" type="submit">Akkaunt yaratish</button>
-</form>
-<p class="form-note">Akkauntingiz orqali AppZone xizmatlaridan foydalaning.</p>
+  <div class="modal-head"><h2>AppZone akkaunti</h2><button class="close-btn" onclick="closeModal('authModal')">×</button></div>
+  <div class="auth-tabs">
+    <button class="auth-tab active" id="loginTab" onclick="switchAuth('login')">Kirish</button>
+    <button class="auth-tab" id="registerTab" onclick="switchAuth('register')">Ro‘yxatdan o‘tish</button>
+  </div>
+  <div id="authMessage"></div>
+  <form id="loginForm">
+    <div class="form-group"><label>Email</label><input type="email" id="loginEmail" required placeholder="example@gmail.com"></div>
+    <div class="form-group"><label>Parol</label><input type="password" id="loginPassword" required minlength="6" placeholder="Parolingiz"></div>
+    <button class="submit-btn" type="submit">Akkauntga kirish</button>
+    <button class="link-btn" type="button" onclick="resetPassword()">Parolni unutdingizmi?</button>
+  </form>
+  <form id="registerForm" hidden>
+    <div class="form-group"><label>Email</label><input type="email" id="registerEmail" required placeholder="example@gmail.com"></div>
+    <div class="form-group"><label>Parol</label><input type="password" id="registerPassword" required minlength="6" placeholder="Kamida 6 ta belgi"></div>
+    <div class="form-group"><label>Parolni tasdiqlang</label><input type="password" id="confirmPassword" required minlength="6" placeholder="Parolni qayta kiriting"></div>
+    <button class="submit-btn" type="submit">Akkaunt yaratish</button>
+  </form>
+  <p class="form-note">Akkauntingiz orqali AppZone xizmatlaridan foydalaning.</p>
 </div>
 </div>
 
 <!-- PROFILE -->
 <div class="modal" id="profileModal">
 <div class="modal-box">
-<div class="modal-head"><h2>Shaxsiy profil</h2><button class="close-btn" onclick="closeModal('profileModal')">×</button></div>
-<div class="profile-info"><small>Akkaunt emaili</small><h3 id="profileEmail" style="margin-top:7px"></h3><p id="profileRole" class="muted" style="margin-top:8px"></p></div>
-<button class="submit-btn" onclick="logout()">Akkauntdan chiqish</button>
+  <div class="modal-head"><h2>Shaxsiy profil</h2><button class="close-btn" onclick="closeModal('profileModal')">×</button></div>
+  <div class="profile-info">
+    <small>Akkaunt emaili</small>
+    <h3 id="profileEmail" style="margin-top:7px"></h3>
+    <p id="profileRole" class="muted" style="margin-top:8px"></p>
+  </div>
+  <button class="submit-btn" onclick="logout()">Akkauntdan chiqish</button>
 </div>
 </div>
 
 <!-- SUBMIT APP -->
 <div class="modal" id="submitAppModal">
 <div class="modal-box">
-<div class="modal-head"><h2>Ilova yuborish</h2><button class="close-btn" onclick="closeModal('submitAppModal')">×</button></div>
-<div id="submitAppMessage"></div>
-<form id="submitAppForm">
-<div class="form-group"><label>Ilova nomi</label><input id="newAppName" required minlength="2" maxlength="60" placeholder="Masalan: My Calculator"></div>
-<div class="form-group"><label>Ilova haqida</label><textarea id="newAppDescription" required maxlength="600" placeholder="Ilovangiz haqida yozing..."></textarea></div>
-<div class="form-group">
-<label>Kategoriya</label>
-<select id="newAppCategory" required>
-<option value="">Kategoriyani tanlang</option>
-<option>Ta’lim</option><option>Foto va video</option><option>Vositalar</option>
-<option>O‘yinlar</option><option>Muloqot</option><option>Ijtimoiy tarmoqlar</option>
-<option>Xaritalar</option><option>Ko‘ngilochar</option><option>Boshqa</option>
-</select>
-</div>
-<div class="form-group"><label>Versiya</label><input id="newAppVersion" required maxlength="20" placeholder="1.0"></div>
-<div class="form-group"><label>Ilova rasmi havolasi (ixtiyoriy)</label><input id="newAppIcon" type="url" placeholder="https://..."></div>
-<button class="submit-btn" id="submitAppSaveBtn" type="submit">Yuborish</button>
-</form>
-<p class="form-note">Yuborilgan ilova avval admin tekshiruvidan o‘tadi.</p>
+  <div class="modal-head"><h2>Ilova yuborish</h2><button class="close-btn" onclick="closeModal('submitAppModal')">×</button></div>
+  <div id="submitAppMessage"></div>
+  <form id="submitAppForm">
+    <div class="form-group"><label>Ilova nomi</label><input id="newAppName" required minlength="2" maxlength="60" placeholder="Masalan: My Calculator"></div>
+    <div class="form-group"><label>Ilova haqida</label><textarea id="newAppDescription" required maxlength="600" placeholder="Ilovangiz haqida yozing..."></textarea></div>
+    <div class="form-group">
+      <label>Kategoriya</label>
+      <select id="newAppCategory" required>
+        <option value="">Kategoriyani tanlang</option>
+        <option>Ta’lim</option><option>Foto va video</option><option>Vositalar</option>
+        <option>O‘yinlar</option><option>Muloqot</option><option>Ijtimoiy tarmoqlar</option>
+        <option>Xaritalar</option><option>Ko‘ngilochar</option><option>Boshqa</option>
+      </select>
+    </div>
+    <div class="form-group"><label>Versiya</label><input id="newAppVersion" required maxlength="20" placeholder="1.0"></div>
+    <div class="form-group"><label>Ilova rasmi havolasi (ixtiyoriy)</label><input id="newAppIcon" type="url" placeholder="https://..."></div>
+    <button class="submit-btn" id="submitAppSaveBtn" type="submit">Yuborish</button>
+  </form>
+  <p class="form-note">Yuborilgan ilova avval admin tekshiruvidan o‘tadi.</p>
 </div>
 </div>
 
 <!-- ADMIN -->
 <div class="modal" id="adminModal">
 <div class="modal-box admin-modal">
-<div class="modal-head">
-<div><h2>⚙ AppZone Admin Panel</h2><p class="muted" style="margin-top:6px">Ilovalarni boshqarish</p></div>
-<button class="close-btn" onclick="closeModal('adminModal')">×</button>
-</div>
-<div class="admin-filters" id="adminFilters">
-<button class="admin-filter" data-filter="pending">Tekshiruvda</button>
-<button class="admin-filter" data-filter="approved">Tasdiqlangan</button>
-<button class="admin-filter" data-filter="rejected">Rad etilgan</button>
-<button class="admin-filter active" data-filter="all">Barchasi</button>
-</div>
-<div class="admin-list" id="adminList"><div class="admin-empty">Ma’lumotlar yuklanmoqda...</div></div>
+  <div class="modal-head">
+    <div><h2>⚙ AppZone Admin Panel</h2><p class="muted" style="margin-top:6px">Ilovalarni boshqarish</p></div>
+    <button class="close-btn" onclick="closeModal('adminModal')">×</button>
+  </div>
+  <div class="admin-filters" id="adminFilters">
+    <button class="admin-filter" data-filter="pending">Tekshiruvda</button>
+    <button class="admin-filter" data-filter="approved">Tasdiqlangan</button>
+    <button class="admin-filter" data-filter="rejected">Rad etilgan</button>
+    <button class="admin-filter active" data-filter="all">Barchasi</button>
+  </div>
+  <div class="admin-list" id="adminList"><div class="admin-empty">Ma’lumotlar yuklanmoqda...</div></div>
 </div>
 </div>
 
 <!-- APP DETAILS -->
 <div class="modal" id="appModal">
 <div class="modal-box">
-<div class="modal-head"><h2 id="detailTitle">Ilova</h2><button class="close-btn" onclick="closeModal('appModal')">×</button></div>
-<div id="detailContent"></div>
+  <div class="modal-head"><h2 id="detailTitle">Ilova</h2><button class="close-btn" onclick="closeModal('appModal')">×</button></div>
+  <div id="detailContent"></div>
 </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-/* FIREBASE CONFIG — sen yuborgan haqiqiy sozlamalar */
+/* FIREBASE CONFIG — mavjud loyihang */
 const firebaseConfig={
   apiKey:"AIzaSyCI_7KqqOy2qPE7Qu5pMm1Jc7mZONtIy70",
   authDomain:"appzone-19115.firebaseapp.com",
@@ -335,11 +487,11 @@ const firebaseConfig={
   appId:"1:685330977059:web:bf686fa47088a70cb33c96"
 };
 
-if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth();
 const db=firebase.firestore();
 
-/* SUPABASE CONFIG — sen yuborgan haqiqiy sozlamalar */
+/* SUPABASE CONFIG — mavjud loyihang */
 const SUPABASE_URL="https://lfbnvltgemyqjsbhrqlo.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY="sb_publishable_ZcE0Jugxq59Uyziw-WkOHQ_D3kMhExO";
 const SUPABASE_BUCKET="appzone-apks";
@@ -351,30 +503,171 @@ const supabaseClient=window.supabase.createClient(
   SUPABASE_PUBLISHABLE_KEY
 );
 
-/* MASHHUR ILOVALAR — RASMIY GOOGLE PLAY HAVOLALARI */
+/*
+  60 TA MASHHUR ILOVA.
+  Har bir ilovada kasb, ilova turi va foydalanish maqsadi bo‘yicha
+  tavsiya guruhi mavjud.
+*/
+const APP_GROUPS={
+  communication:{
+    roles:["student","teacher","entrepreneur","seller","blogger","developer","driver","farmer","translator","office"],
+    types:["communication"],
+    purposes:["clients","team"]
+  },
+  social:{
+    roles:["entrepreneur","seller","blogger","designer","student"],
+    types:["social"],
+    purposes:["marketing","content","clients"]
+  },
+  video:{
+    roles:["student","teacher","blogger","designer","seller"],
+    types:["video"],
+    purposes:["content","teach","leisure"]
+  },
+  music:{
+    roles:["student","driver","designer","office","other"],
+    types:["entertainment"],
+    purposes:["leisure"]
+  },
+  navigation:{
+    roles:["driver","farmer","seller","entrepreneur","engineer"],
+    types:["maps"],
+    purposes:["navigation","clients"]
+  },
+  browser:{
+    roles:["student","teacher","entrepreneur","developer","engineer","translator","office","farmer"],
+    types:["internet"],
+    purposes:["research","study","coding","language"]
+  },
+  office:{
+    roles:["student","teacher","entrepreneur","developer","engineer","translator","office"],
+    types:["documents","productivity"],
+    purposes:["documents","storage","team"]
+  },
+  design:{
+    roles:["teacher","student","entrepreneur","seller","blogger","designer"],
+    types:["design","video"],
+    purposes:["designwork","content","marketing","teach"]
+  },
+  ai:{
+    roles:["student","teacher","entrepreneur","blogger","developer","translator","engineer","office"],
+    types:["ai"],
+    purposes:["study","teach","coding","ideas","research","language","documents"]
+  },
+  education:{
+    roles:["student","teacher","translator"],
+    types:["education"],
+    purposes:["study","language","teach","research"]
+  },
+  gaming:{
+    roles:["student","other"],
+    types:["gaming"],
+    purposes:["leisure"]
+  },
+  productivity:{
+    roles:["teacher","entrepreneur","developer","engineer","office","student"],
+    types:["productivity","documents"],
+    purposes:["team","documents","storage","ideas"]
+  },
+  photos:{
+    roles:["student","blogger","designer","seller","teacher"],
+    types:["design","video"],
+    purposes:["content","designwork","marketing"]
+  },
+  meetings:{
+    roles:["teacher","entrepreneur","developer","office","student"],
+    types:["communication","productivity"],
+    purposes:["team","teach","clients"]
+  },
+  cloud:{
+    roles:["student","teacher","entrepreneur","designer","developer","office","engineer"],
+    types:["documents","productivity"],
+    purposes:["storage","documents","team"]
+  }
+};
+
+function makeApp(id,name,category,icon,description,group){
+  return {
+    id,name,category,icon,description,
+    developer:"Rasmiy ishlab chiquvchi",
+    group,
+    source:"googleplay",
+    playUrl:"https://play.google.com/store/search?q="+encodeURIComponent(name)+"&c=apps"
+  };
+}
+
 const FEATURED_APPS=[
-  {id:"play-whatsapp",name:"WhatsApp",description:"Xabar almashish, ovozli va video qo‘ng‘iroqlar.",category:"Muloqot",icon:"💬",developer:"WhatsApp LLC",packageId:"com.whatsapp"},
-  {id:"play-telegram",name:"Telegram",description:"Tezkor xabar almashish, guruhlar va kanallar.",category:"Muloqot",icon:"✈️",developer:"Telegram FZ-LLC",packageId:"org.telegram.messenger"},
-  {id:"play-instagram",name:"Instagram",description:"Foto, video va ijodiy kontent platformasi.",category:"Ijtimoiy tarmoqlar",icon:"📸",developer:"Instagram",packageId:"com.instagram.android"},
-  {id:"play-youtube",name:"YouTube",description:"Videolar tomosha qilish va ijodkorlarni kuzatish.",category:"Foto va video",icon:"▶️",developer:"Google LLC",packageId:"com.google.android.youtube"},
-  {id:"play-gmail",name:"Gmail",description:"Elektron xatlarni yuborish va qabul qilish.",category:"Vositalar",icon:"✉️",developer:"Google LLC",packageId:"com.google.android.gm"},
-  {id:"play-maps",name:"Google Maps",description:"Manzillar, xaritalar va yo‘nalishlarni topish.",category:"Xaritalar",icon:"📍",developer:"Google LLC",packageId:"com.google.android.apps.maps"},
-  {id:"play-chrome",name:"Google Chrome",description:"Internet sahifalarini tez va qulay ochish.",category:"Vositalar",icon:"🌐",developer:"Google LLC",packageId:"com.android.chrome"},
-  {id:"play-canva",name:"Canva",description:"Dizayn, taqdimot, poster va video yaratish.",category:"Foto va video",icon:"🎨",developer:"Canva",packageId:"com.canva.editor"},
-  {id:"play-duolingo",name:"Duolingo",description:"Chet tillarini o‘rganish platformasi.",category:"Ta’lim",icon:"🦉",developer:"Duolingo",packageId:"com.duolingo"},
-  {id:"play-drive",name:"Google Drive",description:"Fayllarni bulutda saqlash va boshqarish.",category:"Vositalar",icon:"☁️",developer:"Google LLC",packageId:"com.google.android.apps.docs"},
-  {id:"play-tiktok",name:"TikTok",description:"Qisqa videolar va ijodiy kontent.",category:"Ijtimoiy tarmoqlar",icon:"🎵",developer:"TikTok Pte. Ltd.",packageId:"com.zhiliaoapp.musically"},
-  {id:"play-facebook",name:"Facebook",description:"Do‘stlar va hamjamiyatlar bilan aloqada bo‘ling.",category:"Ijtimoiy tarmoqlar",icon:"f",developer:"Meta Platforms, Inc.",packageId:"com.facebook.katana"},
-  {id:"play-spotify",name:"Spotify",description:"Musiqa va podkast platformasi.",category:"Ko‘ngilochar",icon:"🎧",developer:"Spotify AB",packageId:"com.spotify.music"},
-  {id:"play-subway",name:"Subway Surfers",description:"Mashhur yugurish va sarguzasht o‘yini.",category:"O‘yinlar",icon:"🏃",developer:"SYBO Games",packageId:"com.kiloo.subwaysurf"},
-  {id:"play-roblox",name:"Roblox",description:"Turli interaktiv o‘yinlar va tajribalar olami.",category:"O‘yinlar",icon:"🧱",developer:"Roblox Corporation",packageId:"com.roblox.client"},
-  {id:"play-chatgpt",name:"ChatGPT",description:"Savollar, g‘oyalar va o‘rganish uchun AI yordamchi.",category:"Ta’lim",icon:"✳️",developer:"OpenAI",packageId:"com.openai.chatgpt"}
-].map(app=>({
-  ...app,
-  source:"googleplay",
-  playUrl:"https://play.google.com/store/apps/details?id="+app.packageId,
-  version:"Google Play"
-}));
+  makeApp("p01","WhatsApp","Muloqot","💬","Xabar almashish, ovozli va video qo‘ng‘iroqlar.","communication"),
+  makeApp("p02","Telegram","Muloqot","✈️","Xabarlar, guruhlar, kanallar va fayl almashish.","communication"),
+  makeApp("p03","Instagram","Ijtimoiy tarmoqlar","📸","Foto, video va ijodiy kontent platformasi.","social"),
+  makeApp("p04","Facebook","Ijtimoiy tarmoqlar","f","Do‘stlar va hamjamiyatlar bilan aloqa.","social"),
+  makeApp("p05","TikTok","Ijtimoiy tarmoqlar","🎵","Qisqa videolarni ko‘rish va yaratish.","social"),
+  makeApp("p06","Snapchat","Ijtimoiy tarmoqlar","👻","Rasm, video va xabarlar almashish.","social"),
+  makeApp("p07","X","Ijtimoiy tarmoqlar","𝕏","Yangiliklar va qisqa postlar platformasi.","social"),
+  makeApp("p08","Pinterest","Ijtimoiy tarmoqlar","📌","G‘oyalar, rasmlar va ijodiy ilhom.","social"),
+  makeApp("p09","LinkedIn","Ijtimoiy tarmoqlar","in","Kasbiy aloqalar va ish imkoniyatlari.","social"),
+  makeApp("p10","Messenger","Muloqot","🔵","Do‘stlar va tanishlar bilan xabar almashish.","communication"),
+
+  makeApp("p11","YouTube","Foto va video","▶️","Videolar, darslar va ijodiy kontent.","video"),
+  makeApp("p12","YouTube Music","Ko‘ngilochar","🎧","Musiqa tinglash va pleylistlar.","music"),
+  makeApp("p13","Spotify","Ko‘ngilochar","🎵","Musiqa va podkast platformasi.","music"),
+  makeApp("p14","SoundCloud","Ko‘ngilochar","☁️","Musiqa va audio ijodkorlar platformasi.","music"),
+  makeApp("p15","Netflix","Ko‘ngilochar","🎬","Film va seriallarni tomosha qilish xizmati.","music"),
+
+  makeApp("p16","Google Maps","Xaritalar","📍","Manzillar, xaritalar va yo‘nalishlarni topish.","navigation"),
+  makeApp("p17","Waze","Xaritalar","🚗","Yo‘l va transport harakati haqida ma’lumot.","navigation"),
+  makeApp("p18","Google Chrome","Vositalar","🌐","Internet sahifalarini tez va qulay ochish.","browser"),
+  makeApp("p19","Gmail","Vositalar","✉️","Elektron xatlarni yuborish va qabul qilish.","communication"),
+  makeApp("p20","Google Drive","Vositalar","☁️","Fayllarni bulutda saqlash va ulashish.","cloud"),
+
+  makeApp("p21","Google Docs","Vositalar","📄","Matnli hujjatlarni yaratish va tahrirlash.","office"),
+  makeApp("p22","Google Sheets","Vositalar","📊","Jadvallar va hisob-kitoblar bilan ishlash.","office"),
+  makeApp("p23","Google Meet","Muloqot","📹","Video uchrashuvlar va masofaviy muloqot.","meetings"),
+  makeApp("p24","Zoom","Muloqot","🎥","Onlayn uchrashuvlar va videodarslar.","meetings"),
+  makeApp("p25","Microsoft Teams","Muloqot","👥","Jamoa bilan ishlash va videomuloqot.","meetings"),
+
+  makeApp("p26","Microsoft Word","Vositalar","📝","Matnli hujjatlar yaratish va tahrirlash.","office"),
+  makeApp("p27","Microsoft Excel","Vositalar","📈","Jadvallar, formulalar va hisob-kitoblar.","office"),
+  makeApp("p28","Microsoft PowerPoint","Vositalar","📽️","Taqdimotlar tayyorlash.","office"),
+  makeApp("p29","Canva","Foto va video","🎨","Dizayn, poster, taqdimot va ijodiy materiallar.","design"),
+  makeApp("p30","CapCut","Foto va video","🎞️","Video montaj va qisqa videolar yaratish.","video"),
+
+  makeApp("p31","Adobe Lightroom","Foto va video","🌅","Rasmlarni tahrirlash va ranglarni sozlash.","photos"),
+  makeApp("p32","Picsart","Foto va video","🖼️","Foto tahrirlash va ijodiy dizayn.","photos"),
+  makeApp("p33","ChatGPT","Vositalar","✳️","Savollar, g‘oyalar, matnlar va o‘rganish uchun AI.","ai"),
+  makeApp("p34","Google Gemini","Vositalar","💠","AI yordamida savollar va ijodiy vazifalar.","ai"),
+  makeApp("p35","Microsoft Copilot","Vositalar","🤖","AI yordamida izlanish va ishlarni bajarish.","ai"),
+
+  makeApp("p36","Duolingo","Ta’lim","🦉","Chet tillarini o‘rganish platformasi.","education"),
+  makeApp("p37","Google Translate","Ta’lim","🌍","Matn va tillarni tarjima qilish.","education"),
+  makeApp("p38","Quizlet","Ta’lim","🗂️","Kartochkalar va testlar yordamida o‘rganish.","education"),
+  makeApp("p39","Photomath","Ta’lim","➗","Matematik masalalarni o‘rganishga yordam beradi.","education"),
+  makeApp("p40","Khan Academy","Ta’lim","📚","Turli fanlar bo‘yicha bepul ta’lim resurslari.","education"),
+
+  makeApp("p41","Coursera","Ta’lim","🎓","Onlayn kurslar va yangi ko‘nikmalar.","education"),
+  makeApp("p42","Udemy","Ta’lim","📖","Turli mavzularda videokurslar.","education"),
+  makeApp("p43","Notion","Vositalar","📓","Qaydlar, loyihalar va ma’lumotlarni tartiblash.","productivity"),
+  makeApp("p44","Trello","Vositalar","📋","Vazifalar va jamoaviy loyihalarni rejalashtirish.","productivity"),
+  makeApp("p45","Slack","Muloqot","💼","Ish jamoalari uchun muloqot va hamkorlik.","meetings"),
+
+  makeApp("p46","Dropbox","Vositalar","📦","Fayllarni bulutda saqlash va ulashish.","cloud"),
+  makeApp("p47","Microsoft OneDrive","Vositalar","☁️","Hujjat va fayllarni saqlash.","cloud"),
+  makeApp("p48","Google Calendar","Vositalar","📅","Uchrashuvlar va kun tartibini rejalashtirish.","productivity"),
+  makeApp("p49","Todoist","Vositalar","✅","Vazifalar ro‘yxati va rejalashtirish.","productivity"),
+  makeApp("p50","Google Keep","Vositalar","🗒️","Qaydlar va eslatmalarni saqlash.","productivity"),
+
+  makeApp("p51","Shazam","Ko‘ngilochar","🎼","Eshitilayotgan musiqani aniqlash.","music"),
+  makeApp("p52","Subway Surfers","O‘yinlar","🏃","Mashhur yugurish va sarguzasht o‘yini.","gaming"),
+  makeApp("p53","Roblox","O‘yinlar","🧱","Turli interaktiv o‘yinlar olami.","gaming"),
+  makeApp("p54","Minecraft","O‘yinlar","⛏️","Qurish, kashf qilish va ijodiy o‘yin.","gaming"),
+  makeApp("p55","PUBG MOBILE","O‘yinlar","🎮","Ko‘p o‘yinchili jangovar o‘yin.","gaming"),
+
+  makeApp("p56","Free Fire","O‘yinlar","🔥","Ko‘p o‘yinchili jangovar o‘yin.","gaming"),
+  makeApp("p57","Clash of Clans","O‘yinlar","🏰","Strategiya va qishloq qurish o‘yini.","gaming"),
+  makeApp("p58","8 Ball Pool","O‘yinlar","🎱","Billiard sport o‘yini.","gaming"),
+  makeApp("p59","Asphalt Legends","O‘yinlar","🏎️","Avtomobil poygasi o‘yini.","gaming"),
+  makeApp("p60","Google Photos","Foto va video","🌄","Rasmlarni saqlash va tartiblash.","photos")
+];
 
 /* STATE */
 let apps=[...FEATURED_APPS];
@@ -388,6 +681,7 @@ let adminApps=[];
 let adminFilter="all";
 let authCheckNumber=0;
 let toastTimer=null;
+let lastRecommendation=null;
 
 const categoriesList=[
   "Barchasi","Ijtimoiy tarmoqlar","Muloqot","Ta’lim",
@@ -397,7 +691,7 @@ const categoriesList=[
 
 try{
   favorites=JSON.parse(localStorage.getItem("appzoneFavorites")||"[]");
-  if(!Array.isArray(favorites)) favorites=[];
+  if(!Array.isArray(favorites))favorites=[];
 }catch{
   favorites=[];
 }
@@ -452,22 +746,16 @@ function getDateNumber(value){
   if(!value)return 0;
   try{
     return typeof value.toMillis==="function"
-      ? value.toMillis()
-      : new Date(value).getTime()||0;
+      ?value.toMillis()
+      :new Date(value).getTime()||0;
   }catch{return 0;}
 }
 
 function getCategoryIcon(category){
   return ({
-    "Ta’lim":"📚",
-    "Foto va video":"🎬",
-    "Vositalar":"🧰",
-    "O‘yinlar":"🎮",
-    "Muloqot":"💬",
-    "Ijtimoiy tarmoqlar":"🌐",
-    "Xaritalar":"📍",
-    "Ko‘ngilochar":"🎧",
-    "Boshqa":"📱"
+    "Ta’lim":"📚","Foto va video":"🎬","Vositalar":"🧰",
+    "O‘yinlar":"🎮","Muloqot":"💬","Ijtimoiy tarmoqlar":"🌐",
+    "Xaritalar":"📍","Ko‘ngilochar":"🎧","Boshqa":"📱"
   })[category]||"📱";
 }
 
@@ -505,15 +793,18 @@ function renderCategories(){
 document.getElementById("categories").addEventListener("click",event=>{
   const button=event.target.closest("[data-category]");
   if(!button)return;
+
   activeCategory=button.dataset.category;
   favoritesOnly=false;
+
   document.getElementById("appsTitle").textContent=
     activeCategory==="Barchasi"?"Mashhur ilovalar":activeCategory;
+
   renderCategories();
   filterApps();
 });
 
-/* ILOVA KARTALARI */
+/* KATALOG KARTALARI */
 function renderApps(){
   const grid=document.getElementById("appGrid");
   document.getElementById("appCount").textContent=visibleApps.length+" ta ilova";
@@ -572,12 +863,11 @@ function filterApps(){
 
 document.getElementById("searchInput").addEventListener("input",filterApps);
 
-/* BOSH SAHIFA VA SEVIMLILAR */
 function showHome(){
   favoritesOnly=false;
   activeCategory="Barchasi";
   document.getElementById("appsTitle").textContent="Mashhur ilovalar";
-  document.getElementById("appsSubtitle").textContent="Rasmiy Google Play havolalari va AppZone ilovalari";
+  document.getElementById("appsSubtitle").textContent="Google Play qidiruvi va AppZone ilovalari";
   renderCategories();
   filterApps();
   setMobileNav("home");
@@ -598,7 +888,9 @@ function showFavorites(){
 /* FIRESTORE'DAN TASDIQLANGAN ILOVALAR */
 async function loadCloudApps(){
   try{
-    const snapshot=await db.collection("apps").where("status","==","approved").get();
+    const snapshot=await db.collection("apps")
+      .where("status","==","approved")
+      .get();
 
     const cloudApps=snapshot.docs.map(doc=>{
       const d=doc.data();
@@ -614,8 +906,10 @@ async function loadCloudApps(){
         apkName:d.apkName||"",
         apkSize:Number(d.apkSize)||0,
         developer:d.developer||d.ownerEmail||"AppZone foydalanuvchisi",
-        source:"appzone",
-        playUrl:d.playUrl||""
+        recommendRoles:Array.isArray(d.recommendRoles)?d.recommendRoles:[],
+        recommendTypes:Array.isArray(d.recommendTypes)?d.recommendTypes:[],
+        recommendPurposes:Array.isArray(d.recommendPurposes)?d.recommendPurposes:[],
+        source:"appzone"
       };
     });
 
@@ -630,20 +924,157 @@ async function loadCloudApps(){
     apps=[...FEATURED_APPS,...uniqueCloudApps];
     filterApps();
 
+    if(lastRecommendation)renderRecommendations(lastRecommendation);
+
   }catch(error){
     console.error("Katalog xatosi:",error);
     apps=[...FEATURED_APPS];
     filterApps();
-    showToast("Onlayn katalog vaqtincha yuklanmadi; mashhur ilovalar ko‘rsatildi.");
+
+    if(lastRecommendation)renderRecommendations(lastRecommendation);
+    showToast("Onlayn katalog vaqtincha yuklanmadi; asosiy ilovalar ko‘rsatildi.");
   }
 }
 
-/* ILOVA TAFSILOTLARI VA SEVIMLILAR */
+/* FOYDALANUVCHI YUBORGAN ILOVAGA TAVSIYA GURUHI TOPISH */
+function getCustomAppTags(app){
+  const custom={
+    roles:Array.isArray(app.recommendRoles)?app.recommendRoles:[],
+    types:Array.isArray(app.recommendTypes)?app.recommendTypes:[],
+    purposes:Array.isArray(app.recommendPurposes)?app.recommendPurposes:[]
+  };
+
+  if(custom.roles.length||custom.types.length||custom.purposes.length){
+    return custom;
+  }
+
+  const category=String(app.category||"");
+  const map={
+    "Ta’lim":"education",
+    "Muloqot":"communication",
+    "Ijtimoiy tarmoqlar":"social",
+    "Foto va video":"video",
+    "Vositalar":"productivity",
+    "O‘yinlar":"gaming",
+    "Xaritalar":"navigation",
+    "Ko‘ngilochar":"music"
+  };
+
+  return APP_GROUPS[map[category]]||APP_GROUPS.productivity;
+}
+
+/* TAVSIYA ALGORITMI */
+function renderRecommendations(selection){
+  const resultBox=document.getElementById("recommendationResults");
+  const grid=document.getElementById("recommendationGrid");
+
+  const scored=apps.map(app=>{
+    const tags=app.source==="googleplay"
+      ?APP_GROUPS[app.group]||APP_GROUPS.productivity
+      :getCustomAppTags(app);
+
+    let score=0;
+    const reasons=[];
+
+    if(tags.roles.includes(selection.role)){
+      score+=2;
+      reasons.push("Kasbingizga mos");
+    }
+
+    if(tags.types.includes(selection.type)){
+      score+=4;
+      reasons.push("Ilova turiga mos");
+    }
+
+    if(tags.purposes.includes(selection.purpose)){
+      score+=4;
+      reasons.push("Maqsadingizga mos");
+    }
+
+    return {app,score,reasons};
+  })
+  .filter(item=>item.score>0)
+  .sort((a,b)=>b.score-a.score||a.app.name.localeCompare(b.app.name,"uz"))
+  .slice(0,12);
+
+  resultBox.hidden=false;
+  document.getElementById("recommendationCount").textContent=
+    scored.length+" ta mos ilova";
+
+  if(!scored.length){
+    grid.innerHTML='<div class="recommend-empty">Bu tanlovlarga mos ilova topilmadi. Boshqa tur yoki maqsadni tanlab ko‘ring.</div>';
+    return;
+  }
+
+  grid.innerHTML=scored.map(({app,reasons})=>{
+    const image=safeImageUrl(app.iconUrl);
+    const icon=image
+      ?`<img src="${escapeHTML(image)}" alt="">`
+      :escapeHTML(app.icon||getCategoryIcon(app.category));
+
+    const reason=reasons.length?reasons.join(" • "):"Sizning tanlovingizga mos";
+
+    return `
+      <article class="recommend-card">
+        <div class="recommend-card-top">
+          <div class="app-icon">${icon}</div>
+          <div>
+            <h4>${escapeHTML(app.name)}</h4>
+            <small>${escapeHTML(reason)}</small>
+          </div>
+        </div>
+        <p>${escapeHTML(app.description)}</p>
+        <button type="button" data-recommend-app="${escapeHTML(app.id)}">Ilovani ko‘rish →</button>
+      </article>
+    `;
+  }).join("");
+}
+
+document.getElementById("recommendForm").addEventListener("submit",event=>{
+  event.preventDefault();
+
+  const selection={
+    role:document.getElementById("recommendRole").value,
+    type:document.getElementById("recommendType").value,
+    purpose:document.getElementById("recommendPurpose").value
+  };
+
+  if(!selection.role||!selection.type||!selection.purpose){
+    showToast("Uchta tanlovni ham belgilang.");
+    return;
+  }
+
+  lastRecommendation=selection;
+  renderRecommendations(selection);
+
+  document.getElementById("recommendationResults").scrollIntoView({
+    behavior:"smooth",
+    block:"nearest"
+  });
+});
+
+document.getElementById("resetRecommend").addEventListener("click",()=>{
+  document.getElementById("recommendForm").reset();
+  document.getElementById("recommendationResults").hidden=true;
+  document.getElementById("recommendationGrid").innerHTML="";
+  lastRecommendation=null;
+});
+
+document.getElementById("recommendationGrid").addEventListener("click",event=>{
+  const button=event.target.closest("[data-recommend-app]");
+  if(!button)return;
+
+  const app=apps.find(item=>String(item.id)===button.dataset.recommendApp);
+  if(app)openAppDetails(app);
+});
+
+/* ILOVA KARTALARI: SEVIMLILAR VA TAFSILOTLAR */
 document.getElementById("appGrid").addEventListener("click",event=>{
   const fav=event.target.closest("[data-favorite]");
 
   if(fav){
     const id=fav.dataset.favorite;
+
     favorites=favorites.includes(id)
       ?favorites.filter(x=>x!==id)
       :[...favorites,id];
@@ -675,14 +1106,15 @@ function openAppDetails(app){
   let actions="";
 
   if(app.source==="googleplay"){
-    const safeUrl="https://play.google.com/store/apps/details?id="+encodeURIComponent(app.packageId);
+    const url="https://play.google.com/store/search?q="+encodeURIComponent(app.name)+"&c=apps";
+
     actions=`
-      <a class="download-btn play-btn" href="${escapeHTML(safeUrl)}"
+      <a class="download-btn play-btn" href="${escapeHTML(url)}"
         target="_blank" rel="noopener noreferrer">
-        ▶ Google Play orqali o‘rnatish
+        ▶ Google Play’da topish va o‘rnatish
       </a>
       <p class="muted" style="margin-top:9px;text-align:center">
-        Rasmiy Google Play sahifasi ochiladi. Ilova mavjudligi qurilma va hududga bog‘liq.
+        Google Play’da ilovaning rasmiy sahifasini tanlang. Mavjudlik qurilma va hududga bog‘liq.
       </p>
     `;
   }else if(isAllowedApkUrl(app.apkUrl)){
@@ -700,7 +1132,7 @@ function openAppDetails(app){
       </p>
     `;
   }else{
-    actions=`<p class="muted" style="margin-top:18px;text-align:center">⏳ Yuklab olish fayli hali joylanmagan.</p>`;
+    actions='<p class="muted" style="margin-top:18px;text-align:center">⏳ Yuklab olish fayli hali joylanmagan.</p>';
   }
 
   document.getElementById("detailContent").innerHTML=`
@@ -713,9 +1145,7 @@ function openAppDetails(app){
       <p class="muted" style="margin-top:14px">
         Kategoriya: ${escapeHTML(app.category||"Ilova")}<br>
         Dasturchi: ${escapeHTML(app.developer||"Noma’lum")}<br>
-        ${app.source==="googleplay"
-          ?"Manba: Google Play"
-          :"Versiya: "+escapeHTML(app.version||"1.0")}
+        ${app.source==="googleplay"?"Manba: Google Play":"Versiya: "+escapeHTML(app.version||"1.0")}
       </p>
       ${actions}
     </div>
@@ -993,9 +1423,7 @@ function statusLabel(status){
 
 function renderAdminApps(){
   const list=document.getElementById("adminList");
-  const filtered=adminApps.filter(app=>
-    adminFilter==="all"||app.status===adminFilter
-  );
+  const filtered=adminApps.filter(app=>adminFilter==="all"||app.status===adminFilter);
 
   if(!filtered.length){
     list.innerHTML='<div class="admin-empty">Bu bo‘limda hozircha ilovalar yo‘q.</div>';
@@ -1024,7 +1452,6 @@ function renderAdminApps(){
         </div>
 
         <p>${escapeHTML(app.description||"Tavsif yo‘q")}</p>
-
         <p>
           Kategoriya: ${escapeHTML(app.category||"—")}<br>
           Versiya: ${escapeHTML(app.version||"—")}<br>
@@ -1034,16 +1461,13 @@ function renderAdminApps(){
 
         <div class="admin-apk-form">
           <h4>📦 APK faylini telefondan yuklash</h4>
-
           <div class="form-group">
             <label>APK faylini tanlang</label>
             <input type="file" accept=".apk,application/vnd.android.package-archive" data-apk-file>
           </div>
-
           <button class="admin-action apk-upload-btn" data-admin-action="upload-apk" data-id="${escapeHTML(app.id)}">
             ⬆ APK yuklash va saqlash
           </button>
-
           <p class="upload-status" data-upload-status>
             Maksimal hajm: 50 MB. Yuklangandan so‘ng manzil avtomatik saqlanadi.
           </p>
@@ -1051,22 +1475,18 @@ function renderAdminApps(){
           <hr style="border:0;border-top:1px solid var(--border);margin:14px 0">
 
           <h4>Yoki mavjud APK havolasini kiritish</h4>
-
           <div class="form-group">
             <label>Supabase APK URL</label>
             <input type="url" data-apk-url value="${escapeHTML(app.apkUrl||"")}" placeholder="https://.../appzone-apks/ilova.apk">
           </div>
-
           <div class="form-group">
             <label>APK nomi</label>
             <input type="text" data-apk-name maxlength="120" value="${escapeHTML(app.apkName||"")}" placeholder="Ilova.apk">
           </div>
-
           <div class="form-group">
             <label>Hajmi (MB)</label>
             <input type="number" data-apk-size min="0" step="0.01" value="${Number(app.apkSize)||0}">
           </div>
-
           <button class="admin-action apk-save-btn" data-admin-action="save-apk" data-id="${escapeHTML(app.id)}">
             💾 Havola ma’lumotlarini saqlash
           </button>
@@ -1078,7 +1498,7 @@ function renderAdminApps(){
   }).join("");
 }
 
-/* MAVJUD APK HAVOLASINI SAQLASH */
+/* APK HAVOLASINI SAQLASH */
 async function saveApkMetadata(appId,button){
   if(!auth.currentUser||!isAdmin){
     throw new Error("Faqat admin APK ma’lumotlarini saqlay oladi.");
@@ -1128,19 +1548,14 @@ async function uploadApkForApp(appId,button){
   const file=fileInput.files&&fileInput.files[0];
 
   if(!file)throw new Error("Avval telefondan APK faylini tanlang.");
-  if(!file.name.toLowerCase().endsWith(".apk")){
-    throw new Error("Faqat .apk fayl tanlash mumkin.");
-  }
-  if(file.size<=0||file.size>MAX_APK_SIZE){
-    throw new Error("Fayl 50 MB dan kichik bo‘lishi kerak.");
-  }
+  if(!file.name.toLowerCase().endsWith(".apk"))throw new Error("Faqat .apk fayl tanlash mumkin.");
+  if(file.size<=0||file.size>MAX_APK_SIZE)throw new Error("Fayl 50 MB dan kichik bo‘lishi kerak.");
 
   button.disabled=true;
   button.textContent="Yuklanmoqda...";
 
   try{
     status.textContent="1/3 — Admin ruxsati tekshirilmoqda...";
-
     const firebaseToken=await auth.currentUser.getIdToken(true);
 
     const response=await fetch(APK_FUNCTION_URL,{
@@ -1198,7 +1613,6 @@ async function uploadApkForApp(appId,button){
 
     await loadAdminApps();
     await loadCloudApps();
-
   }finally{
     button.disabled=false;
     button.textContent="⬆ APK yuklash va saqlash";
@@ -1247,7 +1661,6 @@ document.getElementById("adminList").addEventListener("click",async event=>{
 
     await loadAdminApps();
     await loadCloudApps();
-
   }catch(error){
     console.error("Admin amali xatosi:",error);
     showToast(error.message||"Amalni bajarib bo‘lmadi.");
@@ -1255,7 +1668,7 @@ document.getElementById("adminList").addEventListener("click",async event=>{
   }
 });
 
-/* ISHGA TUSHIRISH */
+/* BOSHLANG‘ICH YUKLASH */
 renderCategories();
 filterApps();
 </script>
